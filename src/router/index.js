@@ -95,6 +95,30 @@ export default new Router({
       meta: {
         title: '绑定成功'
       }
+    },
+    {
+      path: '/hall',
+      name: 'hall',
+      component: () => import('../views/app/hall.vue'),
+      meta: {
+        title: '需求大厅'
+      }
+    },
+    {
+      path: '/clue',
+      name: 'clue',
+      component: () => import('../views/app/clue.vue'),
+      meta: {
+        title: '我的线索'
+      }
+    },
+    {
+      path: '/mine',
+      name: 'mine',
+      component: () => import('../views/app/mine.vue'),
+      meta: {
+        title: '我的'
+      }
     }
   ],
   scrollBehavior(to, from, saveTop){

@@ -18,6 +18,18 @@
 				<div class="mine_wallet_text">赠币</div>
 			</div>
 		</div>
+		<div class="mine_bottom">
+			<div class="mine_bottom_item" @click="goMyAccount">
+				<img class="mine_bottom_item_icon" src="@/assets/mine-account@3x.png">
+				<div class="mine_bottom_item_text">我的账户</div>
+				<img class="mine_bottom_item_arrow" src="@/assets/ic_chevron_right_small.png">
+			</div>
+			<div class="mine_bottom_item" @click="goRecharge">
+				<img class="mine_bottom_item_icon" src="@/assets/mine-top-up@3x.png">
+				<div class="mine_bottom_item_text">充值</div>
+				<img class="mine_bottom_item_arrow" src="@/assets/ic_chevron_right_small.png">
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -29,7 +41,16 @@
 			}
 		},
 		methods: {
-
+			goMyAccount() {
+				this.$router.push({
+					path: '/myAccount'
+				})
+			},
+			goRecharge() {
+				this.$router.push({
+					path: '/recharge'
+				})
+			},
 		},
 		created() {
 
@@ -105,6 +126,31 @@
 				height: 20px;
 				opacity: 0.3;
 				border-left: 1px solid rgba(255,173,113,0.40);
+			}
+		}
+		.mine_bottom {
+			margin-top: 16px;
+			.mine_bottom_item {
+				width: 100%;
+				height: 56px;
+				display: flex;
+				align-items: center;
+				.mine_bottom_item_icon {
+					margin-right: 16px;
+					width: 24px;
+					height: 24px;
+				}
+				.mine_bottom_item_text {
+					flex: 1;
+					font-family: PingFangSC-Regular;
+					font-size: 14px;
+					color: rgba(0,0,0,0.60);
+					text-align: left;
+					line-height: 20px;
+				}
+				.mine_bottom_item_arrow {
+					width: 16px;
+				}
 			}
 		}
 	}

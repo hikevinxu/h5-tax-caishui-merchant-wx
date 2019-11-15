@@ -4,15 +4,15 @@
       <router-view />
     </keep-alive>
     <div class="tab" v-show="tabName.includes($route.name)">
-      <div class="tab_item">
+      <div class="tab_item" @click="tabClick('hall')">
         <img class="tab_icon" :src="$route.name == 'hall' ? require('@/assets/tab-demand@3x.png') : require('@/assets/tab-nodemand@3x.png')">
         <div class="tab_name":class="{highLight: $route.name == 'hall'}">需求大厅</div>
       </div>
-      <div class="tab_item">
+      <div class="tab_item" @click="tabClick('clue')">
         <img class="tab_icon" :src="$route.name == 'clue' ? require('@/assets/tab-clues@3x.png') : require('@/assets/tab-noclues@3x.png')">
         <div class="tab_name":class="{highLight: $route.name == 'clue'}">我的线索</div>
       </div>
-      <div class="tab_item">
+      <div class="tab_item" @click="tabClick('mine')">
         <img class="tab_icon" :src="$route.name == 'mine' ? require('@/assets/tab-mine@3x.png') : require('@/assets/tab-nomine@3x.png')">
         <div class="tab_name" :class="{highLight: $route.name == 'mine'}">我的</div>
       </div>
@@ -32,6 +32,13 @@ export default {
     // '$route.name': function(val) {
       
     // }
+  },
+  methods: {
+    tabClick(name) {
+      this.$router.replace({
+        name,
+      })
+    }
   }
 }
 </script>

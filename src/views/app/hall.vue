@@ -279,8 +279,7 @@
 		    let distance;
 		    window.addEventListener('touchmove', (e) => {
 		    	if(clientY && !this.showFilter) {
-		    		console.log(e.target);
-		    		distance = e.target.classList.includes['swiper-container1'] ? 20 : 1;
+		    		distance = e.target.classList.value.split().includes('swiper-container1') ? 20 : 1;
 		    		if(clientY + distance < e.targetTouches[0].clientY) {
 			    		this.showBanner = true;
 			    	}

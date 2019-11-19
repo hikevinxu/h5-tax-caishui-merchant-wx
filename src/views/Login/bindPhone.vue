@@ -53,10 +53,13 @@ export default {
         console.log(res)
         if(res.code == 0){
           this.openId = res.data.openId
+          localStorage.setItem('openId',this.openId)
           if(res.data.hasBind == false){
             this.hasBind = false
           }else {
             this.hasBind = true
+            let merchant = res.data.merchant.id
+            localStorage.setItem('merchant', merchant)
             this.$router.replace({ path: '/success' })
           }
         }

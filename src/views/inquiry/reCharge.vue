@@ -1,5 +1,5 @@
 <template>
-  <div class="reCharge" >
+  <div class="reChargeBox" >
     <div class="balanceContainer">
       <div class="balance">
         <h4>当前账户余额</h4>
@@ -12,6 +12,10 @@
             <span class="num">{{data.bonusBalance}}</span>
             <span class="txt">赠币</span>
           </div>
+        </div>
+        <div class="reCharge" @click="costomRecharge">
+          <span>自定义充值</span>
+          <img src="@/assets/ic_recharge_arrow_1@3x.png" alt="">
         </div>
       </div>
     </div>
@@ -32,22 +36,37 @@
         </div>
       </div>
     </div>
+    <van-dialog
+      v-model="rechargeShow"
+      title="自定义充值金额"
+      show-cancel-button
+      @confirm="reCharge"
+      @cancel="rechargeShow = false"
+      :before-close="beforeClose"
+    >
+      <div class="recharge_input_box">
+        <div class="recharge_label">充值金额</div>
+        <input class="recharge_input" type="text" v-model="rechargeNum" placeholder="请输入充值金额">
+      </div>
+    </van-dialog>
   </div>
 </template>
 <script>
 import Vue from 'vue'
-import { Toast, Button } from 'vant'
+import { Toast, Button, Dialog } from 'vant'
 import api from '@/api/api'
 import qs from 'qs'
-import sa from 'sa-sdk-javascript'
-Vue.use(Button)
 Vue.use(Toast)
+Vue.use(Button)
+Vue.use(Dialog)
 export default {
   data () {
     return {
+      rechargeShow: false,
+      rechargeNum: '',
       data: {
         balance: 0,
-        bonusBalance: 0
+        bonusBalance: 0,
       },
       reChargeList: [
         {
@@ -106,6 +125,43 @@ export default {
     })
   },
   methods: {
+    costomRecharge() {
+      sa.track('WebCheckOnTheRechargeBtn', {
+        recharge_type: 'CUSTOM'
+      })
+      this.rechargeShow = true;
+    },
+    reCharge() {
+      console.log(this.rechargeNum)
+      if(!this.rechargeNum) {
+        Toast('请先输入充值金额');
+        return true;
+      }
+      if(/[^0-9]/.test(this.rechargeNum)) {
+        Toast('充值金额必须为整数');
+        return true;
+      }
+      if(this.rechargeNum < 3000 || this.rechargeNum > 50000) {
+        Toast('充值金额范围为3000~50000');
+        return true;
+      }
+      sa.track('WebCheckOnTheRechargeConfirm', {
+        recharge_amount: 'CUSTOM'
+      })
+      let data = {
+        rechargeAmount: this.rechargeNum,
+        bonusAmount: 0,
+        id: ''
+      }
+      this.goPay(data);
+    },
+    beforeClose(action, done) {
+      if(action === 'confirm') {
+        done(false);
+      }else {
+        done();
+      }
+    },
     binding () {
       
     },
@@ -113,11 +169,16 @@ export default {
       window.history.back()
     },
     goPay(item){
+      if(item.id) {
+        sa.track('WebCheckOnTheRechargeBtn', {
+          recharge_type: 'FIXED'
+        })
+      }
+      localStorage.setItem('rechargeAmount', item.rechargeAmount);
+      localStorage.setItem('bonusAmount', item.bonusAmount);
       this.$router.push({
           path: '/reChargePay',
           query: {
-            rechargeAmount: item.rechargeAmount,
-            bonusAmount: item.bonusAmount,
             id: item.id
           }
       })
@@ -126,7 +187,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.reCharge{
+.reChargeBox{
   width: 100%;
   padding-bottom: 20px;
   .balanceContainer{
@@ -135,6 +196,7 @@ export default {
     padding-top: 16px;
     .balance{
       width: 328px;
+      position: relative;
       padding-top: 20px;
       padding-bottom: 30px;
       background: linear-gradient(135deg, #FFAD71 0%, #FF7F4A 100%);
@@ -148,6 +210,25 @@ export default {
         color: rgba(255,255,255,0.74);
         text-align: left;
         margin-left: 16px;
+      }
+      .reCharge{
+        position: absolute;
+        display: flex;
+        align-items: center;
+        top: 12px;
+        right: 12px;
+        img{
+          display: block;
+          width: 12px;
+          height: 12px;
+          margin-left: 6px;
+        }
+        span{
+          font-family: PingFangSC-Regular;
+          font-size: 14px;
+          color: #FFFFFF;
+          text-align: center;
+        }
       }
       .numLine{
         display: flex;
@@ -252,6 +333,15 @@ export default {
           }
         }
       }
+    }
+  }
+  .recharge_input_box {
+    padding: 16px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    .recharge_input {
+      margin-left: 12px;
     }
   }
 }

@@ -1,5 +1,12 @@
 <template>
   <div class="inquiryDetail" >
+    <div class="inquiryDetail_top">
+      <div class="inquiryDetail_top_text">询价单信息</div>
+      <div :class="`inquiryDetail_top_type inquiryDetail_top_type${data.recommendTag}`" v-if="data.recommendTag">{{typeList[data.recommendTag - 1].name}}</div>
+      <div style="flex: 1"></div>
+      <img class="inquiryDetail_top_icon" v-if="data.status" :src="require(`@/assets/deal-${data.status}@3x.png`)">
+      <div :class="`inquiryDetail_top_status inquiryDetail_top_status${data.status}`">{{statusList[data.status]}}</div>
+    </div>
     <div class="inquiryData">
       <div class="line" v-if="data.status == 3">
         <span class="label">服务报价（￥）</span>
@@ -8,7 +15,7 @@
         </div>
       </div>
       <div class="line">
-        <span class="label">客户名称</span>
+        <span class="label">客户称呼</span>
         <div class="data">
           <span class="dataDetail">{{data.name}}</span>
         </div>
@@ -16,9 +23,7 @@
       <div class="line">
         <span class="label">联系电话</span>
         <div class="data" v-if="data.phone">
-          <span v-if="data.phone.indexOf('*') > -1" style="font-family: PingFangSC-Regular;font-size: 14px;">{{data.phone}}</span>
-          <a v-else id="call" style="font-family: PingFangSC-Regular;font-size: 14px;text-decoration: underline;color: #2a5caa" @click="call">{{data.phone}}</a>
-          <span class="sure" style="display:block;-webkit-transform : scale(0.84,0.84);font-family: PingFangSC-Regular;font-size: 8px;color: #FB5332;">(确定报价后显示)</span>
+          <span style="font-family: PingFangSC-Regular;font-size: 14px;">{{data.phone}}</span>
         </div>
       </div>
       <div class="line">
@@ -97,7 +102,23 @@ export default {
       hasBind: false,
       overdue: false,
       success: false,
-      showQrcode: false
+      showQrcode: false,
+      typeList: [
+        {
+          name: '客服推送',
+          code: 1,
+          childs: []
+        }, {
+          name: '超值',
+          code: 2,
+          childs: []
+        }, {
+          name: '准新',
+          code: 3,
+          childs: []
+        }
+      ],
+      statusList: ['', '对接中', '已成交'],
     }
   },
   created () {
@@ -107,32 +128,14 @@ export default {
     if(intentionId) {
       this.intentionId = intentionId
       let data = {
-        intentionId: intentionId
+        id: intentionId
         // intentionId: 1
       }
       // data = qs.stringify(data)
-      api.intentionDetail(data).then(res => {
+      api.clueDetail(data).then(res => {
         console.log(res)
         if(res.code == 0){
-          if(res.data.status == 2) {
-            this.$router.replace({
-              path: '/feedback',
-              query: {
-                intentionId,
-              }
-            })
-          }else {
-            this.data = res.data
-            this.data.extra = JSON.parse(this.data.extra)
-            let typeList = ['预审', '询价单']
-            sa.track('WebConsultingOrder', {
-              page: this.$route.query.form || '',
-              type: typeList[this.data.intentionType],
-              service_name: this.data.intention,
-              service_code: this.data.intentionCode,
-              service_area: this.data.area
-            })
-          }
+          this.data = res.data
         }
       })
       localStorage.setItem('intentionId', intentionId)
@@ -214,6 +217,62 @@ export default {
   padding-bottom: 52px;
   width: 100%;
   position: relative;
+  .inquiryDetail_top {
+    padding: 16px 16px 8px;
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    .inquiryDetail_top_text {
+      font-family: PingFangSC-Medium;
+      font-size: 16px;
+      color: rgba(0,0,0,0.87);
+      text-align: left;
+      flex-grow: 0;
+    }
+    .inquiryDetail_top_type {
+      margin-left: 16px;
+      border: 1px solid #FFAD71;
+      padding: 0 6px;
+      width: fit-content;
+      border-radius: 100px 100px 100px 0;
+      font-family: PingFangSC-Medium;
+      font-size: 12px;
+      color: #FFAD71;
+      line-height: 18px;
+    }
+    .inquiryDetail_top_type1 {
+      border: 1px solid #FFAD71;
+      color: #FFAD71;
+    }
+    .inquiryDetail_top_type2 {
+      border: 1px solid #FB5332;
+      color: #FB5332;
+    }
+    .inquiryDetail_top_type3 {
+      border: 1px solid #90D0FF;
+      color: #90D0FF;
+    }
+    .inquiryDetail_top_icon {
+      width: 20px;
+      height: 20px;
+      flex-grow: 0;
+    }
+    .inquiryDetail_top_status {
+      margin-left: 8px;
+      font-family: PingFangSC-Medium;
+      font-size: 16px;
+      color: #5AB3A4;
+      line-height: 22px;
+      flex-grow: 0;
+    }
+    .inquiryDetail_top_status1 {
+      color: #FF7F4A;
+    }
+    .inquiryDetail_top_status2 {
+      color: #5AB3A4;
+    }
+  }
   .inquiryData{
     width: 100%;
     background: #ffffff;

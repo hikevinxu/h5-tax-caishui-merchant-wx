@@ -1,11 +1,16 @@
 <template>
 	<div class="hall">
 		<div class="banner" :class="{height0: !showBanner}">
-			<div class="swiper-container1">
+			<!-- <div class="swiper-container1">
 			    <div class="swiper-wrapper">
-			      	<img class="swiper-slide banner_item" v-for="(item, index) in imgList" :src="item" :key="index">
+			      	<img class="swiper-slide banner_item" v-for="(item, index) in imgList" :src="item.elementValue" :key="index" @click="clickBanner(item)">
 			    </div>
-	  		</div>
+	  		</div> -->
+	  		<van-swipe :autoplay="2500">
+			  	<van-swipe-item v-for="(item, index) in imgList" :key="index" @click="clickBanner(item)">
+			    	<img :src="item.elementValue" />
+			  	</van-swipe-item>
+			</van-swipe>
 		</div>
 		<div class="hall_container">
 			<div class="hall_container_top" :class="{hall_container_fixed: !showBanner, hall_container_all: showFilter}">
@@ -23,7 +28,7 @@
 						    	</div>
 						      	<div class="swiper-slide message_item" v-for="(item, index) in messageList" :src="item" :key="index" v-html="">
 						      		<img src="@/assets/notice@3x.png">
-						      		<p>{{item.name}}已对接<span>{{item.area}}</span>的<span>{{item.business}}</span>业务</p>
+						      		<p>{{item.name}}已对接<span>{{item.area}}</span>的<span>{{item.intention}}</span>业务</p>
 						      	</div>
 						    </div>
 				  		</div>
@@ -46,15 +51,15 @@
 				<div class="filter_box" v-show="showFilter" @click.self="closeFilter">
 					<div class="filter_container">
 						<div class="filter_left">
-							<div class="filter_left_item">
+							<div class="filter_left_item" @click="selectAll">
 								<div class="filter_left_item_icon"></div>
 								<div class="filter_left_item_text">全部</div>
 								<div class="filter_left_item_arrow"></div>
 							</div>
-							<div class="filter_left_item" v-for="item in city" :key="item.code" :class="{filter_left_item_active: fatherItem.code == item.code}" @click="select1(item)">
+							<div class="filter_left_item" v-for="item in filterList" :key="item.code" :class="{filter_left_item_active: fatherItem.code == item.code}" @click="select1(item)">
 								<div class="filter_left_item_icon"></div>
 								<div class="filter_left_item_text">{{item.name}}</div>
-								<img class="filter_left_item_arrow" src="@/assets/right@3x.png" v-if="item.childs.length > 1">
+								<img class="filter_left_item_arrow" src="@/assets/right@3x.png" v-if="item.childs && item.childs.length > 1">
 								<div class="filter_left_item_arrow" v-else></div>
 							</div>
 						</div>
@@ -65,124 +70,86 @@
 				</div>
 			</div>
 			<div class="intention">
-				<div class="intention_item">
-					<img class="intention_item_type" src="@/assets/label-1@3x.png">
+				<div class="intention_item" v-for="item in clueList" @click="goDetail(item)">
+					<img class="intention_item_type" :src="require(`@/assets/label-${item.recommendTag}@3x.png`)">
 					<div class="intention_item_detail">查看详情</div>
 					<div class="intention_item_top">
-						<div class="intention_item_name">刘先生</div>
-						<div class="intention_item_status">对接中</div>
+						<div class="intention_item_name">{{item.name}}</div>
+						<div :class="`intention_item_status intention_item_status${item.status}`">{{statusList[item.status]}}</div>
 					</div>
-					<div class="intention_item_info">询问类目：工商服务-公司注册</div>
-					<div class="intention_item_info">需求区域：杭州市-西湖区</div>
-					<div class="intention_item_info">客户意向：行业制造业，收入规模哈哈哈</div>
+					<div class="intention_item_info">询问类目：{{item.intention}}</div>
+					<div class="intention_item_info">需求区域：{{item.area}}</div>
+					<div class="intention_item_info" v-if="item.customerIntention">客户意向：{{item.customerIntention}}</div>
 					<div class="intention_item_bottom">
-						<div class="intention_item_date">2019.09.16 23:24</div>
-						<img class="intention_item_icon" src="@/assets/has-pushed@3x.png">
-						<div class="intention_item_push">已推给我</div>
+						<div class="intention_item_date">{{item.createTime}}</div>
+						<!-- <img class="intention_item_icon" src="@/assets/has-pushed@3x.png">
+						<div class="intention_item_push">已推给我</div> -->
 					</div>
 				</div>
-				<div class="intention_item">
-					<img class="intention_item_type" src="@/assets/label-1@3x.png">
-					<div class="intention_item_detail">查看详情</div>
-					<div class="intention_item_top">
-						<div class="intention_item_name">刘先生</div>
-						<div class="intention_item_status">对接中</div>
-					</div>
-					<div class="intention_item_info">询问类目：工商服务-公司注册</div>
-					<div class="intention_item_info">需求区域：杭州市-西湖区</div>
-					<div class="intention_item_info">客户意向：行业制造业，收入规模哈哈哈</div>
-					<div class="intention_item_bottom">
-						<div class="intention_item_date">2019.09.16 23:24</div>
-						<img class="intention_item_icon" src="@/assets/has-pushed@3x.png">
-						<div class="intention_item_push">已推给我</div>
-					</div>
-				</div>
-				<div class="intention_item">
-					<img class="intention_item_type" src="@/assets/label-1@3x.png">
-					<div class="intention_item_detail">查看详情</div>
-					<div class="intention_item_top">
-						<div class="intention_item_name">刘先生</div>
-						<div class="intention_item_status">对接中</div>
-					</div>
-					<div class="intention_item_info">询问类目：工商服务-公司注册</div>
-					<div class="intention_item_info">需求区域：杭州市-西湖区</div>
-					<div class="intention_item_info">客户意向：行业制造业，收入规模哈哈哈</div>
-					<div class="intention_item_bottom">
-						<div class="intention_item_date">2019.09.16 23:24</div>
-						<img class="intention_item_icon" src="@/assets/has-pushed@3x.png">
-						<div class="intention_item_push">已推给我</div>
-					</div>
-				</div>
-				<div class="intention_item">
-					<img class="intention_item_type" src="@/assets/label-1@3x.png">
-					<div class="intention_item_detail">查看详情</div>
-					<div class="intention_item_top">
-						<div class="intention_item_name">刘先生</div>
-						<div class="intention_item_status">对接中</div>
-					</div>
-					<div class="intention_item_info">询问类目：工商服务-公司注册</div>
-					<div class="intention_item_info">需求区域：杭州市-西湖区</div>
-					<div class="intention_item_info">客户意向：行业制造业，收入规模哈哈哈</div>
-					<div class="intention_item_bottom">
-						<div class="intention_item_date">2019.09.16 23:24</div>
-						<img class="intention_item_icon" src="@/assets/has-pushed@3x.png">
-						<div class="intention_item_push">已推给我</div>
-					</div>
-				</div>
-				<div class="intention_item">
-					<img class="intention_item_type" src="@/assets/label-1@3x.png">
-					<div class="intention_item_detail">查看详情</div>
-					<div class="intention_item_top">
-						<div class="intention_item_name">刘先生</div>
-						<div class="intention_item_status">对接中</div>
-					</div>
-					<div class="intention_item_info">询问类目：工商服务-公司注册</div>
-					<div class="intention_item_info">需求区域：杭州市-西湖区</div>
-					<div class="intention_item_info">客户意向：行业制造业，收入规模哈哈哈</div>
-					<div class="intention_item_bottom">
-						<div class="intention_item_date">2019.09.16 23:24</div>
-						<img class="intention_item_icon" src="@/assets/has-pushed@3x.png">
-						<div class="intention_item_push">已推给我</div>
-					</div>
-				</div>
+				<div class="load_more" @click="loadingMore" v-show="showLoad && !noMore">
+		            <span v-show="!loading_more">点击加载更多</span>
+		            <van-loading style="width: 10px;" v-show="loading_more == true" type="spinner" />
+		        </div>
+		        <div class="load_more" v-show="showLoad && noMore">
+		            <span>已经到底了</span>
+		        </div>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script>
+	import Vue from 'vue'
 	import Swiper from 'swiper'
-	import city from '@/mock/city_code'
+	import api from '@/api/api'
+	import { fetchAppGet } from '@/api/axios'
+	import { Toast, Button, Loading, Swipe, SwipeItem } from 'vant'
+	Vue.use(Loading);
+	Vue.use(Swipe).use(SwipeItem);
 	export default {
 		data() {
 			return {
-				imgList: [require('@/assets/ic_articlelist_date.png'), require('@/assets/ic_articlelist_rewarded.png')],
+				imgList: [],
 				userNum: 0,
 				typeNum: 0,
-				messageList: [
-					{
-						id: 1,
-						name: '刘先生',
-						area: '浙江省-杭州市-西湖区',
-						business: '公司注册'
-					},{
-						id: 2,
-						name: '张先生',
-						area: '浙江省-杭州市-余杭区',
-						business: '公司注册'
-					}
-				],
+				messageList: [],
 				filterType: '',
 				showBanner: true,
 				showBanner_: true,
-				city: city,
+				cityList: [],
+				serveList: [],
+				typeList: [
+					{
+						name: '客服推送',
+						code: 1,
+						childs: []
+					}, {
+						name: '超值',
+						code: 2,
+						childs: []
+					}, {
+						name: '准新',
+						code: 3,
+						childs: []
+					}
+				],
 				fatherItem: {},
 				childs: [],
 				childItem: {},
 				showFilter: false,
 				cityText: '筛选城市',
 				serveText: '筛选服务',
-				typeText: '筛选类型'
+				typeText: '筛选类型',
+				areaCode: '',
+				intentionCode: '',
+				recommendTag: '',
+				clueList: [],
+				statusList: ['', '对接中', '已成交'],
+				noMore: false,
+		      	loading: false,
+		      	loading_more: false,
+		      	pageNum: 1,
+		      	total: 0,
 			}
 		},
 		watch: {
@@ -193,9 +160,21 @@
 			}
 		},
 		computed: {
-
+			filterList() {
+				return this.filterType ? this[this.filterType + 'List'] : [];
+			},
+			showLoad() {
+				return this.total > this.pageNum * 10;
+			}
 		},
 		methods: {
+			getBanner() {
+				fetchAppGet('/advert/position/list', {positionNo: '011'}).then(res => {
+					if(res.code == 0) {
+						this.imgList = res.data.infos;
+					}
+				})
+			},
 			getNum() {
 				let time = new Date();
 				let date = time.getDate();
@@ -209,6 +188,56 @@
 				this.userNum = initNum;
 				this.typeNum = date * day % 25 + 20;
 			},
+			getCarouselList() {
+				api.carouselList({}).then(res => {
+					if(res.code == 0) {
+						this.messageList = res.data.items;
+					}
+				})
+			},
+			getClueList() {
+				let data = {
+					areaCode: this.areaCode,
+					intentionCode: this.intentionCode,
+					recommendTag: this.recommendTag,
+					pageNum: this.pageNum,
+					pageSize: 10,
+				}
+				api.clueList(data).then(res => {
+					if(res.code == 0) {
+						this.clueList = res.data.items;
+						this.total = res.data.total;
+						this.loading_more = false;
+						if(res.data.items.length < 10){
+			              	this.noMore = true
+			          	}else{
+			              	this.noMore = false
+			          	}
+					}
+				})
+			},
+			getCityList() {
+				api.cityList({}).then(res => {
+					if(res.code == 0) {
+						this.cityList = res.data;
+					}
+				})
+			},
+			getServeList() {
+				api.serveList({}).then(res => {
+					if(res.code == 0) {
+						this.serveList = res.data;
+					}
+				})
+			},
+			clickBanner(item) {
+				location.href = item.adValue;
+			},
+			loadingMore() {
+				this.loading_more = true;
+				this.pageNum ++;
+				this.getClueList();
+			},
 			closeFilter() {
 				this.filterType = '';
 				this.showFilter = '';
@@ -221,12 +250,20 @@
 				})
 			},
 			select1(item) {
+				let obj = {
+					city: 'areaCode',
+					serve: 'intentionCode',
+					type: 'recommendTag'
+				}
 				this.childItem = {};
 				this.fatherItem = item;
 				this[this.filterType + 'Text'] = item.name;
+				this[obj[this.filterType]] = item.code;
+				this.getClueList();
 				if(item.childs.length > 1) {
 					this.childs = item.childs;
 				}else {
+					this.childs = [];
 					setTimeout(() => {
 						this.showFilter = false;
 						this.filterType = '';
@@ -234,27 +271,47 @@
 				}
 			},
 			select2(item) {
+				let obj = {
+					city: 'areaCode',
+					serve: 'intentionCode',
+					type: 'recommendTag'
+				}
 				this.childItem = item;
 				this[this.filterType + 'Text'] = item.name;
+				this[obj[this.filterType]] = item.code;
+				this.getClueList();
 				setTimeout(() => {
 					this.showFilter = false;
 					this.filterType = '';
 				}, 100);
 				
-			}
+			},
+			selectAll() {
+				// this[this.filterType + 'Text'] = '全部';
+				setTimeout(() => {
+					this.showFilter = false;
+					this.filterType = '';
+				}, 100);
+			},
+			goDetail(item) {
+				this.$router.push({
+					path: '/detail',
+					query: {
+						intentionId: item.id,
+						from: 'clues_page'
+					}
+				})
+			},
 		},
 		created() {
 			this.getNum();
+			this.getBanner();
+			this.getCarouselList();
+			this.getClueList();
+			this.getCityList();
+			this.getServeList();
 		},
 		mounted() {
-			// banner轮播
-			new Swiper('.swiper-container1', {
-		      	autoplay: {
-			        delay: 2500,
-			        disableOnInteraction: false,
-		      	},
-		      	loop : true,
-		    });
 		    // 消息轮播
 		    new Swiper('.swiper-container2', {
 		    	direction: 'vertical',
@@ -339,8 +396,10 @@
 							width: 344px;
 							height: 32px;
 							.message_item {
+								width: 100%;
 								height: 32px;
 								padding-left: 16px;
+								box-sizing: border-box;
 								display: flex;
 								align-items: center;
 								img {
@@ -349,10 +408,15 @@
 									height: 18px;
 								}
 								p {
+									flex: 1;
 									font-family: PingFangSC-Regular;
 									font-size: 12px;
 									color: rgba(0,0,0,0.60);
 									line-height: 18px;
+									text-align: left;
+									overflow: hidden;
+									text-overflow: ellipsis;
+									white-space: nowrap;
 									span {
 										color: #FF7F4A;
 									}
@@ -475,7 +539,7 @@
 			}
 			.intention {
 				margin-top: 96px;
-				padding: 12px 12px 0;
+				padding: 12px 12px 60px;
 				box-sizing: border-box;
 				width: 100%;
 				background: #f5f5f5;
@@ -530,6 +594,14 @@
 							color: #FFAD71;
 							line-height: 16px;
 						}
+						.intention_item_status1 {
+							border: 1px solid #FFAD71;
+							color: #FFAD71;
+						}
+						.intention_item_status2 {
+							border: 1px solid #5BB3A4;
+							color: #5BB3A4;
+						}
 					}
 					.intention_item_info {
 						width: 208px;
@@ -568,6 +640,23 @@
 						}
 					}
 				}
+				.load_more{
+			        width: 100%;
+			        margin-left: auto;
+			        margin-right: auto;
+			        display: flex;
+			        height: 40px;
+			        flex-flow: column;
+			        align-items: center;
+			        justify-content: center;
+			        // margin-top: 16px;
+			        // border-bottom: 1px solid rgba(0,0,0,0.04);
+			        cursor: pointer;
+			        span{
+			            font-size: 14px;
+			            color: rgba(0,0,0,0.60);
+			        }
+		      	}
 			}
 		}
 	}

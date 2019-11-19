@@ -25,7 +25,7 @@
     <div class="consumeContainer">
       <div class="consumeContent">
         <h4>消费记录</h4>
-        <div class="consumeList">
+        <div class="consumeList" v-if="consumeList.length > 0">
           <div class="consume" v-for="(item,index) in consumeList" :key='index' @click="goDetail(item)">
             <div class="detailContent" >
               <img src="@/assets/buy.png" alt="" v-show="item.transactionType == 3 || item.transactionType == 6">
@@ -49,6 +49,10 @@
               <span style="color: #FF7F4A;">+{{item.amount}}金币</span>
             </div>
           </div>
+        </div>
+        <div class="consult_none" v-else>
+          <img class="consult_none_icon" src="@/assets/advisory-details.png">
+          <div class="consult_none_text">暂无记录</div>
         </div>
         <div class="load_more" @click="loadingMore" v-show="showLoad &&!noMore">
             <span v-show="!loading_more">点击加载更多</span>
@@ -87,58 +91,67 @@ export default {
     }
   },
   created () {
-    let params = {
-      code: this.$route.query.code
-    }
-    api.weixinHasBind(params).then(res => {
-      console.log(res)
-      if(res.code == 0){
-        this.openId = res.data.openId
-        localStorage.setItem('openId',this.openId)
-        if(res.data.hasBind == false){
-          this.hasBind = false
-          this.$router.push({ path: '/bindPhone' })
-        }else {
-          this.hasBind = true
-          let merchant = res.data.merchant.id
-          console.log(merchant)
-          localStorage.setItem('merchant', merchant)
-          //账户详情
-          pageNum = 1
-          api.merchantDetail().then(res => {
-            console.log(res)
-            if(res.code == 0){
-              this.data = res.data
-              if(!res.data.bonusBalance){
-                this.data.bonusBalance = 0
-              }
-            }
-          })
-          let data = {
-            pageNum: pageNum,
-            pageSize: 10,
-            shelf: false
-          }
-          this.loading = true
-          this.noMore = false
-          console.log(data)
-          api.merchantTransactionList(data).then(res => {
-            console.log(res)
-            if(res.code == 0){
-              this.consumeList = res.data.items
-              this.total = res.data.total
-              if(res.data.total <= 10){
-                  this.showLoad = false
-              }else{
-                  this.showLoad = true
-              }
-            }
-          })
-        }
+    if(localStorage.getItem('merchant')) {
+      this.merchantDetail();
+      this.merchantTransactionList();
+    }else {
+      let params = {
+        code: this.$route.query.code
       }
-    })
+      api.weixinHasBind(params).then(res => {
+        console.log(res)
+        if(res.code == 0){
+          this.openId = res.data.openId
+          localStorage.setItem('openId',this.openId)
+          if(res.data.hasBind == false){
+            this.hasBind = false
+            this.$router.push({ path: '/bindPhone' })
+          }else {
+            this.hasBind = true
+            let merchant = res.data.merchant.id
+            console.log(merchant)
+            localStorage.setItem('merchant', merchant)
+            this.merchantDetail();
+            this.merchantTransactionList();
+          }
+        }
+      })
+    }
   },
   methods: {
+    //账户详情
+    merchantDetail() {
+      api.merchantDetail().then(res => {
+        console.log(res)
+        if(res.code == 0){
+          this.data = res.data
+          if(!res.data.bonusBalance){
+            this.data.bonusBalance = 0
+          }
+        }
+      })
+    },
+    merchantTransactionList() {
+      let data = {
+        pageNum: pageNum,
+        pageSize: 10,
+        shelf: false
+      }
+      this.loading = true
+      this.noMore = false
+      api.merchantTransactionList(data).then(res => {
+        console.log(res)
+        if(res.code == 0){
+          this.consumeList = res.data.items
+          this.total = res.data.total
+          if(res.data.total <= 10){
+              this.showLoad = false
+          }else{
+              this.showLoad = true
+          }
+        }
+      })
+    },
     goRecharge() {
       this.$router.push({ path: '/reCharge' })
       localStorage.setItem('page','myAccount')
@@ -185,6 +198,9 @@ export default {
 <style lang="scss" scoped>
 .myAccount{
   width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
   padding-bottom: 20px;
   .balanceContainer{
     width: 100%;
@@ -264,11 +280,18 @@ export default {
     }
   }
   .consumeContainer{
+    flex: 1;
     width: 100%;
+    display: flex;
+    flex-direction: column;
     background: #ffffff;
     .consumeContent{
       width: 328px;
+      height: 100%;
       padding-top: 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
       margin-left: auto;
       margin-right: auto;
       h4{
@@ -324,6 +347,28 @@ export default {
           .add{
             margin-right: 20px;
           }
+        }
+      }
+      .consult_none {
+        width: 100%;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        .consult_none_icon {
+          margin: 0 auto;
+          width: 80px;
+          height: 80px;
+          display: block;
+        }
+        .consult_none_text {
+          margin-top: 16px;
+          font-family: PingFangSC-Regular;
+          font-size: 16px;
+          color: rgba(0,0,0,0.38);
+          line-height: 28px;
+          text-align: center;
         }
       }
       .load_more{

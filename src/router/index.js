@@ -29,7 +29,9 @@ export default new Router({
       name: 'inquiryDetail',
       component: () => import('../views/inquiry/inquiryDetail.vue'),
       meta: {
-        title: '咨询详情'
+        title: '咨询详情',
+        saTitle: '询价页',
+        saName: 'enquiry_page'
       }
     },
     {
@@ -37,7 +39,9 @@ export default new Router({
       name: 'feedback',
       component: () => import('../views/inquiry/feedback.vue'),
       meta: {
-        title: '反馈价格'
+        title: '反馈价格',
+        saTitle: '询价页',
+        saName: 'enquiry_page'
       }
     },
     {
@@ -45,7 +49,9 @@ export default new Router({
       name: 'myAccount',
       component: () => import('../views/inquiry/myAccount.vue'),
       meta: {
-        title: '我的账户'
+        title: '我的账户',
+        saTitle: '我的账户',
+        saName: 'account_page'
       }
     },
     {
@@ -53,7 +59,9 @@ export default new Router({
       name: 'reCharge',
       component: () => import('../views/inquiry/reCharge.vue'),
       meta: {
-        title: '充值'
+        title: '充值',
+        saTitle: '充值',
+        saName: 'account_recharge_page'
       }
     },
     {
@@ -61,7 +69,9 @@ export default new Router({
       name: 'reChargePay',
       component: () => import('../views/inquiry/reChargePay.vue'),
       meta: {
-        title: '充值'
+        title: '充值',
+        saTitle: '充值支付',
+        saName: 'account_recharge_detail_page'
       }
     },
     {
@@ -69,7 +79,19 @@ export default new Router({
       name: 'pay',
       component: () => import('../views/inquiry/pay.vue'),
       meta: {
-        title: '支付'
+        title: '支付',
+        saTitle: '支付界面',
+        saName: 'enquiry_payment_page'
+      }
+    },
+    {
+      path: '/consultList',
+      name: 'consultList',
+      component: () => import('../views/inquiry/consultList.vue'),
+      meta: {
+        title: '咨询栏',
+        saTitle: '咨询栏',
+        saName: 'clues_page '
       }
     },
     {
@@ -77,7 +99,9 @@ export default new Router({
       name: 'payResult',
       component: () => import('../views/inquiry/payResult.vue'),
       meta: {
-        title: '支付结果'
+        title: '支付结果',
+        saTitle: '支付成功界面',
+        saName: 'enquiry_payment_success_page'
       }
     },
     {
@@ -93,7 +117,7 @@ export default new Router({
       name: 'agreement',
       component: () => import('../views/Login/agreement.vue'),
       meta: {
-        title: '绑定成功'
+        title: '服务协议'
       }
     },
     {
@@ -118,6 +142,14 @@ export default new Router({
       component: () => import('../views/app/mine.vue'),
       meta: {
         title: '我的'
+      }
+    },
+    {
+      path: '/detail',
+      name: 'detail',
+      component: () => import('../views/app/detail.vue'),
+      meta: {
+        title: '咨询详情'
       }
     }
   ],

@@ -93,7 +93,6 @@ import Vue from 'vue'
 import { Toast, Button } from 'vant'
 import api from '@/api/api'
 import qs from 'qs'
-import sa from 'sa-sdk-javascript'
 Vue.use(Button)
 Vue.use(Toast)
 export default {
@@ -113,18 +112,18 @@ export default {
     }
   },
   created () {
-    let rechargeAmount  =  this.$route.query.rechargeAmount,
-        bonusAmount = this.$route.query.bonusAmount,
-        packageId = this.$route.query.id
-    if(rechargeAmount){
-      this.rechargeAmount = rechargeAmount,
-      this.bonusAmount = bonusAmount,
-      this.packageId = packageId
-    }else {
-      this.rechargeAmount = 0,
-      this.bonusAmount = 0
-      this.packageId = ''
-    }
+    this.rechargeAmount  =  localStorage.getItem('rechargeAmount');
+        this.bonusAmount = localStorage.getItem('bonusAmount');
+        this.packageId = this.$route.query.id || null;
+    // if(rechargeAmount){
+    //   this.rechargeAmount = rechargeAmount,
+    //   this.bonusAmount = bonusAmount,
+    //   this.packageId = packageId
+    // }else {
+    //   this.rechargeAmount = 0,
+    //   this.bonusAmount = 0
+    //   this.packageId = ''
+    // }
 
     //账户详情
     api.merchantDetail().then(res => {
@@ -157,9 +156,9 @@ export default {
         payChannel: 'weixin',
         payType:  'weixin_jsapi'
       }
-      console.log(data)
       this.payLoading = true
-      api.recharge(data).then(res =>{
+      let recharge = this.packageId ? 'recharge' : 'customRecharge'
+      api[recharge](data).then(res =>{
         console.log(res)
         if(res.code == 0){
             let paySign = JSON.parse(res.data.paySign)

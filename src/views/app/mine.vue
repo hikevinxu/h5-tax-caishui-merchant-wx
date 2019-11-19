@@ -1,20 +1,20 @@
 <template>
 	<div class="mine">
 		<div class="mine_top">
-			<img class="mine_icon" src="@/assets/profile-photo@3x.png">
+			<img class="mine_icon" :src="componyInfo.logo ? componyInfo.logo : require('@/assets/profile-photo@3x.png')">
 			<div class="mine_info">
-				<div class="mine_compony">浙江安牛科技有限公司</div>
-				<div class="mine_user">6753用户</div>
+				<div class="mine_compony">{{componyInfo.name}}</div>
+				<div class="mine_user">{{componyInfo.merchantName}}</div>
 			</div>
 		</div>
 		<div class="mine_wallet">
 			<div class="mine_wallet_item">
-				<div class="mine_wallet_num">122</div>
+				<div class="mine_wallet_num">{{data.balance}}</div>
 				<div class="mine_wallet_text">金币</div>
 			</div>
 			<div class="line"></div>
 			<div class="mine_wallet_item">
-				<div class="mine_wallet_num">1000</div>
+				<div class="mine_wallet_num">{{data.bonusBalance}}</div>
 				<div class="mine_wallet_text">赠币</div>
 			</div>
 		</div>
@@ -34,13 +34,37 @@
 </template>
 
 <script>
+	import api from '@/api/api'
 	export default {
 		data() {
 			return {
-
+				data: {
+			        balance: 0,
+			        bonusBalance: 0
+			    },
+			    componyInfo: {},
+			    hasBind: false
 			}
 		},
 		methods: {
+			merchantDetail() {
+				api.merchantDetail().then(res => {
+					console.log(res)
+					if(res.code == 0){
+						this.data = res.data
+						if(!res.data.bonusBalance){
+							this.data.bonusBalance = 0
+						}
+					}
+				})
+			},
+			getComponyInfo() {
+				api.companyInfo({}).then(res => {
+					if(res.code == 0){
+						this.componyInfo = res.data;
+					}
+				})
+			},
 			goMyAccount() {
 				this.$router.push({
 					path: '/myAccount'
@@ -53,7 +77,32 @@
 			},
 		},
 		created() {
-
+			if(localStorage.getItem('merchant')) {
+				this.merchantDetail();
+				this.getComponyInfo();
+			}else {
+				let params = {
+					code: this.$route.query.code
+				}
+				api.weixinHasBind(params).then(res => {
+					console.log(res)
+					if(res.code == 0){
+						this.openId = res.data.openId
+						localStorage.setItem('openId',this.openId)
+						if(res.data.hasBind == false){
+							this.hasBind = false
+							this.$router.push({ path: '/bindPhone' })
+						}else {
+							this.hasBind = true
+							let merchant = res.data.merchant.id
+							console.log(merchant)
+							localStorage.setItem('merchant', merchant)
+							this.merchantDetail();
+							this.getComponyInfo();
+						}
+					}
+				})
+			}
 		},
 		mounted() {
 

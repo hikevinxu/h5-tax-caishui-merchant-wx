@@ -25,7 +25,6 @@ import Vue from 'vue'
 import { Toast, Button } from 'vant'
 import api from '@/api/api'
 import qs from 'qs'
-import sa from 'sa-sdk-javascript'
 import { setTimeout } from 'timers';
 Vue.use(Button)
 export default {
@@ -43,7 +42,7 @@ export default {
     let intentionId = localStorage.getItem('intentionId')
     setTimeout(() => {
       that.$router.push({
-        path: '/inquiryDetail',
+        path: '/feedback',
         query: {
           intentionId: intentionId
         }

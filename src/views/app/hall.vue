@@ -56,7 +56,7 @@
 								<div class="filter_left_item_text">全部</div>
 								<div class="filter_left_item_arrow"></div>
 							</div>
-							<div class="filter_left_item" v-for="item in filterList" :key="item.code" :class="{filter_left_item_active: fatherItem.code == item.code}" @click="select1(item)">
+							<div class="filter_left_item" v-for="item in filterList" :key="item.code" :class="{filter_left_item_active: fatherCode == item.code}" @click="select1(item)">
 								<div class="filter_left_item_icon"></div>
 								<div class="filter_left_item_text">{{item.name}}</div>
 								<img class="filter_left_item_arrow" src="@/assets/right@3x.png" v-if="item.childs && item.childs.length > 1">
@@ -64,7 +64,7 @@
 							</div>
 						</div>
 						<div class="filter_right">
-							<div class="filter_right_item" v-for="item_ in childs" :key="item_.code" :class="{filter_right_item_active: childItem.code == item_.code}" @click="select2(item_)">{{item_.name}}</div>
+							<div class="filter_right_item" v-for="item_ in childs" :key="item_.code" :class="{filter_right_item_active: childCode == item_.code}" @click="select2(item_)">{{item_.name}}</div>
 						</div>
 					</div>
 				</div>
@@ -136,6 +136,12 @@
 				fatherItem: {},
 				childs: [],
 				childItem: {},
+				cityFatherCode: '',
+				cityChildCode: '',
+				serveFatherCode: '',
+				serveChildCode: '',
+				typeFatherCode: '',
+				typeChildCode: '',
 				showFilter: false,
 				cityText: '筛选城市',
 				serveText: '筛选服务',
@@ -156,6 +162,8 @@
 			showFilter(val) {
 				if(val) {
 					this.showBanner = !val;
+				}else {
+					this.showBanner = this.showBanner_;
 				}
 			}
 		},
@@ -165,6 +173,12 @@
 			},
 			showLoad() {
 				return this.total > this.pageNum * 10;
+			},
+			fatherCode() {
+				return this.filterType ? this[this.filterType + 'FatherCode'] : '';
+			},
+			childCode() {
+				return this.filterType ? this[this.filterType + 'ChildCode'] : '';
 			}
 		},
 		methods: {
@@ -243,13 +257,25 @@
 				this.showFilter = '';
 			},
 			filter(type) {
+				let obj = {
+					city: 'areaCode',
+					serve: 'intentionCode',
+					type: 'recommendTag'
+				}
+				this.showBanner_ = this.showBanner;
 				this.filterType = this.filterType == type ? '' : type;
+				if(this.fatherCode) {
+					this.childs = this.filterList.filter(item => this.fatherCode == item.code)[0].childs;
+				}else {
+					this.childs = [];
+				}
 				this.showFilter = this.filterType ? true : false;
 				this.$nextTick(() => {
 					document.getElementsByClassName('filter_box')[0].style.height = window.innerHeight - 96 + 'px';
 				})
 			},
 			select1(item) {
+				console.log(111);
 				let obj = {
 					city: 'areaCode',
 					serve: 'intentionCode',
@@ -259,6 +285,7 @@
 				this.fatherItem = item;
 				this[this.filterType + 'Text'] = item.name;
 				this[obj[this.filterType]] = item.code;
+				this[this.filterType + 'FatherCode'] = item.code
 				this.getClueList();
 				if(item.childs.length > 1) {
 					this.childs = item.childs;
@@ -279,6 +306,7 @@
 				this.childItem = item;
 				this[this.filterType + 'Text'] = item.name;
 				this[obj[this.filterType]] = item.code;
+				this[this.filterType + 'ChildCode'] = item.code
 				this.getClueList();
 				setTimeout(() => {
 					this.showFilter = false;
@@ -287,7 +315,22 @@
 				
 			},
 			selectAll() {
-				// this[this.filterType + 'Text'] = '全部';
+				let obj = {
+					city: '筛选城市',
+					serve: '筛选服务',
+					type: '筛选类型',
+				}
+				this[this.filterType + 'Text'] = obj[this.filterType];
+				this.areaCode = '';
+				this.intentionCode = '';
+				this.recommendTag = '';
+				this.cityFatherCode = '';
+				this.cityChildCode = '';
+				this.serveFatherCode = '';
+				this.serveChildCode = '';
+				this.typeFatherCode = '';
+				this.typeChildCode = '';
+				this.getClueList();
 				setTimeout(() => {
 					this.showFilter = false;
 					this.filterType = '';
@@ -324,7 +367,8 @@
 		    // 监听用户行为判断是否展示banner
 		    let scroll_y = 0;
 		    window.addEventListener('scroll', () => {
-		    	if(scroll_y == 0 && window.scrollY > 0) {
+		    	console.log(window.scrollY)
+		    	if(scroll_y > 100 && window.scrollY > scroll_y) {
 		    		this.showBanner = false;
 		    	}
 		    	if(window.scrollY == 0 && !this.showFilter) {
@@ -332,20 +376,20 @@
 		    	}
 		    	scroll_y = window.scrollY;
 		    })
-		    let clientY = '';
-		    let distance;
-		    window.addEventListener('touchmove', (e) => {
-		    	if(clientY && !this.showFilter) {
-		    		distance = e.target.classList.value.split().includes('swiper-container1') ? 20 : 1;
-		    		if(clientY + distance < e.targetTouches[0].clientY) {
-			    		this.showBanner = true;
-			    	}
-			    	if(clientY > e.targetTouches[0].clientY + distance) {
-			    		this.showBanner = false;
-			    	}
-		    	}
-		    	clientY = e.targetTouches[0].clientY;
-		    })
+		    // let clientY = '';
+		    // let distance;
+		    // window.addEventListener('touchmove', (e) => {
+		    // 	if(clientY && !this.showFilter) {
+		    // 		distance = e.target.classList.value.split().includes('swiper-container1') ? 20 : 1;
+		    // 		if(clientY + distance < e.targetTouches[0].clientY) {
+			   //  		this.showBanner = true;
+			   //  	}
+			   //  	if(clientY > e.targetTouches[0].clientY + distance) {
+			   //  		this.showBanner = false;
+			   //  	}
+		    // 	}
+		    // 	clientY = e.targetTouches[0].clientY;
+		    // })
 		}
 	}
 </script>
@@ -511,12 +555,12 @@
 							overflow: scroll;
 							background: #fff;
 							.filter_right_item {
-								width: 102px;
+								// width: 102px;
 								height: 40px;
 								font-family: PingFangSC-Regular;
 								font-size: 14px;
 								color: rgba(0,0,0,0.38);
-								text-align: center;
+								text-align: left;
 								line-height: 40px;
 							}
 							.filter_right_item_active {

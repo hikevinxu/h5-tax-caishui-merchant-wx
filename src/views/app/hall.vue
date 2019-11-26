@@ -59,7 +59,7 @@
 							<div class="filter_left_item" v-for="item in filterList" :key="item.code" :class="{filter_left_item_active: fatherCode == item.code}" @click="select1(item)">
 								<div class="filter_left_item_icon"></div>
 								<div class="filter_left_item_text">{{item.name}}</div>
-								<img class="filter_left_item_arrow" src="@/assets/right@3x.png" v-if="item.childs && item.childs.length > 1">
+								<img class="filter_left_item_arrow" src="@/assets/right@3x.png" v-if="item.childs && item.childs.length > 0">
 								<div class="filter_left_item_arrow" v-else></div>
 							</div>
 						</div>
@@ -290,7 +290,7 @@
 				this[obj[this.filterType]] = item.code;
 				this[this.filterType + 'FatherCode'] = item.code
 				this.getClueList();
-				if(item.childs.length > 1) {
+				if(item.childs.length > 0) {
 					this.childs = item.childs;
 				}else {
 					this.childs = [];

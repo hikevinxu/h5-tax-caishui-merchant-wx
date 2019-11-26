@@ -12,7 +12,7 @@
 			  	</van-swipe-item>
 			</van-swipe>
 		</div>
-		<div class="hall_container">
+		<div class="hall_container" :class="{hall_container_: !showBanner}">
 			<div class="hall_container_top" :class="{hall_container_fixed: !showBanner, hall_container_all: showFilter}">
 				<div class="message">
 					<div class="message_content">
@@ -324,10 +324,13 @@
 					serve: '筛选服务',
 					type: '筛选类型',
 				}
+				let obj_ = {
+					city: 'areaCode',
+					serve: 'intentionCode',
+					type: 'recommendTag'
+				}
 				this[this.filterType + 'Text'] = obj[this.filterType];
-				this.areaCode = '';
-				this.intentionCode = '';
-				this.recommendTag = '';
+				this[obj[this.filterType]] = '';
 				this.cityFatherCode = '';
 				this.cityChildCode = '';
 				this.serveFatherCode = '';
@@ -372,10 +375,11 @@
 		    // 监听用户行为判断是否展示banner
 		    let scroll_y = 0;
 		    window.addEventListener('scroll', () => {
+		    	console.log(window.scrollY);
 		    	if(scroll_y > 100 && window.scrollY > scroll_y) {
 		    		this.showBanner = false;
 		    	}
-		    	if(window.scrollY == 0 && !this.showFilter) {
+		    	if(window.scrollY < 96 && !this.showFilter && window.scrollY < scroll_y) {
 		    		this.showBanner = true;
 		    	}
 		    	scroll_y = window.scrollY;
@@ -402,8 +406,8 @@
 	.hall {
 		width: 100%;
 		height: 100vh;
-		display: flex;
-		flex-direction: column;
+		// display: flex;
+		// flex-direction: column;
 		.banner {
 			width: 100%;
 			height: 130px;
@@ -426,16 +430,20 @@
 			height: 0;
 			overflow: hidden;
 		}
+		.hall_container_ {
+			padding-top: 192px;
+		}
 		.hall_container {
 			position: relative;
 			flex: 1;
 			padding-bottom: 48px;
-			display: flex;
-			flex-direction: column;
+			// display: flex;
+			// flex-direction: column;
 			.hall_container_top {
-				position: absolute;
-				top: 0;
+				position: relative;
+				top: 0; 
 				width: 100%;
+				height: 96px;
 				z-index: 100;
 				display: flex;
 				flex-direction: column;
@@ -596,8 +604,8 @@
 				height: 100%;
 			}
 			.intention {
-				margin-top: 96px;
-				padding: 12px 12px 60px;
+				// margin-top: 96px;
+				padding: 12px 12px;
 				box-sizing: border-box;
 				width: 100%;
 				background: #f5f5f5;
@@ -715,6 +723,9 @@
 			            color: rgba(0,0,0,0.60);
 			        }
 		      	}
+			}
+			.intention_top {
+				margin-top: 96px;
 			}
 		}
 	}

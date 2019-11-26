@@ -38,6 +38,7 @@
 	import { Toast, Button, Loading } from 'vant'
 	Vue.use(Loading);
 	export default {
+		name: 'clue',
 		data() {
 			return {
 		      	noMore: false,

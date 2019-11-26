@@ -3,7 +3,7 @@
     <keep-alive :include="keepAlive">
       <router-view />
     </keep-alive>
-    <div class="tab" v-show="tabName.includes($route.name)">
+    <div class="tab" :class="{tab_bottom: isIphoneX}" v-show="tabName.includes($route.name)">
       <div class="tab_item" @click="tabClick('hall')">
         <img class="tab_icon" :src="$route.name == 'hall' ? require('@/assets/tab-demand@3x.png') : require('@/assets/tab-nodemand@3x.png')">
         <div class="tab_name":class="{highLight: $route.name == 'hall'}">需求大厅</div>
@@ -24,7 +24,7 @@
 export default {
   data () {
     return {
-      keepAlive: ['login', 'clue', 'hall'],
+      keepAlive: ['login', 'clue', 'hall', 'mine'],
       tabName: ['hall', 'clue', 'mine']
     }
   },
@@ -32,6 +32,11 @@ export default {
     // '$route.name': function(val) {
       
     // }
+  },
+  computed: {
+    isIphoneX(){
+      return /iphone/gi.test(navigator.userAgent) && (screen.height == 812 && screen.width == 375)
+    }
   },
   methods: {
     tabClick(name) {
@@ -43,7 +48,94 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3){
+
+/*增加头部适配层*/
+
+.has-topbar {
+
+    height: 100%;
+
+    box-sizing: border-box;
+
+    padding-top: 44px;
+
+    &:before {
+
+        content: '';
+
+        position: fixed;
+
+        top: 0;
+
+        left: 0;
+
+        width: 100%;
+
+        height: 44px;
+
+        background-color: #000000;
+
+        z-index: 9998;
+
+    }
+
+}
+
+
+
+/*增加底部适配层*/
+
+.has-bottombar {
+
+    height: 100%;
+
+    box-sizing: border-box;
+
+    padding-bottom: 34px;
+
+    &:after {
+
+        content: '';
+
+        z-index: 9998;
+
+        position: fixed;
+
+        left: 0;
+
+        bottom: 0;
+
+        width: 100%;
+
+        height: 34px;
+
+        background: #f7f7f8;
+
+    }
+
+}
+
+
+
+/*导航操作栏上移*/
+
+.bottom-menu-fixed {
+
+    bottom: 34px;
+
+}
+      
+      
+
+}
+body {
+      padding-top: constant(safe-area-inset-top);             
+      padding-left: constant(safe-area-inset-left);                  
+      padding-right: constant(safe-area-inset-right);             
+      padding-bottom: constant(safe-area-inset-bottom);
+  }
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -62,13 +154,17 @@ img{
   width: 100%;
   height: 48px;
   box-sizing: border-box;
-  padding: 0 40px;
+  // padding: 0 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   background: #fff;
 }
+.tab_bottom {
+  bottom: 34px;
+}
 .tab_item {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;

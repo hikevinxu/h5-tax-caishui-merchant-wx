@@ -36,6 +36,7 @@
 <script>
 	import api from '@/api/api'
 	export default {
+		name: 'mine',
 		data() {
 			return {
 				data: {

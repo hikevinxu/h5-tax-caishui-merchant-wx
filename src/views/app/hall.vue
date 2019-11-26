@@ -273,22 +273,26 @@
 				this.showFilter = '';
 			},
 			filter(type) {
-				let obj = {
-					city: 'areaCode',
-					serve: 'intentionCode',
-					type: 'recommendTag'
-				}
-				this.showBanner_ = this.showBanner;
-				this.filterType = this.filterType == type ? '' : type;
-				if(this.fatherCode) {
-					this.childs = this.filterList.filter(item => this.fatherCode == item.code)[0].childs;
+				if(type == this.filterType && this.showFilter) {
+					this.closeFilter();
 				}else {
-					this.childs = [];
+					let obj = {
+						city: 'areaCode',
+						serve: 'intentionCode',
+						type: 'recommendTag'
+					}
+					this.showBanner_ = this.showBanner;
+					this.filterType = this.filterType == type ? '' : type;
+					if(this.fatherCode) {
+						this.childs = this.filterList.filter(item => this.fatherCode == item.code)[0].childs;
+					}else {
+						this.childs = [];
+					}
+					this.showFilter = this.filterType ? true : false;
+					this.$nextTick(() => {
+						document.getElementsByClassName('filter_box')[0].style.height = window.innerHeight - 96 + 'px';
+					})
 				}
-				this.showFilter = this.filterType ? true : false;
-				this.$nextTick(() => {
-					document.getElementsByClassName('filter_box')[0].style.height = window.innerHeight - 96 + 'px';
-				})
 			},
 			select1(item) {
 				let obj = {
@@ -341,7 +345,7 @@
 					type: 'recommendTag'
 				}
 				this[this.filterType + 'Text'] = obj[this.filterType];
-				this[obj[this.filterType]] = '';
+				this[obj_[this.filterType]] = '';
 				this.cityFatherCode = '';
 				this.cityChildCode = '';
 				this.serveFatherCode = '';

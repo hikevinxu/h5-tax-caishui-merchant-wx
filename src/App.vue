@@ -35,7 +35,7 @@ export default {
   },
   computed: {
     isIphoneX(){
-      return /iphone/gi.test(navigator.userAgent) && (screen.height == 812 && screen.width == 375)
+      return /iphone/gi.test(navigator.userAgent) && ((screen.height == 812 && screen.width == 375) || (screen.height == 896 && screen.width == 414))
     }
   },
   methods: {
@@ -51,9 +51,9 @@ export default {
 <style lang="scss">
 @media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3){
 
-/*增加头部适配层*/
+  /*增加头部适配层*/
 
-.has-topbar {
+  .has-topbar {
 
     height: 100%;
 
@@ -63,31 +63,31 @@ export default {
 
     &:before {
 
-        content: '';
+      content: '';
 
-        position: fixed;
+      position: fixed;
 
-        top: 0;
+      top: 0;
 
-        left: 0;
+      left: 0;
 
-        width: 100%;
+      width: 100%;
 
-        height: 44px;
+      height: 44px;
 
-        background-color: #000000;
+      background-color: #000000;
 
-        z-index: 9998;
+      z-index: 9998;
 
     }
 
-}
+  }
 
 
 
-/*增加底部适配层*/
+  /*增加底部适配层*/
 
-.has-bottombar {
+  .has-bottombar {
 
     height: 100%;
 
@@ -97,35 +97,115 @@ export default {
 
     &:after {
 
-        content: '';
+      content: '';
 
-        z-index: 9998;
+      z-index: 9998;
 
-        position: fixed;
+      position: fixed;
 
-        left: 0;
+      left: 0;
 
-        bottom: 0;
+      bottom: 0;
 
-        width: 100%;
+      width: 100%;
 
-        height: 34px;
+      height: 34px;
 
-        background: #f7f7f8;
+      background: #f7f7f8;
 
     }
 
-}
+  }
 
 
 
-/*导航操作栏上移*/
+  /*导航操作栏上移*/
 
-.bottom-menu-fixed {
+  .bottom-menu-fixed {
 
     bottom: 34px;
 
-}
+  }
+      
+      
+
+}@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3){
+
+  /*增加头部适配层*/
+
+  .has-topbar {
+
+    height: 100%;
+
+    box-sizing: border-box;
+
+    padding-top: 44px;
+
+    &:before {
+
+      content: '';
+
+      position: fixed;
+
+      top: 0;
+
+      left: 0;
+
+      width: 100%;
+
+      height: 44px;
+
+      background-color: #000000;
+
+      z-index: 9998;
+
+    }
+
+  }
+
+
+
+  /*增加底部适配层*/
+
+  .has-bottombar {
+
+    height: 100%;
+
+    box-sizing: border-box;
+
+    padding-bottom: 34px;
+
+    &:after {
+
+      content: '';
+
+      z-index: 9998;
+
+      position: fixed;
+
+      left: 0;
+
+      bottom: 0;
+
+      width: 100%;
+
+      height: 34px;
+
+      background: #f7f7f8;
+
+    }
+
+  }
+
+
+
+  /*导航操作栏上移*/
+
+  .bottom-menu-fixed {
+
+    bottom: 34px;
+
+  }
       
       
 

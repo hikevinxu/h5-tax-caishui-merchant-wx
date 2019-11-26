@@ -64,7 +64,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="intention" v-show="clueList.length > 0">
+			<div class="intention" :style="{'padding-bottom': isIphoneX ? '46px' : '12px'}" v-show="clueList.length > 0">
 				<div class="intention_item" v-for="item in clueList" @click="goDetail(item)">
 					<img class="intention_item_type" :src="require(`@/assets/label-${item.recommendTag}@3x.png`)">
 					<div class="intention_item_detail">查看详情</div>
@@ -175,7 +175,10 @@
 			},
 			childCode() {
 				return this.filterType ? this[this.filterType + 'ChildCode'] : '';
-			}
+			},
+			isIphoneX(){
+		      	return /iphone/gi.test(navigator.userAgent) && ((screen.height == 812 && screen.width == 375) || (screen.height == 896 && screen.width == 414))
+		    }
 		},
 		methods: {
 			getBanner() {

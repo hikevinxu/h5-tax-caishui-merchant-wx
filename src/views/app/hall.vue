@@ -209,7 +209,7 @@
 					}
 				})
 			},
-			getClueList() {
+			getClueList(more) {
 				let data = {
 					areaCode: this.areaCode,
 					intentionCode: this.intentionCode,
@@ -219,7 +219,11 @@
 				}
 				api.clueList(data).then(res => {
 					if(res.code == 0) {
-						this.clueList = [...this.clueList, ...res.data.items];
+						if(more) {
+							this.clueList = [...this.clueList, ...res.data.items];
+						}else {
+							this.clueList = res.data.items;
+						}
 						this.total = res.data.total;
 						this.loading_more = false;
 						if(res.data.items.length < 10){
@@ -250,7 +254,7 @@
 			loadingMore() {
 				this.loading_more = true;
 				this.pageNum ++;
-				this.getClueList();
+				this.getClueList(1);
 			},
 			closeFilter() {
 				this.filterType = '';
@@ -275,7 +279,6 @@
 				})
 			},
 			select1(item) {
-				console.log(111);
 				let obj = {
 					city: 'areaCode',
 					serve: 'intentionCode',
@@ -367,7 +370,6 @@
 		    // 监听用户行为判断是否展示banner
 		    let scroll_y = 0;
 		    window.addEventListener('scroll', () => {
-		    	console.log(window.scrollY)
 		    	if(scroll_y > 100 && window.scrollY > scroll_y) {
 		    		this.showBanner = false;
 		    	}

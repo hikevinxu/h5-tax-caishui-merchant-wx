@@ -16,7 +16,7 @@ axios.defaults.baseURL = process.env.VUE_APP_API
 // 线上环境地址
 // axios.defaults.baseURL = 'https://merchant-api.caishuiyu.com'
 // 本地环境地址
-// axios.defaults.baseURL = 'http://172.100.8.140:8080'
+// axios.defaults.baseURL = 'http://172.100.8.114:8080'
 
 // POST传参序列化(添加请求拦截器)
 const merchant = localStorage.getItem('merchant')
@@ -81,6 +81,21 @@ export function fetchPost (url, params) {
 export function fetchGet (url, param) {
   return new Promise((resolve, reject) => {
     axios.get(url, { params: param })
+      .then(response => {
+        resolve(response.data)
+      }, err => {
+        reject(err)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
+
+// 返回一个Promise(发送get请求)
+export function fetchAppGet (url, param) {
+  return new Promise((resolve, reject) => {
+    axios.get(url, { params: param, baseURL: 'http://tax-caishui-app.int.anniu-inc.com' })
       .then(response => {
         resolve(response.data)
       }, err => {

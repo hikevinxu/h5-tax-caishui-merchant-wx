@@ -54,7 +54,13 @@
           <img class="consult_none_icon" src="@/assets/advisory-details.png">
           <div class="consult_none_text">暂无记录</div>
         </div>
-        s
+        <div class="load_more" @click="loadingMore" v-show="showLoad &&!noMore">
+            <span v-show="!loading_more">点击加载更多</span>
+            <van-loading style="width: 10px;" v-show="loading_more == true" type="spinner" />
+        </div>
+        <div class="load_more" v-show="showLoad && noMore">
+            <span>已经到底了</span>
+        </div>
       </div>
     </div>
   </div>
@@ -192,10 +198,10 @@ export default {
 <style lang="scss" scoped>
 .myAccount{
   width: 100%;
-  height: 100vh;
+  // height: 100vh;
   display: flex;
   flex-direction: column;
-  padding-bottom: 20px;
+  // padding-bottom: 20px;
   .balanceContainer{
     width: 100%;
     background: #ffffff;
@@ -281,7 +287,7 @@ export default {
     background: #ffffff;
     .consumeContent{
       width: 328px;
-      height: 100%;
+      // height: 100%;
       padding-top: 20px;
       box-sizing: border-box;
       display: flex;

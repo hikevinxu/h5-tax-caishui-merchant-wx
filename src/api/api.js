@@ -70,4 +70,39 @@ export default {
   rechargePackage (params) {
     return fetchPost('/merchant/rechargePackage', params)
   },
+
+  //轮播列表
+  carouselList (params) {
+    return fetchGet('/clueHall/carouselList', params)
+  },
+
+  //线索列表
+  clueList (params) {
+    return fetchPost('/clueHall/clueList', params)
+  },
+
+  //获取城市列表
+  cityList (params) {
+    return fetchGet('/address/trees', params)
+  },
+
+  //获取服务列表
+  serveList (params) {
+    return fetchGet('/serviceType/trees', params)
+  },
+
+  //获取头部banner列表
+  bannerList (params) {
+    return fetchGet('/advert/position/list', params)
+  },
+
+  //获取公司信息
+  companyInfo (params) {
+    return fetchGet('/merchant-service/companyInfo', params)
+  },
+
+  //获取app询价单详情
+  clueDetail (params) {
+    return fetchGet('/clueHall/clueDetail', params)
+  },
 }

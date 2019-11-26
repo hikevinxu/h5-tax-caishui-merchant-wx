@@ -276,7 +276,9 @@
 						serve: 'intentionCode',
 						type: 'recommendTag'
 					}
-					this.showBanner_ = this.showBanner;
+					if(!this.showFilter) {
+						this.showBanner_ = this.showBanner;
+					}
 					this.filterType = this.filterType == type ? '' : type;
 					if(this.fatherCode) {
 						this.childs = this.filterList.filter(item => this.fatherCode == item.code)[0].childs;

@@ -1,6 +1,6 @@
 <template>
 	<div class="hall">
-		<div class="banner" :class="{height0: !showBanner}">
+		<div class="banner" :class="{height0: !showBanner}" v-show="imgList.length > 0">
 			<!-- <div class="swiper-container1">
 			    <div class="swiper-wrapper">
 			      	<img class="swiper-slide banner_item" v-for="(item, index) in imgList" :src="item.elementValue" :key="index" @click="clickBanner(item)">
@@ -107,6 +107,7 @@
 	Vue.use(Loading);
 	Vue.use(Swipe).use(SwipeItem);
 	export default {
+		name: 'hall',
 		data() {
 			return {
 				imgList: [],
@@ -358,6 +359,7 @@
 			this.getServeList();
 		},
 		mounted() {
+			console.log(1);
 		    // 消息轮播
 		    new Swiper('.swiper-container2', {
 		    	direction: 'vertical',

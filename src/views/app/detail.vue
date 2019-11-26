@@ -62,17 +62,6 @@
         </div>
       </div>
     </div>
-    <div class="footer">
-      <div class="btnContent" v-show="data.status == 1">
-        <span class="offer" @click="baojia">支付<span class="offerNum">({{data.price || ''}}金币)</span></span>
-      </div>
-      <!-- <div class="btnContent" v-show="data.status == 2 || data.status == 3">
-        <span class="offer" @click="goDetail">查看详情</span>
-      </div>
-      <div class="btnContent" v-show="data.status == 4 || data.status == 5">
-        <span class="offer" style="background: rgba(0,0,0,0.26);font-family: PingFangSC-Medium;font-size: 16px;color: #FFFFFF;">已过期</span>
-      </div> -->
-    </div>
     <van-dialog
       v-model="showQrcode"
       title="请前往财税鱼商家助手小程序进行查看"

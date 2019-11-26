@@ -219,7 +219,7 @@
 				}
 				api.clueList(data).then(res => {
 					if(res.code == 0) {
-						this.clueList = res.data.items;
+						this.clueList = [...this.clueList, ...res.data.items];
 						this.total = res.data.total;
 						this.loading_more = false;
 						if(res.data.items.length < 10){
@@ -406,6 +406,16 @@
 			overflow: auto;
 			.banner_item {
 				height: 130px;
+			}
+			.van-swipe {
+				.van-swipe__track {
+					.van-swipe-item {
+						img {
+							width: 100%;
+							height: 130px;
+						}
+					}
+				}
 			}
 		}
 		.height0 {

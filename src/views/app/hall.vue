@@ -26,7 +26,7 @@
 						    		<img src="@/assets/notice@3x.png">
 						    		<p>今日发布财税类需求类型 <span>{{this.typeNum}}</span> 类</p>
 						    	</div>
-						      	<div class="swiper-slide message_item" v-for="(item, index) in messageList" :src="item" :key="index" v-html="">
+						      	<div class="swiper-slide message_item" v-for="(item, index) in messageList" :key="index">
 						      		<img src="@/assets/notice@3x.png">
 						      		<p>{{item.name}}已对接<span>{{item.area}}</span>的<span>{{item.intention}}</span>业务</p>
 						      	</div>
@@ -207,6 +207,17 @@
 				api.carouselList({}).then(res => {
 					if(res.code == 0) {
 						this.messageList = res.data.items;
+						this.$nextTick(() => {
+						    // 消息轮播
+						    new Swiper('.swiper-container2', {
+						    	direction: 'vertical',
+						      	autoplay: {
+						        	delay: 2500,
+						        	disableOnInteraction: false,
+						      	},
+						      	loop : true,
+						    });
+						})
 					}
 				})
 			},
@@ -362,20 +373,9 @@
 			this.getServeList();
 		},
 		mounted() {
-			console.log(1);
-		    // 消息轮播
-		    new Swiper('.swiper-container2', {
-		    	direction: 'vertical',
-		      	autoplay: {
-		        	delay: 2500,
-		        	disableOnInteraction: false,
-		      	},
-		      	loop : true,
-		    });
 		    // 监听用户行为判断是否展示banner
 		    let scroll_y = 0;
 		    window.addEventListener('scroll', () => {
-		    	console.log(window.scrollY);
 		    	if(scroll_y > 100 && window.scrollY > scroll_y) {
 		    		this.showBanner = false;
 		    	}

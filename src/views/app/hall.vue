@@ -1,18 +1,13 @@
 <template>
 	<div class="hall">
 		<div class="banner" :class="{height0: !showBanner}" v-show="imgList.length > 0">
-			<!-- <div class="swiper-container1">
-			    <div class="swiper-wrapper">
-			      	<img class="swiper-slide banner_item" v-for="(item, index) in imgList" :src="item.elementValue" :key="index" @click="clickBanner(item)">
-			    </div>
-	  		</div> -->
 	  		<van-swipe :autoplay="2500">
 			  	<van-swipe-item v-for="(item, index) in imgList" :key="index" @click="clickBanner(item)">
 			    	<img :src="item.elementValue" />
 			  	</van-swipe-item>
 			</van-swipe>
 		</div>
-		<div class="hall_container" :class="{hall_container_: !showBanner}">
+		<div class="hall_container" :class="{hall_container_: !showBanner && imgList.length > 0}">
 			<div class="hall_container_top" :class="{hall_container_fixed: !showBanner, hall_container_all: showFilter}">
 				<div class="message">
 					<div class="message_content">
@@ -69,7 +64,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="intention">
+			<div class="intention" v-show="clueList.length > 0">
 				<div class="intention_item" v-for="item in clueList" @click="goDetail(item)">
 					<img class="intention_item_type" :src="require(`@/assets/label-${item.recommendTag}@3x.png`)">
 					<div class="intention_item_detail">查看详情</div>

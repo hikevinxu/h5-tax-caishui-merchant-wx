@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="">
     <keep-alive :include="keepAlive">
       <router-view />
     </keep-alive>
@@ -29,9 +29,9 @@ export default {
     }
   },
   watch: {
-    // '$route.name': function(val) {
+    '$route.name': function(val) {
       
-    // }
+    }
   },
   computed: {
     isIphoneX(){
@@ -93,7 +93,7 @@ export default {
 
     box-sizing: border-box;
 
-    padding-bottom: 34px;
+    padding-bottom: 20px;
 
     &:after {
 
@@ -109,7 +109,7 @@ export default {
 
       width: 100%;
 
-      height: 34px;
+      height: 20px;
 
       background: #f7f7f8;
 
@@ -123,7 +123,7 @@ export default {
 
   .bottom-menu-fixed {
 
-    bottom: 34px;
+    bottom: 20px;
 
   }
       
@@ -173,7 +173,7 @@ export default {
 
     box-sizing: border-box;
 
-    padding-bottom: 34px;
+    padding-bottom: 20px;
 
     &:after {
 
@@ -189,7 +189,7 @@ export default {
 
       width: 100%;
 
-      height: 34px;
+      height: 20px;
 
       background: #f7f7f8;
 
@@ -203,7 +203,7 @@ export default {
 
   .bottom-menu-fixed {
 
-    bottom: 34px;
+    bottom: 20px;
 
   }
       
@@ -241,7 +241,7 @@ img{
   background: #fff;
 }
 .tab_bottom {
-  bottom: 34px;
+  bottom: 20px;
 }
 .tab_item {
   flex: 1;

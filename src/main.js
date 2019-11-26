@@ -36,14 +36,14 @@ sa.init({
 	    clickmap: 'not_collect',
 	    // 是否开启触达注意力图，默认 default 表示开启，自动采集 $WebStay 事件，可以设置 'not_collect' 表示关闭
 	    scroll_notice_map: 'not_collect',
-	    show_log: false
+	    show_log: false	
   	}
 })
 
 window.sa = sa;
 
 sa.quick("autoTrack")
-
+	
 router.beforeEach((to, from, next) => {
 	sa.registerPage({
 	  	$title: to.meta.saTitle,

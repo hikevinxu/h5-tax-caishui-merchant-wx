@@ -290,10 +290,10 @@
 				this[this.filterType + 'Text'] = item.name;
 				this[obj[this.filterType]] = item.code;
 				this[this.filterType + 'FatherCode'] = item.code
-				this.getClueList();
 				if(item.childs.length > 0) {
 					this.childs = item.childs;
 				}else {
+					this.getClueList();
 					this.childs = [];
 					setTimeout(() => {
 						this.showFilter = false;

@@ -198,10 +198,10 @@ export default {
 <style lang="scss" scoped>
 .myAccount{
   width: 100%;
-  height: 100vh;
+  // height: 100vh;
   display: flex;
   flex-direction: column;
-  padding-bottom: 20px;
+  // padding-bottom: 20px;
   .balanceContainer{
     width: 100%;
     background: #ffffff;
@@ -287,7 +287,7 @@ export default {
     background: #ffffff;
     .consumeContent{
       width: 328px;
-      height: 100%;
+      // height: 100%;
       padding-top: 20px;
       box-sizing: border-box;
       display: flex;

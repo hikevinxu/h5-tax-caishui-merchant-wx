@@ -92,10 +92,12 @@ export function fetchGet (url, param) {
   })
 }
 
+let baseURL_ = process.env.VUE_APP_API_
+
 // 返回一个Promise(发送get请求)
 export function fetchAppGet (url, param) {
   return new Promise((resolve, reject) => {
-    axios.get(url, { params: param, baseURL: 'http://tax-caishui-app.int.anniu-inc.com' })
+    axios.get(url, { params: param, baseURL: baseURL_ })
       .then(response => {
         resolve(response.data)
       }, err => {

@@ -125,7 +125,8 @@ export default new Router({
       name: 'hall',
       component: () => import('../views/app/hall.vue'),
       meta: {
-        title: '需求大厅'
+        title: '交易大厅',
+        saName: 'trading_floor_page'
       }
     },
     {
@@ -133,7 +134,8 @@ export default new Router({
       name: 'clue',
       component: () => import('../views/app/clue.vue'),
       meta: {
-        title: '我的线索'
+        title: '交易大厅询价单',
+        saName: 'trading_floor_enquiry_page'
       }
     },
     {

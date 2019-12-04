@@ -90,6 +90,7 @@
 		        </div>
 			</div>
 		</div>
+		<confirm :show.sync="showConfirm" :content="content" @confirm="goRZ"></confirm>
 	</div>
 </template>
 
@@ -99,12 +100,20 @@
 	import api from '@/api/api'
 	import { fetchAppGet } from '@/api/axios'
 	import { Toast, Button, Loading, Swipe, SwipeItem } from 'vant'
+	import Confirm from '@/components/confirm'
 	Vue.use(Loading);
 	Vue.use(Swipe).use(SwipeItem);
 	export default {
 		name: 'hall',
+		components: {
+			Confirm
+		},
 		data() {
 			return {
+				renzheng: false, // 是否已认证
+				isLogin: false, // 是否已登录
+				showConfirm: false, // 确认弹窗
+				content: '',
 				imgList: [],
 				userNum: 0,
 				typeNum: 0,
@@ -359,6 +368,16 @@
 				}, 100);
 			},
 			goDetail(item) {
+				if(!this.isLogin) {
+					this.content = '您还未登录，登录后方可查看订单';
+					this.showConfirm = true;
+					return false;
+				}
+				if(!this.renzheng) {
+					this.content = '您还未进行商户认证，认证后方可查看订单';
+					this.showConfirm = true;
+					return false;
+				}
 				this.$router.push({
 					path: '/detail',
 					query: {
@@ -367,6 +386,20 @@
 					}
 				})
 			},
+			// 跳转认证
+			goRZ() {	
+				if(!this.isLogin) {
+					location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=https://wb.caishuiyu.com/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect'
+				}else {
+					this.$router.push({
+					path: '/detail',
+					query: {
+						intentionId: item.id,
+						from: 'clues_page'
+					}
+				})
+				}
+			}
 		},
 		created() {
 			this.getNum();

@@ -1,11 +1,21 @@
 <template>
 	<div class="mine">
-		<div class="mine_top">
+		<div class="mine_top" @click="goRz">
 			<img class="mine_icon" :src="componyInfo.logo ? componyInfo.logo : require('@/assets/profile-photo@3x.png')">
 			<div class="mine_info">
-				<div class="mine_compony">{{componyInfo.name}}</div>
-				<div class="mine_user">{{componyInfo.merchantName}}</div>
+				<div class="mine_compony">
+					<span>{{status == 0 ? '未认证公司' : componyInfo.name}}</span>
+					<div class="mine_rz" v-if="status == 0">
+						<span>去认证</span>
+						<img src="@/assets/mine-redright.png">
+					</div>
+				</div>
+				<div class="mine_user">
+					<span>{{componyInfo.merchantName}}</span>
+					<div class="mine_rz_status" v-if="status != 0" :class="{mine_rz_finish: status == 2}">({{status == 1 ? '审核中' : '已认证'}})</div>
+				</div>
 			</div>
+			<img class="mine_arrow" v-if="status != 0" src="@/assets/ic_chevron_right_small@3x.png">
 		</div>
 		<div class="mine_wallet">
 			<div class="mine_wallet_item">
@@ -29,6 +39,16 @@
 				<div class="mine_bottom_item_text">充值</div>
 				<img class="mine_bottom_item_arrow" src="@/assets/ic_chevron_right_small.png">
 			</div>
+			<div class="mine_bottom_item" @click="changePhone">
+				<img class="mine_bottom_item_icon" src="@/assets/mine-replace.png">
+				<div class="mine_bottom_item_text">更换手机号</div>
+				<img class="mine_bottom_item_arrow" src="@/assets/ic_chevron_right_small.png">
+			</div>
+			<div class="mine_bottom_item" @click="unlinkWechat">
+				<img class="mine_bottom_item_icon" src="@/assets/mine-wechat.png">
+				<div class="mine_bottom_item_text">解绑微信</div>
+				<img class="mine_bottom_item_arrow" src="@/assets/ic_chevron_right_small.png">
+			</div>
 		</div>
 	</div>
 </template>
@@ -44,7 +64,8 @@
 			        bonusBalance: 0
 			    },
 			    componyInfo: {},
-			    hasBind: false
+			    hasBind: false,
+			    status: 0
 			}
 		},
 		methods: {
@@ -76,6 +97,21 @@
 					path: '/recharge'
 				})
 			},
+			changePhone() {
+				this.$router.push('/changePhone')
+			},
+			unlinkWechat() {
+				this.$router.push('/unlinkWechat')
+			},
+			goRz() {
+				let path = this.status == 0 ? '/renzheng' : '/rzResult';
+				this.$router.push({
+					path,
+					query: {
+						status: this.status
+					}
+				});
+			}
 		},
 		created() {
 			if(localStorage.getItem('merchant')) {
@@ -92,7 +128,7 @@
 						localStorage.setItem('openId',this.openId)
 						if(res.data.hasBind == false){
 							this.hasBind = false
-							this.$router.push({ path: '/bindPhone' })
+							location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=https://wb.caishuiyu.com/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect'
 						}else {
 							this.hasBind = true
 							let merchant = res.data.merchant.id
@@ -133,6 +169,24 @@
 					color: rgba(0,0,0,0.87);
 					line-height: 30px;
 					text-align: left;
+					display: flex;
+					.mine_rz {
+						margin-left: 12px;
+						align-self: flex-start;
+						margin-top: 10px;
+						display: flex;
+						align-items: center;
+						span {
+							font-family: PingFangSC-Regular;
+							font-size: 12px;
+							color: #FF7F4A;
+							line-height: 16px;
+						}
+						img {
+							width: 16px;
+							height: 16px;
+						}
+					}
 				}
 				.mine_user {
 					margin-top: 8px;
@@ -141,7 +195,23 @@
 					color: rgba(0,0,0,0.60);
 					line-height: 22px;
 					text-align: left;
+					display: flex;
+					align-items: flex-end;
+					.mine_rz_status {
+						margin-left: 8px;
+						font-family: PingFangSC-Regular;
+						font-size: 12px;
+						color: #FB5332;
+						line-height: 16px;
+					}
+					.mine_rz_finish {
+						color: #5AB3A4;
+					}
 				}
+			}
+			.mine_arrow {
+				width: 16px;
+				height: 16px;
 			}
 		}
 		.mine_wallet {

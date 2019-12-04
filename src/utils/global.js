@@ -24,6 +24,31 @@ export let Terminal = {
   language : (navigator.browserLanguage || navigator.language).toLowerCase()
 }
 
+export const getScript = (url, callback) => {
+    let id = document.getElementById(url)
+    if(id){
+        callback && callback()
+        return
+    }
+    let head = document.getElementsByTagName('head')[0],
+        js = document.createElement('script');
+
+    js.setAttribute('type', 'text/javascript');
+    js.setAttribute('src', url);
+    js.setAttribute('id', url);
+
+    head.appendChild(js);
+
+    let callbackFn = function(){
+        if(typeof callback === 'function'){
+            callback();
+        }
+    }
+    js.onload = function() {
+        callbackFn();
+    }
+}
+
 export let config = {
   // IM即时通信的 key
   IMAppKey: '7cb7efab05029f8c18576aa98a9cce96',

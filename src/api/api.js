@@ -105,4 +105,9 @@ export default {
   clueDetail (params) {
     return fetchGet('/clueHall/clueDetail', params)
   },
+
+  // 获取验证码
+  sendPhoneCode (params) {
+    return fetchGet('/clueHall/clueDetail', params)
+  },
 }

@@ -24,7 +24,7 @@
 export default {
   data () {
     return {
-      keepAlive: ['login', 'clue', 'hall', 'mine'],
+      keepAlive: ['login', 'clue', 'hall', 'mine', 'renzheng'],
       tabName: ['hall', 'clue', 'mine']
     }
   },
@@ -129,7 +129,8 @@ export default {
       
       
 
-}@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3){
+}
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3){
 
   /*增加头部适配层*/
 

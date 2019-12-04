@@ -92,7 +92,7 @@
 						localStorage.setItem('openId',this.openId)
 						if(res.data.hasBind == false){
 							this.hasBind = false
-							this.$router.push({ path: '/bindPhone' })
+							location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=https://wb.caishuiyu.com/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect'
 						}else {
 							this.hasBind = true
 							let merchant = res.data.merchant.id
@@ -101,6 +101,8 @@
 							this.merchantDetail();
 							this.getComponyInfo();
 						}
+					}else {
+						location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=https://wb.caishuiyu.com/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect'
 					}
 				})
 			}

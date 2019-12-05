@@ -251,7 +251,7 @@
 					recommendList,
 					statusList,
 					pageNum: this.pageNum,
-					pageSize: 10,
+					pageSize: 20,
 				}
 				api.clueList(data).then(res => {
 					if(res.code == 0) {

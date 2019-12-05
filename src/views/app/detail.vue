@@ -4,7 +4,7 @@
       <div class="inquiryDetail_top_text">询价单信息</div>
       <div :class="`inquiryDetail_top_type inquiryDetail_top_type${data.recommendTag}`" v-if="data.recommendTag">{{typeList[data.recommendTag - 1].name}}</div>
       <div style="flex: 1"></div>
-      <img class="inquiryDetail_top_icon" v-if="data.status" :src="require(`@/assets/deal-${data.status}@3x.png`)">
+      <img class="inquiryDetail_top_icon" :src="require(`@/assets/deal-${data.status}@3x.png`)">
       <div :class="`inquiryDetail_top_status inquiryDetail_top_status${data.status}`">{{statusList[data.status]}}</div>
     </div>
     <div class="inquiryData">
@@ -62,7 +62,7 @@
         </div>
       </div>
     </div>
-    <div class="pay_bottom">
+    <div class="pay_bottom" v-if="data.status == 0">
       <div class="pay_bottom_dw">¥</div>
       <div class="pay_bottom_price">{{data.price || 100}}</div>
       <div class="pay_bottom_oldPrice">原价：¥200</div>
@@ -117,7 +117,7 @@ export default {
           childs: []
         }
       ],
-      statusList: ['', '对接中', '已成交'],
+      statusList: ['待对接', '对接中', '已成交'],
     }
   },
   created () {
@@ -182,6 +182,7 @@ export default {
         path: '/pay',
         query: {
           intentionId: this.intentionId,
+          from: 'detail',
           price: this.data.price
         }
       })
@@ -265,6 +266,9 @@ export default {
       color: #5AB3A4;
       line-height: 22px;
       flex-grow: 0;
+    }
+    .inquiryDetail_top_status0 {
+      color: #FFAD71;
     }
     .inquiryDetail_top_status1 {
       color: #FF7F4A;

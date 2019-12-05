@@ -105,4 +105,9 @@ export default {
   clueDetail (params) {
     return fetchGet('/clueHall/clueDetail', params)
   },
+
+  //购买app询价单
+  purchaseClue (params) {
+    return fetchPost('/clueHall/purchaseClue', params)
+  },
 }

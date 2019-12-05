@@ -42,16 +42,20 @@
 						<div class="filter_item_name" :class="{active: filterType == 'type'}">{{typeText}}</div>
 						<img class="filter_item_icon" :src="filterType == 'type' ? require('@/assets/arrow-up@3x.png') : require('@/assets/arrow-down@3x.png')">
 					</div>
+					<div class="filter_item" @click="filter('status')">
+						<div class="filter_item_name" :class="{active: filterType == 'status'}">{{statusText}}</div>
+						<img class="filter_item_icon" :src="filterType == 'status' ? require('@/assets/arrow-up@3x.png') : require('@/assets/arrow-down@3x.png')">
+					</div>
 				</div>
 				<div class="filter_box" v-show="showFilter" @click.self="closeFilter">
 					<div class="filter_container">
 						<div class="filter_left">
-							<div class="filter_left_item" @click="selectAll">
+							<div class="filter_left_item" :class="{filter_left_item_active: fatherCode === ''}" @click="selectAll">
 								<div class="filter_left_item_icon"></div>
 								<div class="filter_left_item_text">全部</div>
 								<div class="filter_left_item_arrow"></div>
 							</div>
-							<div class="filter_left_item" v-for="item in filterList" :key="item.code" :class="{filter_left_item_active: fatherCode == item.code}" @click="select1(item)">
+							<div class="filter_left_item" v-for="item in filterList" :key="item.code" :class="{filter_left_item_active: fatherCode === item.code}" @click="select1(item)">
 								<div class="filter_left_item_icon"></div>
 								<div class="filter_left_item_text">{{item.name}}</div>
 								<img class="filter_left_item_arrow" src="@/assets/right@3x.png" v-if="item.childs && item.childs.length > 0">
@@ -59,18 +63,18 @@
 							</div>
 						</div>
 						<div class="filter_right">
-							<div class="filter_right_item" v-for="item_ in childs" :key="item_.code" :class="{filter_right_item_active: childCode == item_.code}" @click="select2(item_)">{{item_.name}}</div>
+							<div class="filter_right_item" v-for="item_ in childs" :key="item_.code" :class="{filter_right_item_active: childCode === item_.code}" @click="select2(item_)">{{item_.name}}</div>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="intention" :style="{'padding-bottom': isIphoneX ? '32px' : '12px'}" v-show="clueList.length > 0">
 				<div class="intention_item" v-for="item in clueList" @click="goDetail(item)">
-					<img class="intention_item_type" :src="require(`@/assets/label-${item.recommendTag}@3x.png`)">
+					<img class="intention_item_type" v-if="item.recommendTag" :src="require(`@/assets/label-${item.recommendTag}@3x.png`)">
 					<div class="intention_item_detail">查看详情</div>
 					<div class="intention_item_top">
 						<div class="intention_item_name">{{item.name}}</div>
-						<div :class="`intention_item_status intention_item_status${item.status}`">{{statusList[item.status]}}</div>
+						<div :class="`intention_item_status intention_item_status${item.status}`">{{statusList[item.status]['name']}}</div>
 					</div>
 					<div class="intention_item_info">询问类目：{{item.intention}}</div>
 					<div class="intention_item_info">需求区域：{{item.area}}</div>
@@ -129,6 +133,21 @@
 						childs: []
 					}
 				],
+				statusList: [
+					{
+						name: '待对接',
+						code: 0,
+						childs: []
+					}, {
+						name: '对接中',
+						code: 1,
+						childs: []
+					}, {
+						name: '已成交',
+						code: 2,
+						childs: []
+					}
+				],
 				fatherItem: {},
 				childs: [],
 				childItem: {},
@@ -138,15 +157,18 @@
 				serveChildCode: '',
 				typeFatherCode: '',
 				typeChildCode: '',
+				statusFatherCode: '',
+				statusChildCode: '',
 				showFilter: false,
-				cityText: '筛选城市',
-				serveText: '筛选服务',
-				typeText: '筛选类型',
+				cityText: '城市',
+				serveText: '服务',
+				typeText: '类型',
+				statusText: '状态',
 				areaCode: '',
 				intentionCode: '',
 				recommendTag: '',
+				statusCode: '',
 				clueList: [],
-				statusList: ['', '对接中', '已成交'],
 				noMore: false,
 		      	loading: false,
 		      	loading_more: false,
@@ -221,10 +243,13 @@
 				})
 			},
 			getClueList(more) {
+				let recommendList = this.recommendTag !== '' ? [this.recommendTag] : [];
+				let statusList = this.statusCode !== '' ? [this.statusCode] : [];
 				let data = {
 					areaCode: this.areaCode,
 					intentionCode: this.intentionCode,
-					recommendTag: this.recommendTag,
+					recommendList,
+					statusList,
 					pageNum: this.pageNum,
 					pageSize: 10,
 				}
@@ -278,7 +303,8 @@
 					let obj = {
 						city: 'areaCode',
 						serve: 'intentionCode',
-						type: 'recommendTag'
+						type: 'recommendTag',
+						status: 'statusCode'
 					}
 					if(!this.showFilter) {
 						this.showBanner_ = this.showBanner;
@@ -299,16 +325,17 @@
 				let obj = {
 					city: 'areaCode',
 					serve: 'intentionCode',
-					type: 'recommendTag'
+					type: 'recommendTag',
+					status: 'statusCode'
 				}
 				this.childItem = {};
 				this.fatherItem = item;
-				this[this.filterType + 'Text'] = item.name;
 				this[obj[this.filterType]] = item.code;
 				this[this.filterType + 'FatherCode'] = item.code
 				if(item.childs.length > 0) {
 					this.childs = item.childs;
 				}else {
+					this[this.filterType + 'Text'] = item.name;
 					this.getClueList();
 					this.childs = [];
 					setTimeout(() => {
@@ -321,7 +348,8 @@
 				let obj = {
 					city: 'areaCode',
 					serve: 'intentionCode',
-					type: 'recommendTag'
+					type: 'recommendTag',
+					status: 'statusCode'
 				}
 				this.childItem = item;
 				this[this.filterType + 'Text'] = item.name;
@@ -336,14 +364,16 @@
 			},
 			selectAll() {
 				let obj = {
-					city: '筛选城市',
-					serve: '筛选服务',
-					type: '筛选类型',
+					city: '城市',
+					serve: '服务',
+					type: '类型',
+					status: '状态',
 				}
 				let obj_ = {
 					city: 'areaCode',
 					serve: 'intentionCode',
-					type: 'recommendTag'
+					type: 'recommendTag',
+					status: 'statusCode'
 				}
 				this[this.filterType + 'Text'] = obj[this.filterType];
 				this[obj_[this.filterType]] = '';
@@ -353,6 +383,8 @@
 				this.serveChildCode = '';
 				this.typeFatherCode = '';
 				this.typeChildCode = '';
+				this.statusFatherCode = '';
+				this.statusChildCode = '';
 				this.getClueList();
 				setTimeout(() => {
 					this.showFilter = false;
@@ -364,20 +396,20 @@
 					path: '/detail',
 					query: {
 						intentionId: item.id,
+						origin: item.origin,
 						from: 'clues_page'
 					}
 				})
 			},
 		},
 		created() {
-			this.getNum();
-			this.getBanner();
-			this.getCarouselList();
-			this.getClueList();
-			this.getCityList();
-			this.getServeList();
 			if(localStorage.getItem('merchant')) {
-				this.getList();
+				this.getNum();
+				this.getBanner();
+				this.getCarouselList();
+				this.getClueList();
+				this.getCityList();
+				this.getServeList();
 		    }else {
 		      	let params = {
 		        	code: this.$route.query.code
@@ -396,7 +428,12 @@
 		            		let merchant = res.data.merchant.id
 		            		console.log(merchant)
 		            		localStorage.setItem('merchant', merchant)
-							this.getList();
+							this.getNum();
+							this.getBanner();
+							this.getCarouselList();
+							this.getClueList();
+							this.getCityList();
+							this.getServeList();
 		          		}
 		        	}
 		      	})

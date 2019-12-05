@@ -123,14 +123,13 @@ export default {
   created () {
 
     let intentionId = this.$route.query.intentionId
-    console.log(intentionId)
+    let origin = this.$route.query.origin
     if(intentionId) {
       this.intentionId = intentionId
       let data = {
-        id: intentionId
-        // intentionId: 1
+        id: intentionId,
+        origin,
       }
-      // data = qs.stringify(data)
       api.clueDetail(data).then(res => {
         console.log(res)
         if(res.code == 0){

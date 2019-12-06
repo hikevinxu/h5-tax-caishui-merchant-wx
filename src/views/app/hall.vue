@@ -370,14 +370,13 @@
 			},
 		},
 		created() {
-			this.getNum();
-			this.getBanner();
-			this.getCarouselList();
-			this.getClueList();
-			this.getCityList();
-			this.getServeList();
 			if(localStorage.getItem('merchant')) {
-				this.getList();
+				this.getNum();
+				this.getBanner();
+				this.getCarouselList();
+				this.getClueList();
+				this.getCityList();
+				this.getServeList();
 		    }else {
 		      	let params = {
 		        	code: this.$route.query.code
@@ -396,7 +395,12 @@
 		            		let merchant = res.data.merchant.id
 		            		console.log(merchant)
 		            		localStorage.setItem('merchant', merchant)
-							this.getList();
+							this.getNum();
+							this.getBanner();
+							this.getCarouselList();
+							this.getClueList();
+							this.getCityList();
+							this.getServeList();
 		          		}
 		        	}
 		      	})

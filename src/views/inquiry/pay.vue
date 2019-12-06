@@ -132,11 +132,11 @@ export default {
               this.$router.push({ path: '/payResult' })
             }else {
               this.success = false
-              Toast(res.data.msg)
+              Toast(res.msg)
             }
           })
           .catch(err => {
-            Toast(err.data.msg)
+            Toast(err.msg)
           })
         }else {
           api.intentionCashPurchase(data).then(res => {

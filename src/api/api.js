@@ -110,4 +110,19 @@ export default {
   sendPhoneCode (params) {
     return fetchGet('/clueHall/clueDetail', params)
   },
+
+  //购买app询价单
+  purchaseClue (params) {
+    return fetchPost('/clueHall/purchaseClue', params)
+  },
+
+  //更换手机号
+  changePhone (params) {
+    return fetchPost('/clueHall/purchaseClue', params)
+  },
+
+  //解绑
+  unLinkWechat (params) {
+    return fetchPost('/clueHall/purchaseClue', params)
+  },
 }

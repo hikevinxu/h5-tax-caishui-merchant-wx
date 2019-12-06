@@ -1,11 +1,11 @@
 <template>
 	<transition name='model'>
-		<div class="model" v-show="show" @click="$emit('update:show', false)">
+		<div class="model" v-show="show" @click="clickMask">
 			<div class="confirm" @clicl.stop>
 				<div class="confirm_title">{{title}}</div>
 				<div class="confirm_content">{{content}}</div>
 				<div class="confirm_btn_box">
-					<div class="btn cancel_btn" @click="$emit('update:show', false)">
+					<div class="btn cancel_btn" @click="$emit('cancel')">
 						<span>{{cancelText}}</span>
 					</div>
 					<div class="btn confirm_btn" @click="$emit('confirm')">
@@ -44,6 +44,17 @@
 			confirmText: {
 				default: '确认',
 				type: String
+			},
+			closeFromMask: {
+				default: true,
+				type: Boolean
+			}
+		},
+		methods: {
+			clickMask() {
+				if(this.closeFromMask) {
+					this.$emit('update:show', false);
+				}
 			}
 		}
 	}

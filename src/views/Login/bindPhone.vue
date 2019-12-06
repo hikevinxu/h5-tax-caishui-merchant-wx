@@ -23,7 +23,7 @@
       </p>
       <div class="submit_btn" @click="binding">入驻&绑定</div>
     </div>
-    <confirm :show.sync="showConfirm" content="当前是否前去商户认证？" cancelText="跳过" @confirm="confirm"></confirm>
+    <confirm :show.sync="showConfirm" content="当前是否前去商户认证？" cancelText="跳过" :closeFromMask="false" @cancel="cancel" @confirm="confirm"></confirm>
   </div>  
 </template>
 <script>
@@ -170,8 +170,11 @@ export default {
         window.scroll(0, 0);
       }
     },
+    cancel() {
+      this.$router.replace('/hall');
+    },
     confirm() {
-      this.$router.push('/renzheng');
+      this.$router.replace('/renzheng');
     },
     setCaptcha(){
       getScript('//cstaticdun.126.net/load.min.js',()=>{
@@ -316,6 +319,7 @@ export default {
         outline: none;
         font-family: PingFangSC-Regular;
         color: rgba(0,0,0,0.87);
+        flex: 1;
       }
       .line1 {
         width: 1px;

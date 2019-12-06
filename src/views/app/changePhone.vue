@@ -19,7 +19,7 @@
 			<div class="login_code_btn" :class="{login_code_btn_send: !isSend2}" id="getPhoneCode2" @click.stop.prevent="getCode('2')">{{codeText2}}</div>
 		</div>
 		<div class="submit_btn" @click="confirmChange">确认修改</div>
-		<confirm :show.sync="showConfirm" content="您确认更换手机号？" @confirm="confirm"></confirm>
+		<confirm :show.sync="showConfirm" content="您确认更换手机号？" @cancel="showConfirm = false" @confirm="confirm"></confirm>
 	</div>
 </template>
 
@@ -89,7 +89,19 @@
 				}
 			},
 			confirm() {
-				this.showConfirm = false;
+				let data = {
+
+				};
+				api.changePhone(data).then(res => {
+					if(res.code == 0) {
+						Toast('更换手机号成功，请重新登录');
+						setTimeout(() => {
+							location.replace('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=https://wb.caishuiyu.com/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect');
+						}, 1000);
+					}else {
+						Toast(res.msg)
+					}
+				})
 			},
 			getCode(index){
 				if(!/^1([358][0-9]|4[56789]|6[67]|7[0135678]|9[189])[0-9]{8}$/.test(this[`phone${index}`])) {

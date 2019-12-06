@@ -6,12 +6,14 @@
 			<div class="phone_value">{{wechatCode}}</div>
 		</div>
 		<div class="submit_btn" @click="confirmChange">确认修改</div>
-		<confirm :show.sync="showConfirm" content="您确认解绑当前微信吗？" @confirm="confirm"></confirm>
+		<confirm :show.sync="showConfirm" content="您确认解绑当前微信吗？" @cancel="showConfirm = false" @confirm="confirm"></confirm>
 	</div>
 </template>
 
 <script>
 	import Confirm from '@/components/confirm'
+	import { Toast } from 'vant'
+	import api from '@/api/api'
 	export default {
 		name: '',
 		components: {
@@ -34,7 +36,17 @@
 				this.showConfirm = true;
 			},
 			confirm() {
-				this.showConfirm = false;
+				let data = {};
+				api.unLinkWechat(data).then(res => {
+					if(res.code == 0) {
+						Toast('解绑成功，请重新登录');
+						setTimeout(() => {
+							location.replace('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=https://wb.caishuiyu.com/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect');
+						}, 1000);
+					}else {
+						Toast(res.msg)
+					}
+				})
 			}
 		},
 		created() {

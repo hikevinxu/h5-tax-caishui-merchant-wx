@@ -127,16 +127,20 @@ export default {
       }).then(() => {
         if(this.payType == 'balance') {
           api.intentionPurchase(data).then(res => {
+            console.log(1111);
+            console.log(res);
             if(res.code == 0){
               Toast('购买成功')
               this.$router.push({ path: '/payResult' })
             }else {
               this.success = false
-              Toast(res.msg)
+              console.log(res);
+              Toast(res.msg)  
             }
           })
           .catch(err => {
-            Toast(err.msg)
+            console.log(err);
+            Toast(err.data.msg)
           })
         }else {
           api.intentionCashPurchase(data).then(res => {

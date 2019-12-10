@@ -115,7 +115,7 @@
 		data() {
 			return {
 				renzheng: false, // 是否已认证
-				isLogin: false, // 是否已登录
+				isLogin: Boolean(localStorage.getItem('accessToken')), // 是否已登录
 				showConfirm: false, // 确认弹窗
 				content: '',
 				imgList: [],
@@ -293,6 +293,14 @@
 					}
 				})
 			},
+			applyStatus() {
+				api.applyStatus({}).then(res => {
+					if(res.code == 0) {
+						this.renzheng = res.data.status == 103;
+						localStorage.setItem('status', res.data.status);
+					}
+				})
+			},
 			clickBanner(item) {
 				location.href = item.adValue;
 			},
@@ -443,6 +451,7 @@
 				this.getClueList();
 				this.getCityList();
 				this.getServeList();
+				this.applyStatus();
 		    }else {
 		      	let params = {
 		        	code: this.$route.query.code
@@ -467,6 +476,7 @@
 							this.getClueList();
 							this.getCityList();
 							this.getServeList();
+							this.applyStatus();
 		          		}
 		        	}
 		      	})

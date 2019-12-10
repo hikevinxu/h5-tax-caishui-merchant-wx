@@ -14,12 +14,20 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/inquiryDetail'
+      redirect: '/hall'
     },
     {
       path: '/bindPhone',
       name: 'bindPhone',
       component: () => import('../views/Login/bindPhone.vue'),
+      meta: {
+        title: '商户绑定'
+      }
+    },
+    {
+      path: '/init',
+      name: 'init',
+      component: () => import('../views/Login/init.vue'),
       meta: {
         title: '商户绑定'
       }
@@ -184,6 +192,14 @@ export default new Router({
       component: () => import('../views/app/unlinkWechat.vue'),
       meta: {
         title: '解绑微信'
+      }
+    },
+    {
+      path: '/bindLogin',
+      name: 'bindLogin',
+      component: () => import('../views/Login/bindLogin.vue'),
+      meta: {
+        title: '自动登录中'
       }
     }
   ],

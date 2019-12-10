@@ -1,13 +1,14 @@
 <template>
 	<div class="container">
-		<img class="rz_img" :src="status == 1 ? require('@/assets/img_page_complete.png') : require('@/assets/img_page_failed.png')">
+		<img class="rz_img" :src="status == 102 ? require('@/assets/img_page_complete.png') : require('@/assets/img_page_failed.png')">
 		<div class="rz_text1">{{rz_text1}}</div>
 		<div class="rz_text2" v-html="rz_text2"></div>
-		<div class="submit_btn" v-if="status == 2">重新提交</div>
+		<div class="submit_btn" v-if="status != 102" @click="reset">重新提交</div>
 	</div>
 </template>
 
 <script>
+	import api from '@/api/api'
 	export default {
 		name: '',
 		data() {
@@ -23,14 +24,20 @@
 				return this.$route.query.status;
 			},
 			rz_text1() {
-				return this.$route.query.status == 1 ? ' 商户认证申请提交成功' : '商户认证申请审核失败';
+				return this.$route.query.status == 102 ? ' 商户认证申请提交成功' : '商户认证申请审核失败';
 			},
 			rz_text2() {
-				return this.$route.query.status == 1 ? ' 1个工作内将通知您审核结果' : '因商家提供资料与实际不符，审核失败</br>请重新提交，感谢您的合作';
+				return this.$route.query.status == 102 ? ' 1个工作内将通知您审核结果' : '因商家提供资料与实际不符，审核失败</br>请重新提交，感谢您的合作';
 			},
 		},
 		methods: {
-
+			reset() {
+				api.reset({}).then(res => {
+					if(res.code == 0) {
+						this.$router.replace('/renzheng');
+					}
+				})
+			}
 		},
 		created() {
 

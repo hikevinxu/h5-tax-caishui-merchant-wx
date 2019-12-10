@@ -4,7 +4,7 @@
       <div class="inquiryDetail_top_text">询价单信息</div>
       <div :class="`inquiryDetail_top_type inquiryDetail_top_type${data.recommendTag}`" v-if="data.recommendTag">{{typeList[data.recommendTag - 1].name}}</div>
       <div style="flex: 1"></div>
-      <img class="inquiryDetail_top_icon" :src="require(`@/assets/deal-${data.status}@3x.png`)">
+      <img class="inquiryDetail_top_icon" v-if="data.status" :src="require(`@/assets/deal-${data.status}@3x.png`)">
       <div :class="`inquiryDetail_top_status inquiryDetail_top_status${data.status}`">{{statusList[data.status]}}</div>
     </div>
     <div class="inquiryData">

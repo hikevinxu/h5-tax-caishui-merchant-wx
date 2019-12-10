@@ -6,13 +6,13 @@
 		</div>
 		<div class="content_title">企业信息认证</div>
 		<div class="content_info">
-			<div class="content_info_item">
+			<div class="content_info_item" v-if="fileUrl1">
 				<div class="content_info_key">机构名称</div>
 				<input class="content_info_value1" type="text" placeholder="请输入名称" v-model="name">
 			</div>
-			<div class="content_info_item">
+			<div class="content_info_item" v-if="fileUrl1">
 				<div class="content_info_key">社会信用代码</div>
-				<div class="content_info_value1">{{code}}</div>
+				<input class="content_info_value1" type="text" placeholder="请输入社会信用代码" v-model="code">
 			</div>
 			<div class="content_img">
 				<div class="idcrad_box">
@@ -21,7 +21,7 @@
 					</div>
 					<div class="idcrad_default_img" v-if="!this.img1"></div>
 					<img class="idcrad_img" :src="img1" v-else>
-					<input class="idcard_input" type="file" accept="image/*" capture='camera' value="file" @change="getFile1">
+					<input class="idcard_input" id="file" type="file" accept="image/*" capture='camera' @change="getFile1">
 				</div>
 				<div class="idcrad_default_text">营业执照</div>
 			</div>
@@ -50,6 +50,10 @@
 </template>
 
 <script>
+	import api from '@/api/api'
+	import { baseURL } from '@/api/axios'
+	import $ from 'zhangjia-zepto'
+	import { Toast } from 'vant'
 	export default {
 		name: 'renzheng',
 		data() {
@@ -60,7 +64,8 @@
 				file1: {},
 				file2: {},
 				name: '',
-				code: ''
+				code: '',
+				fileUrl1: '',
 			}
 		},
 		watch: {
@@ -72,19 +77,21 @@
 		methods: {
 			// 获取文件
 			getFile1(e) {
+				console.log(111);
 				let self = this;
 				this.file1 = e.target.files[0];
-				// this.submitImg();
+				this.submitImg1();
 				var reads= new FileReader();
 		        reads.readAsDataURL(e.target.files[0]);
 		        reads.onload=function () {
+		        	console.log(this.result)
 		            self.img1 = this.result;
 		        };
 			},// 获取文件
 			getFile2(e) {
 				let self = this;
 				this.file2 = e.target.files[0];
-				// this.submitImg();
+				this.submitImg2();
 				var reads= new FileReader();
 		        reads.readAsDataURL(e.target.files[0]);
 		        reads.onload=function () {
@@ -93,28 +100,53 @@
 			},
 			deleteImg(index) {
 				this[`img${index}`] = '';
+				this[`fileUrl${index}`] = '';
+				if(index == '1') {
+					document.getElementById("file").value = "";
+				} 
 			},
-			submitImg() {
+			submitImg1() {
 				const formData = new FormData();
-				formData.append(this.file.name, this.file);
+				formData.append('files', this.file1);
 				var self = this;
 				$.ajax({
-					url: baseUrl + '/huzhu/uploadsV1',
+					url: baseURL + '/wechat/enterpriseAuth/uploadBusinessLicense',
 					type: 'post',
 					processData: false,
 					contentType: false,
 					data: formData,
 					dataType: 'json',
 					headers: {
-						'sessionId': storage.get('sessionId') || '',
-						'packageName': 'com.anniu.white.web',
-						'clientId': storage.get('distinctId'),
-						'deviceType': 'wap'
+						'Authorization': localStorage.getItem('accessToken'),
 					},
 					success(res) {
 						if(res.code == 0) {
-							self.fileName = res.data;
-							self.isSubmitImg = true
+							self.fileUrl1 = res.data.fileId;
+							self.name = res.data.data['单位名称'].words;
+							self.code = res.data.data['社会信用代码'].words;
+						}else {
+							Toast(res.msg);
+						}
+					}
+			    })
+			},
+			submitImg2() {
+				const formData = new FormData();
+				formData.append('files', this.file2);
+				var self = this;
+				$.ajax({
+					url: baseURL + '/fileupload/upload',
+					type: 'post',
+					processData: false,
+					contentType: false,
+					data: formData,
+					dataType: 'json',
+					headers: {
+						'Authorization': localStorage.getItem('accessToken'),
+					},
+					success(res) {
+						if(res.code == 0) {
+							self.fileUrl2 = res.data[0].fileId;
 							// self.tipShow = true;
 						}else {
 							// this.$message({
@@ -127,7 +159,38 @@
 			    })
 			},
 			submit() {
-
+				if(!this.fileUrl1) {
+					Toast('请先上传营业执照');
+					return ;
+				}
+				if(!this.name) {
+					Toast('请先填写机构名称');
+					return ;
+				}
+				if(!this.code) {
+					Toast('请先填写社会信用代码');
+					return ;
+				}
+				if(!this.fileUrl1) {
+					Toast('请先上传法人手持身份证');
+					return ;
+				}
+				let data = {
+					businessLicenseImg: this.fileUrl1,
+					idCardImg: this.fileUrl2,
+					organization: this.name,
+					socialCreditCode: this.code
+				}
+				api.apply(data).then(res => {
+					if(res.code == 0) {
+						this.$router.replace({
+							path: '/rzResult',
+							query: {
+								status: 102
+							}
+						})
+					}
+				})
 			},
 			changeAgree() {
       			this.isAgreement = !this.isAgreement;
@@ -196,6 +259,7 @@
 					line-height: 20px;
 				}
 				.content_info_value1 {
+					flex: 1;
 					font-family: PingFangSC-Regular;
 					font-size: 14px;
 					color: rgba(0,0,0,0.87);

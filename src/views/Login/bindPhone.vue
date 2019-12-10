@@ -6,7 +6,7 @@
         <img src="@/assets/ic_form_cellnum.png">
         <input @focus="phoneFocus=true" @blur="scrollTop1" ref="login_input" type="number" maxlength="11" v-model="phone" placeholder="账号使用手机号" />
       </div>
-      <div class="authenticationInput" v-if="!hasBind">
+      <div class="authenticationInput" v-if="isPhone && !isRegistered">
         <img src="@/assets/ic_form_code.png">
         <input @focus="codeFocus=true" @blur="scrollTop3" type="number" maxlength="4" v-model="code" placeholder="验证码" />
         <div class="line1"></div>
@@ -26,7 +26,7 @@
     <confirm :show.sync="showConfirm" content="当前是否前去商户认证？" cancelText="跳过" :closeFromMask="false" @cancel="cancel" @confirm="confirm"></confirm>
   </div>  
 </template>
-<script>
+<script>2
 import Vue from 'vue'
 import { Toast, Button } from 'vant'
 import api from '@/api/api'
@@ -50,13 +50,32 @@ export default {
       codeFocus: false,
       psdFocus: false,
       jumpUrlInfo: {},
-      openId: '',
+      openId: localStorage.getItem('openId'),
       hasBind: false,
       isAgreement: true,
       showConfirm: false,
       isSend: true,
       codeText: '获取验证码',
-      timer: null
+      timer: null,
+      isRegistered: true
+    }
+  },
+  watch: {
+    isPhone(val) {
+      if(val) {
+        api.isRegistered({phone: val}).then(res => {
+          if(res.code == 0) {
+            this.isRegistered = res.data.isRegistered;
+            if(!this.isRegistered) {
+              this.$nextTick(() => {
+                this.setCaptcha();
+              })
+            }
+          }else {
+
+          }
+        })
+      }
     }
   },
   computed: {
@@ -68,41 +87,64 @@ export default {
     }
   },
   created () {
-    
     let code = this.$route.query.code
-    if(code){
-      let params = {
-        code: this.$route.query.code
-      }
-      console.log(params)
-      api.weixinHasBind(params).then(res => {
-        console.log(res)
-        if(res.code == 0){
-          this.openId = res.data.openId
-          localStorage.setItem('openId',this.openId)
-          if(res.data.hasBind == false){
-            this.hasBind = false
-            this.$nextTick(() => {
-              this.setCaptcha();
-            })
-          }else {
-            this.hasBind = true
-            let merchant = res.data.merchant.id
-            localStorage.setItem('merchant', merchant)
-            this.$router.replace({ path: '/success' })
-          }
+      if(code){
+        let params = {
+          code: this.$route.query.code
         }
-      })
-      .catch((error) => {
+        api.registerHasBind(params).then(res => {
+          console.log(res)
+          if(res.code == 0){
+            localStorage.setItem('openId', res.data.openId)
+            if(res.data.hasBind == false){
+              this.hasBind = false
+            }else {
+              this.hasBind = true
+              let merchant = res.data.merchant.id;
+              localStorage.setItem('merchant', merchant)
+              this.$router.replace({ path: '/success' })
+            }
+          }
+        })
+        .catch((error) => {
           console.log(error)
-      })
-    }else {
-      let openId = localStorage.getItem('openId')
-      this.openId = openId
-      this.$nextTick(() => {
-        this.setCaptcha();
-      })
-    }
+        })
+      }
+    
+    // let code = this.$route.query.code
+    // if(code){
+    //   let params = {
+    //     code: this.$route.query.code
+    //   }
+    //   console.log(params)
+    //   api.weixinHasBind(params).then(res => {
+    //     console.log(res)
+    //     if(res.code == 0){
+    //       this.openId = res.data.openId
+    //       localStorage.setItem('openId',this.openId)
+    //       if(res.data.hasBind == false){
+    //         this.hasBind = false
+    //         this.$nextTick(() => {
+    //           this.setCaptcha();
+    //         })
+    //       }else {
+    //         this.hasBind = true
+    //         let merchant = res.data.merchant.id
+    //         localStorage.setItem('merchant', merchant)
+    //         this.$router.replace({ path: '/hall' })
+    //       }
+    //     }
+    //   })
+    //   .catch((error) => {
+    //       console.log(error)
+    //   })
+    // }else {
+    //   let openId = localStorage.getItem('openId')
+    //   this.openId = openId
+    //   this.$nextTick(() => {
+    //     this.setCaptcha();
+    //   })
+    // }
   },
   methods: {
     changeAgree() {
@@ -133,16 +175,29 @@ export default {
         return
       }
       let params = {
+        clientType: 'h5',
         openId: this.openId,
         password: this.password,
-        phone: this.phone
+        phone: this.phone,
+        verificationCode: this.code
       }
       // let paramsString = qs.stringify(params)
       console.log(params)
-      api.weixinBindPhone(params).then(res => {
+      // api.weixinBindPhone(params).then(res => {
+      //   console.log(res)
+      //   if (res.code == 0) {
+      //     Toast('绑定成功')
+      //     this.$router.push({ path: '/success' })
+      //   }else {
+      //     Toast(res.msg)
+      //   }
+      // })
+      api.registerLogin(params).then(res => {
         console.log(res)
         if (res.code == 0) {
           Toast('绑定成功')
+          console.log(res.data.accessToken)
+          localStorage.setItem('accessToken', res.data.accessToken);
           this.$router.push({ path: '/success' })
         }else {
           Toast(res.msg)
@@ -185,7 +240,7 @@ export default {
     initCaptcha(){
       let self = this
       initNECaptcha({
-        captchaId: '6404ded8c53b464c9f0071f415fbff01',
+        captchaId: 'ed852fa384a14b579172a3f93ba4c934',
         element: '#getPhoneCode',
         mode: 'bind',
         width: 320,
@@ -206,16 +261,16 @@ export default {
         let data
         if(this.isPhone) {
           data = {
-            userPhone: this.phone,
-            validate: this.validate,
-            platform: 'H5'
+            phone: this.phone,
+            captchaValidate: this.validate,
+            clientType: 'h5'
           }
         }else {
           Toast('请输入正确的手机号');
           return false;
         }
         let self = this;
-        api.sendPhoneCodeV1(data).then(res => {
+        api.registerVerification(data).then(res => {
           if (res.code == 0) {
             this.hasCode = true;
             Toast('发送验证码成功');

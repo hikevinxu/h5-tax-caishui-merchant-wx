@@ -10,7 +10,7 @@
 		</div>
 		<div class="phone_item">
 			<div class="phone_key">现手机号码</div>
-			<input class="phone_value" ref="login_input2" type="text" placeholder="请输入名称" v-model="phone2">
+			<input class="phone_value" ref="login_input2" type="text" placeholder="请输入手机号码" v-model="phone2">
 		</div>
 		<div class="phone_item">
 			<div class="phone_key">现手机验证码</div>
@@ -90,13 +90,18 @@
 			},
 			confirm() {
 				let data = {
-
-				};
+					clientType: "h5",
+					newPhone: this.phone2,
+					newVerificationCode: this.code2,
+					originPhone: this.phone1,
+					originVerificationCode: this.code1,
+				}
 				api.changePhone(data).then(res => {
 					if(res.code == 0) {
 						Toast('更换手机号成功，请重新登录');
 						setTimeout(() => {
-							location.replace('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=https://wb.caishuiyu.com/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect');
+							this.$router.replace('/bindPhone');
+							// location.replace('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=https://wb.caishuiyu.com/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect');
 						}, 1000);
 					}else {
 						Toast(res.msg)
@@ -121,7 +126,7 @@
 			initCaptcha(index){
 				let self = this
 				initNECaptcha({
-					captchaId: '6404ded8c53b464c9f0071f415fbff01',
+					captchaId: 'ed852fa384a14b579172a3f93ba4c934',
 					element: `#getPhoneCode${index}`,
 					mode: 'bind',
 					width: 320,
@@ -143,16 +148,17 @@
 					let data
 					if(/^1([358][0-9]|4[56789]|6[67]|7[0135678]|9[189])[0-9]{8}$/.test(this[`phone${index}`])) {
 						data = {
-							userPhone: this[`phone${index}`],
-							validate: this.validate,
-							platform: 'H5'
+							phone: this[`phone${index}`],
+				            captchaValidate: this.validate,
+				            clientType: 'h5'
 						}
 					}else {
 						Toast('请输入正确的手机号');
 						return false;
 					}
 					let self = this;
-					api.sendPhoneCode(data).then(res => {
+					let methodList = ['sendVerifyOrigin', 'verifyNew'];
+					api[methodList[this.index - 1]](data).then(res => {
 						self.initCaptcha(index);
 						if (res.code == 0) {
 							Toast('发送验证码成功');

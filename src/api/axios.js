@@ -9,27 +9,26 @@ Vue.use(Toast)
 
 // 响应时间
 axios.defaults.timeout = 100000
-axios.defaults.baseURL = process.env.VUE_APP_API
+// axios.defaults.baseURL = process.env.VUE_APP_API
 
 // 测试地址（内网)
 // axios.defaults.baseURL = 'http://tax-caishui-merchant.int.anniu-inc.com'
 // 线上环境地址
 // axios.defaults.baseURL = 'https://merchant-api.caishuiyu.com'
 // 本地环境地址
-// axios.defaults.baseURL = 'http://172.100.8.88:8081'
+axios.defaults.baseURL = 'http://172.100.8.46:8081'
 
 // POST传参序列化(添加请求拦截器)
-const merchant = localStorage.getItem('merchant')
-// const merchant = 448
-console.log(merchant)
+const accessToken = localStorage.getItem('accessToken')
+// const accessToken = 448
 axios.interceptors.request.use((config) => {
   // 在发送请求之前做某件事
   if (config.method === 'post') {
     // config.data = qs.stringify(config.data)
   }
-  if (merchant) {
+  if (accessToken) {
     // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
-    config.headers['Authorization'] = merchant
+    config.headers['Authorization'] = accessToken
   }
   return config
 }, (error) => {
@@ -45,9 +44,12 @@ axios.interceptors.response.use((res) => {
     return Promise.reject(res)
   } else if (res.data.code !== 0) {
     let info = '系统异常'
+    console.log(res.data.code);
     switch (res.data.code) {
       case 500:
         return Promise.resolve(res)
+      case 10000: 
+        location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/bindLogin&response_type=code&scope=snsapi_base&state=123#wechat_redirect`;
     }
     if(res.data.msg) {
       info = res.data.msg
@@ -92,7 +94,8 @@ export function fetchGet (url, param) {
   })
 }
 
-let baseURL_ = process.env.VUE_APP_API_
+export const baseURL = axios.defaults.baseURL;
+export const baseURL_ = process.env.VUE_APP_API_;
 
 // 返回一个Promise(发送get请求)
 export function fetchAppGet (url, param) {

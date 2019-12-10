@@ -24,7 +24,7 @@
 export default {
   data () {
     return {
-      keepAlive: ['login', 'clue', 'hall', 'mine', 'renzheng'],
+      keepAlive: ['login', 'clue', 'hall', 'renzheng'],
       tabName: ['hall', 'clue', 'mine']
     }
   },

@@ -4,18 +4,18 @@
 			<img class="mine_icon" :src="componyInfo.logo ? componyInfo.logo : require('@/assets/profile-photo@3x.png')">
 			<div class="mine_info">
 				<div class="mine_compony">
-					<span>{{status == 0 ? '未认证公司' : componyInfo.name}}</span>
-					<div class="mine_rz" v-if="status == 0">
+					<div class="mine_compony_name">{{componyInfo.name || '未认证公司'}}</div>
+					<div class="mine_rz" v-if="status < 102">
 						<span>去认证</span>
 						<img src="@/assets/mine-redright.png">
 					</div>
 				</div>
 				<div class="mine_user">
 					<span>{{componyInfo.merchantName}}</span>
-					<div class="mine_rz_status" v-if="status != 0" :class="{mine_rz_finish: status == 2}">({{status == 1 ? '审核中' : '已认证'}})</div>
+					<div class="mine_rz_status" v-if="status >= 102" :class="{mine_rz_finish: status == 103}">({{statusList[status]}})</div>
 				</div>
 			</div>
-			<img class="mine_arrow" v-if="status != 0" src="@/assets/ic_chevron_right_small@3x.png">
+			<img class="mine_arrow" v-if="status >= 102" src="@/assets/ic_chevron_right_small@3x.png">
 		</div>
 		<div class="mine_wallet">
 			<div class="mine_wallet_item">
@@ -65,10 +65,25 @@
 			    },
 			    componyInfo: {},
 			    hasBind: false,
-			    status: 0
+			    status: '',
+			    statusList: {
+			    	'100': '未认证',
+			    	'101': '未认证',
+			    	'102': '审核中',
+			    	'103': '已认证',
+			    	'999': '审核失败'
+			    }
 			}
 		},
 		methods: {
+			applyStatus() {
+				api.applyStatus({}).then(res => {
+					if(res.code == 0) {
+						this.status = res.data.status;
+						localStorage.setItem('status', res.data.status);
+					}
+				})
+			},
 			merchantDetail() {
 				api.merchantDetail().then(res => {
 					console.log(res)
@@ -104,7 +119,7 @@
 				this.$router.push('/unlinkWechat')
 			},
 			goRz() {
-				let path = this.status == 0 ? '/renzheng' : '/rzResult';
+				let path = this.status < 102 ? '/renzheng' : '/rzResult';
 				this.$router.push({
 					path,
 					query: {
@@ -114,34 +129,37 @@
 			}
 		},
 		created() {
-			if(localStorage.getItem('merchant')) {
-				this.merchantDetail();
-				this.getComponyInfo();
-			}else {
-				let params = {
-					code: this.$route.query.code
-				}
-				api.weixinHasBind(params).then(res => {
-					console.log(res)
-					if(res.code == 0){
-						this.openId = res.data.openId
-						localStorage.setItem('openId',this.openId)
-						if(res.data.hasBind == false){
-							this.hasBind = false
-							location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=https://wb.caishuiyu.com/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect'
-						}else {
-							this.hasBind = true
-							let merchant = res.data.merchant.id
-							console.log(merchant)
-							localStorage.setItem('merchant', merchant)
-							this.merchantDetail();
-							this.getComponyInfo();
-						}
-					}else {
-						location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=https://wb.caishuiyu.com/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect'
-					}
-				})
-			}
+			this.merchantDetail();
+			this.getComponyInfo();
+			this.applyStatus();
+			// if(localStorage.getItem('merchant')) {
+			// 	this.merchantDetail();
+			// 	this.getComponyInfo();
+			// }else {
+			// 	let params = {
+			// 		code: this.$route.query.code
+			// 	}
+			// 	api.weixinHasBind(params).then(res => {
+			// 		console.log(res)
+			// 		if(res.code == 0){
+			// 			this.openId = res.data.openId
+			// 			localStorage.setItem('openId',this.openId)
+			// 			if(res.data.hasBind == false){
+			// 				this.hasBind = false
+			// 				location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=https://wb.caishuiyu.com/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect'
+			// 			}else {
+			// 				this.hasBind = true
+			// 				let merchant = res.data.merchant.id
+			// 				console.log(merchant)
+			// 				localStorage.setItem('merchant', merchant)
+			// 				this.merchantDetail();
+			// 				this.getComponyInfo();
+			// 			}
+			// 		}else {
+			// 			location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=https://wb.caishuiyu.com/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect'
+			// 		}
+			// 	})
+			// }
 		},
 		mounted() {
 			console.log(1);
@@ -172,6 +190,12 @@
 					line-height: 30px;
 					text-align: left;
 					display: flex;
+					.mine_compony_name {
+						max-width: 160px;
+						overflow: hidden;
+						text-overflow: ellipsis;
+						white-space: nowrap;
+					}
 					.mine_rz {
 						margin-left: 12px;
 						align-self: flex-start;
@@ -183,6 +207,7 @@
 							font-size: 12px;
 							color: #FF7F4A;
 							line-height: 16px;
+							white-space: nowrap;
 						}
 						img {
 							width: 16px;

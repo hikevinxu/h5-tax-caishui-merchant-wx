@@ -18,7 +18,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="consult_none" v-else>
+		<div class="consult_none" v-show="hasData" v-else>
 			<img class="consult_none_icon" src="@/assets/expense-calendar.png">
 			<div class="consult_none_text">暂无线索，赶紧去抢单吧~</div>
 		</div>
@@ -47,6 +47,7 @@
 		      	pageNum: 1,
 		      	total: 0,
 		      	consultList: [],
+		      	hasData: false
 			}
 		},
 		computed: {
@@ -70,6 +71,7 @@
 			          	}else{
 			              	this.noMore = false
 			          	}
+			          	this.hasData = true;
 			        }
 			    })
 			},

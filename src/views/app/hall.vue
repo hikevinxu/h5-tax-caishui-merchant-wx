@@ -192,7 +192,10 @@
 				}
 			},
 			reload(newVal, oldVal) {
-				newVal !== oldVal && this.getClueList();
+				if(newVal !== oldVal) {
+					this.pageNum = 1;
+					this.getClueList();
+				}
 			}
 		},
 		computed: {

@@ -177,6 +177,12 @@
 		      	hasBind: false
 			}
 		},
+		props: {
+			reload: {
+				default: 0,
+				type: Number
+			}
+		},
 		watch: {
 			showFilter(val) {
 				if(val) {
@@ -184,6 +190,9 @@
 				}else {
 					this.showBanner = this.showBanner_;
 				}
+			},
+			reload(newVal, oldVal) {
+				newVal !== oldVal && this.getClueList();
 			}
 		},
 		computed: {

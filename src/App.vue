@@ -30,10 +30,29 @@ export default {
     }
   },
   watch: {
-    '$route.name': function(newVal, oldVal) {
-      if(newVal == 'hall' && oldVal == 'detail') {
-        this.getData += 1;
-      }
+    '$route.name': {
+      handler(newVal, oldVal) {
+        if(newVal == 'hall' && oldVal == 'detail') {
+          this.getData += 1;
+        }
+        // if(newVal == 'feedback' && this.$route.query.from == 'payResult') {
+        //   console.log(111);
+        //   let self = this;
+        //   let state = {
+        //     title: "title",
+        //     url: '#'
+        //   };
+        //   window.history.pushState(state, "title", location.href);
+        //   window.addEventListener("popstate", () => {
+        //     this.$router.push('/clue');
+        //   }, false);
+        // }else {
+        //   window.removeEventListener("popstate", () => {
+        //     this.$router.push('/clue');
+        //   }, false);
+        // }
+      },
+      immediate: true
     }
   },
   computed: {

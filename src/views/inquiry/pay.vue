@@ -123,7 +123,7 @@ export default {
           if(res.code == 0){
             Toast('购买成功')
             localStorage.setItem('intentionId', res.data);
-            this.$router.push({ path: '/payResult' })
+            this.$router.replace({ path: '/payResult' })
           }else {
             this.success = false
             Toast(res.msg)
@@ -180,7 +180,7 @@ export default {
                     // 使用以上方式判断前端返回,微信团队郑重提示：
                     // res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
                     Toast.success('购买成功！')
-                    self.$router.push({ path: '/payResult' })
+                    self.$router.replace({ path: '/payResult' })
                   }
                   else if(res.err_msg == "get_brand_wcpay_request:cancel" ){
                     // 使用以上方式判断前端返回,微信团队郑重提示：

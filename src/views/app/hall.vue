@@ -177,6 +177,12 @@
 		      	hasBind: false
 			}
 		},
+		props: {
+			reload: {
+				default: 0,
+				type: Number
+			}
+		},
 		watch: {
 			showFilter(val) {
 				if(val) {
@@ -184,6 +190,10 @@
 				}else {
 					this.showBanner = this.showBanner_;
 				}
+			},
+			reload(newVal, oldVal) {
+
+				newVal !== oldVal && this.getClueList();
 			}
 		},
 		computed: {
@@ -228,18 +238,18 @@
 				api.carouselList({}).then(res => {
 					if(res.code == 0) {
 						this.messageList = res.data.items;
-						this.$nextTick(() => {
-						    // 消息轮播
-						    new Swiper('.swiper-container2', {
-						    	direction: 'vertical',
-						      	autoplay: {
-						        	delay: 2500,
-						        	disableOnInteraction: false,
-						      	},
-						      	loop : true,
-						    });
-						})
 					}
+					this.$nextTick(() => {
+					    // 消息轮播
+					    new Swiper('.swiper-container2', {
+					    	direction: 'vertical',
+					      	autoplay: {
+					        	delay: 2500,
+					        	disableOnInteraction: false,
+					      	},
+					      	loop : true,
+					    });
+					})
 				})
 			},
 			getClueList(more) {

@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="">
     <keep-alive :include="keepAlive">
-      <router-view />
+      <router-view :reload="getData" />
     </keep-alive>
     <div class="tab" :class="{tab_bottom: isIphoneX}" v-show="tabName.includes($route.name)">
       <div class="tab_item" @click="tabClick('hall')">
@@ -25,12 +25,15 @@ export default {
   data () {
     return {
       keepAlive: ['login', 'clue', 'hall', 'mine'],
-      tabName: ['hall', 'clue', 'mine']
+      tabName: ['hall', 'clue', 'mine'],
+      getData: 0
     }
   },
   watch: {
-    '$route.name': function(val) {
-      
+    '$route.name': function(newVal, oldVal) {
+      if(newVal == 'hall' && oldVal == 'detail') {
+        this.getData += 1;
+      }
     }
   },
   computed: {

@@ -180,4 +180,9 @@ export default {
   wechatLogin (params) {
     return fetchGet('/wechat/login', params)
   },
+
+  //认证详情
+  authenticationInfo (params) {
+    return fetchGet('/merchant-service/authenticationInfo', params)
+  },
 }

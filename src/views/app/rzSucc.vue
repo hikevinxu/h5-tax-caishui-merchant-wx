@@ -27,6 +27,7 @@
 </template>
 
 <script>
+	import api from '@/api/api'
 	export default {
 		name: '',
 		data() {
@@ -41,10 +42,14 @@
 
 		},
 		methods: {
+			getData() {
+				api.authenticationInfo({}).then(res => {
 
+				})
+			}
 		},
 		created() {
-
+			this.getData();
 		},
 		mounted() {
 

@@ -77,7 +77,7 @@
 						<div :class="`intention_item_status intention_item_status${item.status}`">{{statusList[item.status]['name']}}</div>
 					</div>
 					<div class="intention_item_info">询问类目：{{item.intention}}</div>
-					<div class="intention_item_info">需求区域：{{item.area}}</div>
+					<div class="intention_item_info">需求区域：{{areaHandle(item.area)}}</div>
 					<div class="intention_item_info" v-if="item.customerIntention">客户意向：{{item.customerIntention}}</div>
 					<div class="intention_item_bottom">
 						<div class="intention_item_date">{{item.createTime}}</div>
@@ -390,6 +390,14 @@
 					this.showFilter = false;
 					this.filterType = '';
 				}, 100);
+			},
+			areaHandle(area) {
+				if(area.indexOf('-') > -1) {
+					let list = area.split('-').reverse();
+					return `${list[1]}-${list[0]}`
+				}else {
+					return area;
+				}
 			},
 			goDetail(item) {
 				this.$router.push({

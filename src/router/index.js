@@ -14,12 +14,20 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/inquiryDetail'
+      redirect: '/hall'
     },
     {
       path: '/bindPhone',
       name: 'bindPhone',
       component: () => import('../views/Login/bindPhone.vue'),
+      meta: {
+        title: '商户绑定'
+      }
+    },
+    {
+      path: '/init',
+      name: 'init',
+      component: () => import('../views/Login/init.vue'),
       meta: {
         title: '商户绑定'
       }
@@ -152,6 +160,46 @@ export default new Router({
       component: () => import('../views/app/detail.vue'),
       meta: {
         title: '咨询详情'
+      }
+    },
+    {
+      path: '/renzheng',
+      name: 'renzheng',
+      component: () => import('../views/app/renzheng.vue'),
+      meta: {
+        title: '商户认证'
+      }
+    },
+    {
+      path: '/rzResult',
+      name: 'rzResult',
+      component: () => import('../views/app/rzResult.vue'),
+      meta: {
+        title: '商户认证'
+      }
+    },
+    {
+      path: '/changePhone',
+      name: 'changePhone',
+      component: () => import('../views/app/changePhone.vue'),
+      meta: {
+        title: '更换手机号'
+      }
+    },
+    {
+      path: '/unlinkWechat',
+      name: 'unlinkWechat',
+      component: () => import('../views/app/unlinkWechat.vue'),
+      meta: {
+        title: '解绑微信'
+      }
+    },
+    {
+      path: '/bindLogin',
+      name: 'bindLogin',
+      component: () => import('../views/Login/bindLogin.vue'),
+      meta: {
+        title: '自动登录中'
       }
     }
   ],

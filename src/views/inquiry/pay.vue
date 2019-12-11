@@ -122,6 +122,10 @@ export default {
             Toast('购买成功')
             localStorage.setItem('intentionId', res.data);
             this.$router.push({ path: '/payResult' })
+          }else if(res.code == 20001) {
+            this.success = false
+            Toast(res.msg)
+            this.$router.back()
           }else {
             this.success = false
             Toast(res.msg)
@@ -191,6 +195,10 @@ export default {
                     self.payLoading = false
                   }
                 })
+              }else if(res.code == 20001) {
+                this.success = false
+                Toast(res.msg)
+                this.$router.back()
               }else {
                 this.success = false
                 Toast(res.msg)

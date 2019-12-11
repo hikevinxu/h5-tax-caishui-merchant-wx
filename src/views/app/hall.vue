@@ -94,6 +94,7 @@
 		        </div>
 			</div>
 		</div>
+		<confirm :show.sync="showConfirm" :content="content" @cancel="showConfirm = false" @confirm="goRZ"></confirm>
 	</div>
 </template>
 
@@ -103,12 +104,20 @@
 	import api from '@/api/api'
 	import { fetchAppGet } from '@/api/axios'
 	import { Toast, Button, Loading, Swipe, SwipeItem } from 'vant'
+	import Confirm from '@/components/confirm'
 	Vue.use(Loading);
 	Vue.use(Swipe).use(SwipeItem);
 	export default {
 		name: 'hall',
+		components: {
+			Confirm
+		},
 		data() {
 			return {
+				renzheng: false, // 是否已认证
+				isLogin: Boolean(localStorage.getItem('accessToken')), // 是否已登录
+				showConfirm: false, // 确认弹窗
+				content: '',
 				imgList: [],
 				userNum: 0,
 				typeNum: 0,
@@ -294,6 +303,15 @@
 					}
 				})
 			},
+			applyStatus() {
+				api.applyStatus({}).then(res => {
+					if(res.code == 0) {
+						this.status = res.data.status;
+						this.renzheng = res.data.status == 103;
+						localStorage.setItem('status', res.data.status);
+					}
+				})
+			},
 			clickBanner(item) {
 				location.href = item.adValue;
 			},
@@ -402,6 +420,16 @@
 				}, 100);
 			},
 			goDetail(item) {
+				if(!this.isLogin) {
+					this.content = '您还未登录，登录后方可查看订单';
+					this.showConfirm = true;
+					return false;
+				}
+				if(!this.renzheng) {
+					this.content = '您还未进行商户认证，认证后方可查看订单';
+					this.showConfirm = true;
+					return false;
+				}
 				this.$router.push({
 					path: '/detail',
 					query: {
@@ -411,6 +439,26 @@
 					}
 				})
 			},
+			// 跳转认证
+			goRZ() {	
+				if(!this.isLogin) {
+					location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=https://wb.caishuiyu.com/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect'
+				}else {
+					if(this.status < 102) {
+						this.$router.push({
+							path: '/renzheng',
+						})
+					}else if(this.status == 103) {
+						this.$router.push({
+							path: '/rzSucc',
+						})
+					}else {
+						this.$router.push({
+							path: '/rzResult',
+						})
+					}
+				}
+			}
 		},
 		created() {
 			if(localStorage.getItem('merchant')) {
@@ -420,6 +468,7 @@
 				this.getClueList();
 				this.getCityList();
 				this.getServeList();
+				this.applyStatus();
 		    }else {
 		      	let params = {
 		        	code: this.$route.query.code
@@ -444,6 +493,7 @@
 							this.getClueList();
 							this.getCityList();
 							this.getServeList();
+							this.applyStatus();
 		          		}
 		        	}
 		      	})
@@ -682,7 +732,7 @@
 			}
 			.intention {
 				// margin-top: 96px;
-				padding: 12px 12px;
+				padding: 12px;
 				box-sizing: border-box;
 				width: 100%;
 				background: #f5f5f5;

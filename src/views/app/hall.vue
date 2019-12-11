@@ -68,8 +68,8 @@
 					</div>
 				</div>
 			</div>
-			<div class="intention" :style="{'padding-bottom': isIphoneX ? '32px' : '12px'}" v-show="clueList.length > 0">
-				<div class="intention_item" v-for="item in clueList" @click="goDetail(item)">
+			<div class="intention" :class="{intention_top: !showBanner}" :style="{'padding-bottom': isIphoneX ? '32px' : '12px'}" v-show="clueList.length > 0">
+				<div class="intention_item" v-for="(item, index) in clueList" :key="item.id" v-show="index < 4" @click="goDetail(item)">
 					<img class="intention_item_type" v-if="item.recommendTag" :src="require(`@/assets/label-${item.recommendTag}@3x.png`)">
 					<div class="intention_item_detail">查看详情</div>
 					<div class="intention_item_top">

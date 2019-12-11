@@ -4,7 +4,7 @@
       <div class="inquiryDetail_top_text">询价单信息</div>
       <div :class="`inquiryDetail_top_type inquiryDetail_top_type${data.recommendTag}`" v-if="data.recommendTag">{{typeList[data.recommendTag - 1].name}}</div>
       <div style="flex: 1"></div>
-      <img class="inquiryDetail_top_icon" :src="require(`@/assets/deal-${data.status}@3x.png`)">
+      <img class="inquiryDetail_top_icon" v-if="data.status" :src="require(`@/assets/deal-${data.status}@3x.png`)">
       <div :class="`inquiryDetail_top_status inquiryDetail_top_status${data.status}`">{{statusList[data.status]}}</div>
     </div>
     <div class="inquiryData">
@@ -64,8 +64,8 @@
     </div>
     <div class="pay_bottom" v-if="data.status == 0">
       <div class="pay_bottom_dw">¥</div>
-      <div class="pay_bottom_price">{{data.price || 100}}</div>
-      <div class="pay_bottom_oldPrice">原价：¥200</div>
+      <div class="pay_bottom_price">{{data.price}}</div>
+      <div class="pay_bottom_oldPrice">原价：¥ {{data.originPrice}}</div>
       <div class="pay_bottom_icon">
         <p>限时特惠</p>
       </div>

@@ -117,15 +117,13 @@ export default {
           clueId: this.$route.query.intentionId,
           price: this.$route.query.price,
         }
+        console.log(222);
         api.purchaseClue(data).then(res => {
+          console.log(res.code)
           if(res.code == 0){
             Toast('购买成功')
             localStorage.setItem('intentionId', res.data);
             this.$router.push({ path: '/payResult' })
-          }else if(rec.code == 20001) {
-            this.success = false
-            Toast(res.msg)
-            this.$router.back();
           }else {
             this.success = false
             Toast(res.msg)
@@ -133,6 +131,9 @@ export default {
         })
         .catch(err => {
           Toast(err.data.msg)
+          if(err.data.code == 20001) {
+            this.$router.back();
+          }
         })
       }else {
         let self = this;
@@ -195,7 +196,7 @@ export default {
                     self.payLoading = false
                   }
                 })
-              }else if(rec.code == 20001) {
+              }else if(res.code == 20001) {
                 this.success = false
                 Toast(res.msg)
                 this.$router.back();

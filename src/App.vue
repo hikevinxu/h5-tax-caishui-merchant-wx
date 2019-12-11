@@ -24,7 +24,7 @@
 export default {
   data () {
     return {
-      keepAlive: ['login', 'clue', 'hall', 'mine'],
+      keepAlive: ['login', 'hall', 'mine'],
       tabName: ['hall', 'clue', 'mine'],
       getData: 0
     }
@@ -32,7 +32,7 @@ export default {
   watch: {
     '$route.name': {
       handler(newVal, oldVal) {
-        if(newVal == 'hall' && oldVal == 'detail') {
+        if(newVal == 'hall') {
           this.getData += 1;
         }
         if(newVal == 'feedback' && this.$route.query.from == 'payResult') {

@@ -179,6 +179,14 @@ export default new Router({
       }
     },
     {
+      path: '/rzSucc',
+      name: 'rzSucc',
+      component: () => import('../views/app/rzSucc.vue'),
+      meta: {
+        title: '商户认证'
+      }
+    },
+    {
       path: '/changePhone',
       name: 'changePhone',
       component: () => import('../views/app/changePhone.vue'),

@@ -16,12 +16,12 @@
 			</div>
 			<div class="content_img">
 				<div class="idcrad_box">
-					<div class="idcrad_delete" v-show="this.img1" @click="deleteImg('1')">
+					<div class="idcrad_delete" v-show="fileUrl1" @click="deleteImg('1')">
 						<img src="@/assets/close.png">
 					</div>
-					<div class="idcrad_default_img" v-if="!this.img1"></div>
+					<div class="idcrad_default_img" v-if="!img1"></div>
 					<img class="idcrad_img" :src="img1" v-else>
-					<input class="idcard_input" id="file" type="file" accept="image/*" capture='camera' @change="getFile1">
+					<input class="idcard_input" id="file" type="file" accept="image/*" @change="getFile1">
 				</div>
 				<div class="idcrad_default_text">营业执照</div>
 			</div>
@@ -30,12 +30,12 @@
 		<div class="content_info">
 			<div class="content_img">
 				<div class="idcrad_box">
-					<div class="idcrad_delete" v-show="this.img2" @click="deleteImg('2')">
+					<div class="idcrad_delete" v-show="img2" @click="deleteImg('2')">
 						<img src="@/assets/close.png">
 					</div>
-					<div class="idcrad_default_img" v-if="!this.img2"></div>
+					<div class="idcrad_default_img" v-if="!img2"></div>
 					<img class="idcrad_img" :src="img2" v-else>
-					<input class="idcard_input" type="file" accept="image/*" capture='camera' value="file" @change="getFile2">
+					<input class="idcard_input" type="file" accept="image/*" value="file" @change="getFile2">
 				</div>
 				<div class="idcrad_default_text">法人手持身份证</div>
 			</div>
@@ -45,7 +45,7 @@
 	        <img class="check" src="@/assets/checkbox_off.png" v-else>
 	        <span class="argument_text">已阅读并同意<span @click.stop="goAgreement">《用户服务协议》</span></span>
 	    </p>
-	    <div class="submit_btn" @click="submit">提交申请</div>
+	    <div class="submit_btn" :class="{submit_btn_no: !canRz}" @click="submit">提交申请</div>
 	</div>
 </template>
 
@@ -66,13 +66,16 @@
 				name: '',
 				code: '',
 				fileUrl1: '',
+				fileUrl2: ''
 			}
 		},
 		watch: {
 
 		},
 		computed: {
-
+			canRz() {
+				return this.fileUrl1 && this.name && this.code && this.fileUrl2;
+			}
 		},
 		methods: {
 			// 获取文件
@@ -159,21 +162,23 @@
 			    })
 			},
 			submit() {
-				if(!this.fileUrl1) {
-					Toast('请先上传营业执照');
-					return ;
-				}
-				if(!this.name) {
-					Toast('请先填写机构名称');
-					return ;
-				}
-				if(!this.code) {
-					Toast('请先填写社会信用代码');
-					return ;
-				}
-				if(!this.fileUrl1) {
-					Toast('请先上传法人手持身份证');
-					return ;
+				if(!this.canRz) {
+					if(!this.fileUrl1) {
+						Toast('请先上传营业执照');
+						return ;
+					}
+					if(!this.name) {
+						Toast('请先填写机构名称');
+						return ;
+					}
+					if(!this.code) {
+						Toast('请先填写社会信用代码');
+						return ;
+					}
+					if(!this.fileUrl2) {
+						Toast('请先上传法人手持身份证');
+						return ;
+					}
 				}
 				let data = {
 					businessLicenseImg: this.fileUrl1,
@@ -351,6 +356,9 @@
 			color: #FFFFFF;
 			text-align: center;
 			line-height: 36px;
+		}
+		.submit_btn_no {
+			background: #ccc;
 		}
 	}
 </style>

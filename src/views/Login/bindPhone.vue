@@ -76,6 +76,21 @@ export default {
           }
         })
       }
+    },
+    phone(val) {
+      if(val.length > 11) {
+        this.phone = this.phone.slice(0, 11);
+      }
+    },
+    code(val) {
+      if(val.length > 4) {
+        this.code = this.code.slice(0, 4);
+      }
+    },
+    password(val) {
+      if(val.length > 16) {
+        this.password = this.password.slice(0, 16);
+      }
     }
   },
   computed: {

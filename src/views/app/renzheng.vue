@@ -66,7 +66,9 @@
 				name: '',
 				code: '',
 				fileUrl1: '',
-				fileUrl2: ''
+				fileUrl2: '',
+				address: '',
+				contactName: ''
 			}
 		},
 		watch: {
@@ -127,6 +129,8 @@
 							self.fileUrl1 = res.data.fileId;
 							self.name = res.data.data['单位名称'].words;
 							self.code = res.data.data['社会信用代码'].words;
+							self.address = res.data.data['地址'].words;
+							self.contactName = res.data.data['法人'].words;
 						}else {
 							Toast(res.msg);
 						}
@@ -150,13 +154,6 @@
 					success(res) {
 						if(res.code == 0) {
 							self.fileUrl2 = res.data[0].fileId;
-							// self.tipShow = true;
-						}else {
-							// this.$message({
-							// 	text: res.msg,
-							// 	type: 'warn'
-							// })
-							// this.isSubmit = false;
 						}
 					}
 			    })
@@ -184,7 +181,9 @@
 					businessLicenseImg: this.fileUrl1,
 					idCardImg: this.fileUrl2,
 					organization: this.name,
-					socialCreditCode: this.code
+					socialCreditCode: this.code,
+					address: this.address,
+					contactName: this.contactName
 				}
 				api.apply(data).then(res => {
 					if(res.code == 0) {

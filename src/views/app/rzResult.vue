@@ -27,7 +27,7 @@
 				return this.$route.query.status == 102 ? ' 商户认证申请提交成功' : '商户认证申请审核失败';
 			},
 			rz_text2() {
-				return this.$route.query.status == 102 ? ' 1个工作内将通知您审核结果' : '因商家提供资料与实际不符，审核失败</br>请重新提交，感谢您的合作';
+				return this.$route.query.status == 102 ? ' 1个工作日内将通知您审核结果' : '因商家提供资料与实际不符，审核失败</br>请重新提交，感谢您的合作';
 			},
 		},
 		methods: {

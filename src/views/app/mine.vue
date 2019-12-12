@@ -119,13 +119,22 @@
 				this.$router.push('/unlinkWechat')
 			},
 			goRz() {
-				let path = this.status < 102 ? '/renzheng' : '/rzResult';
-				this.$router.push({
-					path,
-					query: {
-						status: this.status
-					}
-				});
+				if(this.status == 102 || this.status == 999) {
+					this.$router.push({
+						path: '/rzResult',
+						query: {
+							status: this.status
+						}
+					});
+				}else if(this.status < 102) {
+					this.$router.push({
+						path: '/renzheng'
+					})
+				}else {
+					this.$router.push({
+						path: '/rzSucc'
+					})
+				}
 			}
 		},
 		created() {

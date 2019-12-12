@@ -1,11 +1,7 @@
 <template>
   <div id="app" class="">
     <keep-alive :include="keepAlive">
-<<<<<<< HEAD
       <router-view :reload="getData" />
-=======
-      <router-view  :reload="getData"/>
->>>>>>> master
     </keep-alive>
     <div class="tab" :class="{tab_bottom: isIphoneX}" v-show="tabName.includes($route.name)">
       <div class="tab_item" @click="tabClick('hall')">

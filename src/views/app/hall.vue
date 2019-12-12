@@ -315,7 +315,11 @@
 				})
 			},
 			clickBanner(item) {
-				location.href = item.adValue;
+				sa.track('WebCheckOnTheBanner', {
+					id: item.id
+				}, () => {
+					location.href = item.adValue;
+				})
 			},
 			loadingMore() {
 				this.loading_more = true;

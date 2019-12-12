@@ -24,7 +24,7 @@
 export default {
   data () {
     return {
-      keepAlive: ['login', 'hall', 'mine'],
+      keepAlive: ['login', 'hall', 'bindPhone'],
       tabName: ['hall', 'clue', 'mine'],
       getData: 0
     }

@@ -6,7 +6,7 @@
         <img src="@/assets/ic_form_cellnum.png">
         <input @focus="phoneFocus=true" @blur="scrollTop1" ref="login_input" type="number" maxlength="11" v-model="phone" placeholder="账号使用手机号" />
       </div>
-      <div class="authenticationInput" v-if="isPhone && !isRegistered">
+      <div class="authenticationInput">
         <img src="@/assets/ic_form_code.png">
         <input @focus="codeFocus=true" @blur="scrollTop3" type="number" maxlength="4" v-model="code" placeholder="验证码" />
         <div class="line1"></div>
@@ -87,6 +87,13 @@ export default {
     }
   },
   created () {
+
+    this.phone = localStorage.getItem('phone') || '';
+    this.code = localStorage.getItem('code') || '';
+    this.password = localStorage.getItem('password') || '';
+    // localStorage.removeItem('phone')
+    localStorage.removeItem('code')
+    localStorage.removeItem('password')
     let code = this.$route.query.code
       if(code){
         let params = {
@@ -151,6 +158,9 @@ export default {
       this.isAgreement = !this.isAgreement;
     },
     goAgreement() {
+      localStorage.setItem('phone', this.phone);
+      localStorage.setItem('code', this.code);
+      localStorage.setItem('password', this.password);
       this.$router.push('/agreement');
     },
     binding () {
@@ -186,7 +196,7 @@ export default {
           if (res.code == 0) {
             Toast('绑定成功')
             localStorage.setItem('accessToken', res.data.accessToken);
-            this.showConfirm();
+            this.showConfirm = true;
             // this.$router.push({ path: '/success' })
           }else {
             Toast(res.msg)
@@ -367,6 +377,7 @@ export default {
         flex-shrink: 0;
       }
       input {
+        width: 169px;
         margin-left: 12px;
         box-sizing: border-box;
         font-size: 14px;

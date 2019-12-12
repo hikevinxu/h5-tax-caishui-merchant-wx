@@ -1,11 +1,11 @@
 <template>
 	<div class="container">
-		<img class="phone_icon" src="@/assets/change-phone.png">
+		<img class="phone_icon" src="@/assets/unbundle-wechat.png">
 		<div class="phone_item">
 			<div class="phone_key">当前绑定微信号</div>
 			<div class="phone_value">{{wechatCode}}</div>
 		</div>
-		<div class="submit_btn" @click="confirmChange">确认修改</div>
+		<div class="submit_btn" @click="confirmChange">解绑微信</div>
 		<confirm :show.sync="showConfirm" content="您确认解绑当前微信吗？" @cancel="showConfirm = false" @confirm="confirm"></confirm>
 	</div>
 </template>
@@ -61,15 +61,15 @@
 
 <style lang="scss" scoped>
 	.container {
-		padding-top: 32px;
+		padding-top: 48px;
 		min-height: 100vh;
 		background: #f5f5f5;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		.phone_icon {
-			width: 52px;
-			height: 80px;
+			width: 68px;
+			height: 55px;
 		}
 		.phone_item {
 			margin-top: 32px;

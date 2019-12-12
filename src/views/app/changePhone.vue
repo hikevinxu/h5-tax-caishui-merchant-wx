@@ -37,7 +37,7 @@
 		},
 		data() {
 			return {
-				phone1: '17865922909',
+				phone1: '',
 				phone2: '',
 				code1: '',
 				code2: '',
@@ -59,6 +59,13 @@
 
 		},
 		methods: {
+			getPhone1() {
+				api.authenticationInfo({}).then(res => {
+					if(res.code == 0) {
+						this.phone1 = res.loginPhone;
+					}
+				})
+			},
 			confirmChange() {
 				if(!this.code1) {
 					Toast('请输入原手机号验证码');
@@ -187,6 +194,7 @@
 			},
 		},
 		created() {
+			this.getPhone1();
 			this.$nextTick(() => {
 				this.setCaptcha();
 			})

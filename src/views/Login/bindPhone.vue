@@ -172,9 +172,6 @@ export default {
       this.isAgreement = !this.isAgreement;
     },
     goAgreement() {
-      localStorage.setItem('phone', this.phone);
-      localStorage.setItem('code', this.code);
-      localStorage.setItem('password', this.password);
       this.$router.push('/agreement');
     },
     binding () {
@@ -212,7 +209,6 @@ export default {
         params.verificationCode = this.code;
         api.registerLogin(params).then(res => {
           if (res.code == 0) {
-            Toast('绑定成功')
             localStorage.setItem('accessToken', res.data.accessToken);
             this.showConfirm = true;
             // this.$router.push({ path: '/success' })
@@ -339,6 +335,12 @@ export default {
         this.inst && this.inst.verify();
       }
     },
+  },
+  beforeRouteLeave(to, from, next) {
+    localStorage.setItem('phone', this.phone);
+    localStorage.setItem('code', this.code);
+    localStorage.setItem('password', this.password);
+    next();
   }
 }
 </script>

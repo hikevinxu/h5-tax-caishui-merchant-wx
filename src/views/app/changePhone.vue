@@ -107,6 +107,7 @@
 					if(res.code == 0) {
 						Toast('更换手机号成功，请重新登录');
 						setTimeout(() => {
+							localStorage.removeItem('accessToken');
 							this.$router.replace('/bindPhone');
 							// location.replace('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=https://wb.caishuiyu.com/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect');
 						}, 1000);

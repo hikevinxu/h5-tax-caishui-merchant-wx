@@ -16,16 +16,14 @@ axios.defaults.baseURL = process.env.VUE_APP_API
 // 线上环境地址
 // axios.defaults.baseURL = 'https://merchant-api.caishuiyu.com'
 // 本地环境地址
-// axios.defaults.baseURL = 'http://172.100.8.46:8081'
+// axios.defaults.baseURL = 'http://172.100.8.46:8081'  
 
-// POST传参序列化(添加请求拦截器)
-const accessToken = localStorage.getItem('accessToken')
-// const accessToken = 448
 axios.interceptors.request.use((config) => {
   // 在发送请求之前做某件事
   if (config.method === 'post') {
     // config.data = qs.stringify(config.data)
   }
+  const accessToken = localStorage.getItem('accessToken')
   if (accessToken) {
     // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
     config.headers['Authorization'] = accessToken
@@ -44,12 +42,16 @@ axios.interceptors.response.use((res) => {
     return Promise.reject(res)
   } else if (res.data.code !== 0) {
     let info = '系统异常'
-    console.log(res.data.code);
     switch (res.data.code) {
       case 500:
         return Promise.resolve(res)
       case 10000: 
-        location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/bindLogin&response_type=code&scope=snsapi_base&state=123#wechat_redirect`;
+        if(!localStorage.getItem('accessToken')) {
+          router.push('/bindPhone');
+        }else {
+          location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/bindLogin&response_type=code&scope=snsapi_base&state=123#wechat_redirect`;
+        }
+        
     }
     if(res.data.msg) {
       info = res.data.msg

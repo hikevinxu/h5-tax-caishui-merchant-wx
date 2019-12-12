@@ -119,31 +119,7 @@
 		    }
 		},
 		created() {
-			if(localStorage.getItem('merchant')) {
-				this.getList();
-		    }else {
-		      	let params = {
-		        	code: this.$route.query.code
-		      	}
-		      	api.weixinHasBind(params).then(res => {
-		        	console.log(res)
-		        	if(res.code == 0){
-		          		let openId = res.data.openId
-		          		localStorage.setItem('openId', openId)
-		          		if(res.data.hasBind == false){
-		            		this.hasBind = false
-		            		location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=https://wb.caishuiyu.com/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect'
-		            		// this.$router.push({ path: '/bindPhone' })
-		          		}else {
-		            		this.hasBind = true
-		            		let merchant = res.data.merchant.id
-		            		console.log(merchant)
-		            		localStorage.setItem('merchant', merchant)
-							this.getList();
-		          		}
-		        	}
-		      	})
-		    }
+			
 		},
 		mounted() {
 			console.log(1);

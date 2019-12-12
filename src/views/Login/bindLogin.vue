@@ -35,7 +35,9 @@
 				if(res.code == 0) {
 					Toast('登录成功');
 					localStorage.setItem('accessToken', res.data.accessToken);
-					this.$router.back();
+					setTimeout(() => {
+						this.$router.back();
+					}, 1000);
 				}
 			})
 		},

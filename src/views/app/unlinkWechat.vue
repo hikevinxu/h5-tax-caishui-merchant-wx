@@ -1,10 +1,10 @@
 <template>
 	<div class="container">
 		<img class="phone_icon" src="@/assets/unbundle-wechat.png">
-		<div class="phone_item">
+		<!-- <div class="phone_item">
 			<div class="phone_key">当前绑定微信号</div>
 			<div class="phone_value">{{wechatCode}}</div>
-		</div>
+		</div> -->
 		<div class="submit_btn" @click="confirmChange">解绑微信</div>
 		<confirm :show.sync="showConfirm" content="您确认解绑当前微信吗？" @cancel="showConfirm = false" @confirm="confirm"></confirm>
 	</div>
@@ -41,6 +41,7 @@
 					if(res.code == 0) {
 						Toast('解绑成功，请重新登录');
 						setTimeout(() => {
+							localStorage.removeItem('accessToken');
 							this.$router.replace('/bindPhone');
 							// location.replace(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect`);
 						}, 1000);
@@ -98,7 +99,7 @@
 			}
 		}
 		.submit_btn {
-			margin-top: 24px;
+			margin-top: 40px;
 			width: 328px;
 			height: 36px;
 			background: linear-gradient(135deg, #FFAD71 0%, #FF7F4A 100%);

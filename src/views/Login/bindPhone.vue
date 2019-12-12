@@ -194,6 +194,10 @@ export default {
         Toast('请输入密码！')
         return
       }
+      if (!/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/.test(this.password)) {
+        Toast('密码必须为6～16位数字字母组合！')
+        return
+      }
       if (!this.isAgreement) {
         Toast('请先阅读并同意服务协议！')
         return

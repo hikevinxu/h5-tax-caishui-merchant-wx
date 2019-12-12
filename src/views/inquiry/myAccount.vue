@@ -1,5 +1,5 @@
 <template>
-  <div class="myAccount" >
+  <div class="myAccount" v-show="hasData">
     <div class="balanceContainer">
       <div class="balance">
         <h4>当前账户余额</h4>
@@ -88,6 +88,7 @@ export default {
       noMore: false,
       loading: false,
       loading_more: false,
+      hasData: false
     }
   },
   created () {
@@ -124,6 +125,7 @@ export default {
       api.merchantDetail().then(res => {
         console.log(res)
         if(res.code == 0){
+          this.hasData = true;
           this.data = res.data
           if(!res.data.bonusBalance){
             this.data.bonusBalance = 0

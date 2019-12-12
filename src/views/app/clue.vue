@@ -119,7 +119,7 @@
 		    }
 		},
 		created() {
-			
+			this.getList();
 		},
 		mounted() {
 			console.log(1);

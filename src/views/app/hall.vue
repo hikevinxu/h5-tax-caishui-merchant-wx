@@ -68,7 +68,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="intention" :class="{intention_top: !showBanner}" :style="{'padding-bottom': isIphoneX ? '32px' : '12px'}" v-show="clueList.length > 0">
+			<div class="intention" :class="{intention_top: !showBanner && imgList.length == 0}" :style="{'padding-bottom': isIphoneX ? '32px' : '12px'}" v-show="clueList.length > 0">
 				<div class="intention_item" v-for="(item, index) in clueList" :key="item.id" @click="goDetail(item)">
 					<img class="intention_item_type" v-if="item.recommendTag" :src="require(`@/assets/label-${item.recommendTag}@3x.png`)">
 					<div class="intention_item_detail">查看详情</div>
@@ -77,7 +77,7 @@
 						<div :class="`intention_item_status intention_item_status${item.status}`">{{statusList[item.status]['name']}}</div>
 					</div>
 					<div class="intention_item_info">询问类目：{{item.intention}}</div>
-					<div class="intention_item_info">需求区域：{{item.area}}</div>
+					<div class="intention_item_info">需求区域：{{areaHandle(item.area)}}</div>
 					<div class="intention_item_info" v-if="item.customerIntention">客户意向：{{item.customerIntention}}</div>
 					<div class="intention_item_bottom">
 						<div class="intention_item_date">{{item.createTime}}</div>
@@ -201,8 +201,10 @@
 				}
 			},
 			reload(newVal, oldVal) {
-
-				newVal !== oldVal && this.getClueList();
+				if(newVal !== oldVal) {
+					this.pageNum = 1;
+					this.getClueList();
+				}
 			}
 		},
 		computed: {
@@ -418,6 +420,14 @@
 					this.showFilter = false;
 					this.filterType = '';
 				}, 100);
+			},
+			areaHandle(area) {
+				if(area.indexOf('-') > -1) {
+					let list = area.split('-').reverse();
+					return `${list[1]}-${list[0]}`
+				}else {
+					return area;
+				}
 			},
 			goDetail(item) {
 				if(!this.isLogin) {

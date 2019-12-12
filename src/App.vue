@@ -1,7 +1,11 @@
 <template>
   <div id="app" class="">
     <keep-alive :include="keepAlive">
+<<<<<<< HEAD
       <router-view :reload="getData" />
+=======
+      <router-view  :reload="getData"/>
+>>>>>>> master
     </keep-alive>
     <div class="tab" :class="{tab_bottom: isIphoneX}" v-show="tabName.includes($route.name)">
       <div class="tab_item" @click="tabClick('hall')">
@@ -24,16 +28,39 @@
 export default {
   data () {
     return {
-      keepAlive: ['login', 'clue', 'hall', 'mine'],
+      keepAlive: ['login', 'hall', 'mine'],
       tabName: ['hall', 'clue', 'mine'],
       getData: 0
     }
   },
   watch: {
-    '$route.name': function(newVal, oldVal) {
-      if(newVal == 'hall' && oldVal == 'detail') {
-        this.getData += 1;
-      }
+    '$route.name': {
+      handler(newVal, oldVal) {
+        if(newVal == 'hall') {
+          this.getData += 1;
+        }
+        if(newVal == 'feedback' && this.$route.query.from == 'payResult') {
+          console.log(111);
+          let self = this;
+          let state = {
+            title: "title",
+            url: '#'
+          };
+          window.history.pushState(state, "title", location.href);
+          window.addEventListener("popstate", () => {
+            if(this.$route.name == 'feedback' && this.$route.query.from == 'payResult') {
+              this.$router.push('/clue');
+            }else {
+              return false
+            }
+          }, false);
+        }else {
+          window.removeEventListener("popstate", () => {
+            this.$router.push('/clue');
+          }, false);
+        }
+      },
+      immediate: true
     }
   },
   computed: {

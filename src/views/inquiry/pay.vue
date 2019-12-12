@@ -117,15 +117,17 @@ export default {
           clueId: this.$route.query.intentionId,
           price: this.$route.query.price,
         }
+        console.log(222);
         api.purchaseClue(data).then(res => {
+          console.log(res.code)
           if(res.code == 0){
             Toast('购买成功')
             localStorage.setItem('intentionId', res.data);
-            this.$router.push({ path: '/payResult' })
+            this.$router.replace({ path: '/payResult' })
           }else if(res.code == 20001) {
             this.success = false
             Toast(res.msg)
-            this.$router.back()
+            this.$router.replace({ path: '/payResult' })
           }else {
             this.success = false
             Toast(res.msg)
@@ -133,6 +135,9 @@ export default {
         })
         .catch(err => {
           Toast(err.data.msg)
+          if(err.data.code == 20001) {
+            this.$router.back();
+          }
         })
       }else {
         let self = this;
@@ -151,7 +156,7 @@ export default {
             api.intentionPurchase(data).then(res => {
               if(res.code == 0){
                 Toast('购买成功')
-                this.$router.push({ path: '/payResult' })
+                this.$router.replace({ path: '/payResult' })
               }else {
                 this.success = false
                 Toast(res.data.msg)
@@ -179,7 +184,7 @@ export default {
                     // 使用以上方式判断前端返回,微信团队郑重提示：
                     // res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
                     Toast.success('购买成功！')
-                    self.$router.push({ path: '/payResult' })
+                    self.$router.replace({ path: '/payResult' })
                   }
                   else if(res.err_msg == "get_brand_wcpay_request:cancel" ){
                     // 使用以上方式判断前端返回,微信团队郑重提示：
@@ -198,7 +203,7 @@ export default {
               }else if(res.code == 20001) {
                 this.success = false
                 Toast(res.msg)
-                this.$router.back()
+                this.$router.back();
               }else {
                 this.success = false
                 Toast(res.msg)

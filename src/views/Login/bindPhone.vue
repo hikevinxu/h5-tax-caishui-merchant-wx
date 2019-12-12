@@ -220,7 +220,7 @@ export default {
         api.bindLogin(params).then(res => {
           if (res.code == 0) {
             localStorage.setItem('accessToken', res.data.accessToken);
-            this.$router.push({ path: '/hall' })
+            this.$router.replace({ path: '/hall' })
           }else {
             Toast(res.msg)
           }

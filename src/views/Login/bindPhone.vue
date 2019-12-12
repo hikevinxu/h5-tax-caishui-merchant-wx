@@ -226,9 +226,11 @@ export default {
       }
     },
     cancel() {
+      sa.track('WebMerchantsSettledDialogCancel');
       this.$router.replace('/hall');
     },
     confirm() {
+      sa.track('WebMerchantsSettledDialogConfirm');
       this.$router.replace('/renzheng');
     },
     setCaptcha(){

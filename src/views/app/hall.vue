@@ -94,7 +94,7 @@
 		        </div>
 			</div>
 		</div>
-		<confirm :show.sync="showConfirm" :content="content" @cancel="showConfirm = false" @confirm="goRZ"></confirm>
+		<confirm :show.sync="showConfirm" :content="content" @cancel="cancel" @confirm="goRZ"></confirm>
 	</div>
 </template>
 
@@ -453,11 +453,18 @@
 					}
 				})
 			},
+			cancel() {
+				if(this.isLogin) {
+					sa.track('WebTradingFloorDialogCancel');
+				}
+				this.showConfirm = false;
+			},
 			// 跳转认证
 			goRZ() {	
 				if(!this.isLogin) {
 					location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=https://wb.caishuiyu.com/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect'
 				}else {
+					sa.track('WebTradingFloorConfirmConfirm');
 					if(this.status < 102) {
 						this.$router.push({
 							path: '/renzheng',

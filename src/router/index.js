@@ -21,7 +21,9 @@ export default new Router({
       name: 'bindPhone',
       component: () => import('../views/Login/bindPhone.vue'),
       meta: {
-        title: '商户绑定'
+        title: '商户绑定',
+        saTitle: '入驻&绑定页',
+        saName: 'merchants_settled_binding_page'
       }
     },
     {
@@ -29,7 +31,9 @@ export default new Router({
       name: 'init',
       component: () => import('../views/Login/init.vue'),
       meta: {
-        title: '商户绑定'
+        title: '商户绑定',
+        saTitle: '商家入驻介绍页',
+        saName: 'merchants_settled_page'
       }
     },
     {
@@ -167,7 +171,9 @@ export default new Router({
       name: 'renzheng',
       component: () => import('../views/app/renzheng.vue'),
       meta: {
-        title: '商户认证'
+        title: '商户认证',
+        saTitle: '商家认证',
+        saName: 'merchant_ca_page'
       }
     },
     {
@@ -175,7 +181,9 @@ export default new Router({
       name: 'rzResult',
       component: () => import('../views/app/rzResult.vue'),
       meta: {
-        title: '商户认证'
+        title: '商户认证',
+        saTitle: '商家认证反馈页面',
+        saName: 'merchant_certification_results_page'
       }
     },
     {
@@ -183,7 +191,9 @@ export default new Router({
       name: 'rzSucc',
       component: () => import('../views/app/rzSucc.vue'),
       meta: {
-        title: '商户认证'
+        title: '商户认证',
+        saTitle: '商家资料查看页面',
+        saName: 'merchant_recognition_results_page'
       }
     },
     {
@@ -191,7 +201,9 @@ export default new Router({
       name: 'changePhone',
       component: () => import('../views/app/changePhone.vue'),
       meta: {
-        title: '更换手机号'
+        title: '更换手机号',
+        saTitle: '修改手机号码',
+        saName: 'change_mobile_number_page'
       }
     },
     {
@@ -199,7 +211,9 @@ export default new Router({
       name: 'unlinkWechat',
       component: () => import('../views/app/unlinkWechat.vue'),
       meta: {
-        title: '解绑微信'
+        title: '解绑微信',
+        saTitle: '解绑微信',
+        saName: 'untying_wechat_page'
       }
     },
     {

@@ -21,7 +21,7 @@
 					</div>
 					<div class="idcrad_default_img" v-if="!fileUrl1"></div>
 					<img class="idcrad_img" :src="img1" v-else>
-					<input class="idcard_input" id="file" type="file" accept="image/*" @change="getFile1">
+					<input class="idcard_input" id="file1" type="file" accept="image/*" @change="getFile1">
 				</div>
 				<div class="idcrad_default_text">营业执照</div>
 			</div>
@@ -35,7 +35,7 @@
 					</div>
 					<div class="idcrad_default_img" v-if="!img2"></div>
 					<img class="idcrad_img" :src="img2" v-else>
-					<input class="idcard_input" type="file" accept="image/*" value="file" @change="getFile2">
+					<input class="idcard_input" id="file2" type="file" accept="image/*" value="file" @change="getFile2">
 				</div>
 				<div class="idcrad_default_text">法人手持身份证</div>
 			</div>
@@ -117,9 +117,7 @@
 			deleteImg(index) {
 				this[`img${index}`] = '';
 				this[`fileUrl${index}`] = '';
-				if(index == '1') {
-					document.getElementById("file").value = "";
-				} 
+				document.getElementById(`file${index}`).value = "";
 			},
 			submitImg1() {
 				const formData = new FormData();

@@ -46,14 +46,21 @@
 	        <span class="argument_text">已阅读并同意<span @click.stop="goAgreement">《用户服务协议》</span></span>
 	    </p>
 	    <div class="submit_btn" :class="{submit_btn_no: !canRz}" @click="submit">提交申请</div>
+	    <div class="mask" v-show="showLoading">
+			<van-loading size="30px" vertical></van-loading>
+			<div class="loading_text">正在上传...</div>
+		</div>
 	</div>
 </template>
 
 <script>
+	import Vue from 'vue'
 	import api from '@/api/api'
 	import { baseURL } from '@/api/axios'
 	import $ from 'zhangjia-zepto'
-	import { Toast } from 'vant'
+	import { Loading, Toast } from 'vant';
+
+	Vue.use(Loading);
 	export default {
 		name: 'renzheng',
 		data() {
@@ -69,7 +76,8 @@
 				fileUrl2: '',
 				address: '',
 				contactName: '',
-				isErr: false
+				isErr: false,
+				showLoading: false
 			}
 		},
 		watch: {
@@ -83,6 +91,7 @@
 		methods: {
 			// 获取文件
 			getFile1(e) {
+				this.showLoading = true;
 				console.log(111);
 				let self = this;
 				this.file1 = e.target.files[0];
@@ -95,6 +104,7 @@
 		        };
 			},// 获取文件
 			getFile2(e) {
+				this.showLoading = true;
 				let self = this;
 				this.file2 = e.target.files[0];
 				this.submitImg2();
@@ -126,6 +136,7 @@
 						'Authorization': localStorage.getItem('accessToken'),
 					},
 					success(res) {
+						self.showLoading = false;
 						if(res.code == 0) {
 							self.fileUrl1 = res.data.fileId;
 							self.name = res.data.data['单位名称'].words;
@@ -135,6 +146,10 @@
 						}else {
 							Toast(res.msg);
 						}
+					},
+					fail(err) {
+						this.showLoading = false;
+						Toast(err.data.msg);
 					}
 			    })
 			},
@@ -153,11 +168,16 @@
 						'Authorization': localStorage.getItem('accessToken'),
 					},
 					success(res) {
+						self.showLoading = false;
 						if(res.code == 0) {
 							self.fileUrl2 = res.data[0].fileId;
 						}else {
 							Toast(res.msg);
 						}
+					},
+					fail(err) {
+						this.showLoading = false;
+						Toast(err.data.msg);
 					}
 			    })
 			},
@@ -366,6 +386,28 @@
 		}
 		.submit_btn_no {
 			background: #ccc;
+		}
+		.mask {
+			position: fixed;
+			top: 0;
+			left: 0;
+			bottom: 0;
+			right: 0;
+			z-index: 2000;
+			// padding-top: 25%;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.5);
+			.loading_text {
+				margin-top: 16px;
+				font-family: PingFangSC-Regular;
+		        font-size: 20px;
+		        color: #ffffff;
+		        line-height: 30px;
+			}
 		}
 	}
 </style>

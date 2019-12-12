@@ -19,7 +19,7 @@
 					<div class="idcrad_delete" v-show="fileUrl1" @click="deleteImg('1')">
 						<img src="@/assets/close.png">
 					</div>
-					<div class="idcrad_default_img" v-if="!img1"></div>
+					<div class="idcrad_default_img" v-if="!fileUrl1"></div>
 					<img class="idcrad_img" :src="img1" v-else>
 					<input class="idcard_input" id="file" type="file" accept="image/*" @change="getFile1">
 				</div>
@@ -68,7 +68,8 @@
 				fileUrl1: '',
 				fileUrl2: '',
 				address: '',
-				contactName: ''
+				contactName: '',
+				isErr: false
 			}
 		},
 		watch: {
@@ -154,28 +155,31 @@
 					success(res) {
 						if(res.code == 0) {
 							self.fileUrl2 = res.data[0].fileId;
+						}else {
+							Toast(res.msg);
 						}
 					}
 			    })
 			},
 			submit() {
 				if(!this.canRz) {
-					if(!this.fileUrl1) {
-						Toast('请先上传营业执照');
-						return ;
-					}
-					if(!this.name) {
-						Toast('请先填写机构名称');
-						return ;
-					}
-					if(!this.code) {
-						Toast('请先填写社会信用代码');
-						return ;
-					}
-					if(!this.fileUrl2) {
-						Toast('请先上传法人手持身份证');
-						return ;
-					}
+					return ;
+					// if(!this.fileUrl1) {
+					// 	Toast('请先上传营业执照');
+					// 	return ;
+					// }
+					// if(!this.name) {
+					// 	Toast('请先填写机构名称');
+					// 	return ;
+					// }
+					// if(!this.code) {
+					// 	Toast('请先填写社会信用代码');
+					// 	return ;
+					// }
+					// if(!this.fileUrl2) {
+					// 	Toast('请先上传法人手持身份证');
+					// 	return ;
+					// }
 				}
 				let data = {
 					businessLicenseImg: this.fileUrl1,
@@ -193,8 +197,12 @@
 								status: 102
 							}
 						})
-					}
-				})
+					}else {
+		                Toast(res.msg)
+		            }
+				}).catch(err => {
+	              	Toast(err.data.msg)
+	            })
 			},
 			changeAgree() {
       			this.isAgreement = !this.isAgreement;

@@ -3,22 +3,22 @@
 		<div class="content_info">
 			<div class="content_info_item">
 				<div class="content_info_key">商户名称</div>
-				<div class="content_info_value1">浙江安牛科技有限公司</div>
+				<div class="content_info_value1">{{info.name}}</div>
 			</div>
 			<div class="content_info_item">
 				<div class="content_info_key">负责人</div>
-				<div class="content_info_value1">浙江安牛科技有限公司</div>
+				<div class="content_info_value1">{{info.contactName}}</div>
 			</div>
 			<div class="content_info_item">
 				<div class="content_info_key">商户账号</div>
-				<div class="content_info_value1">浙江安牛科技有限公司</div>
+				<div class="content_info_value1">{{info.contactPhone}}</div>
 			</div>
 		</div>
 		<div class="content_title">账户资质</div>
 		<div class="content_info">
 			<div class="content_img">
 				<div class="idcrad_box">
-					<img class="idcrad_img">
+					<img class="idcrad_img" :src="info.businessLicenseImg">
 				</div>
 				<div class="idcrad_default_text">营业执照</div>
 			</div>
@@ -32,7 +32,7 @@
 		name: '',
 		data() {
 			return {
-
+				info: {}
 			}
 		},
 		watch: {
@@ -44,7 +44,9 @@
 		methods: {
 			getData() {
 				api.authenticationInfo({}).then(res => {
-
+					if(res.code == 0) {
+						this.info = res.data;
+					}
 				})
 			}
 		},

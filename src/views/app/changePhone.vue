@@ -53,7 +53,21 @@
 			}
 		},
 		watch: {
-
+		    phone2(val) {
+		      if(val.length > 11) {
+		        this.phone2 = this.phone2.slice(0, 11);
+		      }
+		    },
+		    code1(val) {
+		      if(val.length > 4) {
+		        this.code1 = this.code1.slice(0, 4);
+		      }
+		    },
+		    code2(val) {
+		      if(val.length > 4) {
+		        this.code2 = this.code2.slice(0, 4);
+		      }
+		    },
 		},
 		computed: {
 

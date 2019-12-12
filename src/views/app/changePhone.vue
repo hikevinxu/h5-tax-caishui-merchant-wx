@@ -62,7 +62,7 @@
 			getPhone1() {
 				api.authenticationInfo({}).then(res => {
 					if(res.code == 0) {
-						this.phone1 = res.loginPhone;
+						this.phone1 = res.data.loginPhone;
 					}
 				})
 			},

@@ -3,7 +3,7 @@
 		<img class="rz_img" :src="status == 102 ? require('@/assets/img_page_complete.png') : require('@/assets/img_page_failed.png')">
 		<div class="rz_text1">{{rz_text1}}</div>
 		<div class="rz_text2" v-show="status == 102">1个工作日内将通知您审核结果</div>
-		<div class="rz_text2" v-show="status == 999">{{failCause}}</div>
+		<div class="rz_text2" v-show="status == 999">因{{failCause}}，审核失败<br/>请重新提交，感谢您的合作</div>
 		<div class="submit_btn" v-if="status != 102" @click="reset">重新提交</div>
 	</div>
 </template>

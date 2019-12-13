@@ -11,14 +11,14 @@ Vue.use(Toast)
 
 // 响应时间
 axios.defaults.timeout = 100000
-// axios.defaults.baseURL = process.env.VUE_APP_API
+axios.defaults.baseURL = process.env.VUE_APP_API
 
 // 测试地址（内网)
 // axios.defaults.baseURL = 'http://tax-caishui-merchant.int.anniu-inc.com'
 // 线上环境地址
 // axios.defaults.baseURL = 'https://merchant-api.caishuiyu.com'
 // 本地环境地址
-axios.defaults.baseURL = 'http://172.100.8.46:8081'  
+// axios.defaults.baseURL = 'http://172.100.8.46:8081'  
 
 axios.interceptors.request.use((config) => {
   // 在发送请求之前做某件事

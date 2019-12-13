@@ -2,18 +2,18 @@
 	<div class="container">
 		<div class="phone_item">
 			<div class="phone_key">原密码</div>
-			<input class="phone_value" ref="login_input2" type="password" placeholder="请输入原密码" v-model="password1">
+			<input class="phone_value" ref="password1" type="password" placeholder="请输入原密码" v-model="password1">
 		</div>
 		<div class="phone_item">
 			<div class="phone_key">新密码</div>
-			<input class="phone_value" ref="login_input2" type="password" placeholder="请输入新密码" v-model="password2">
+			<input class="phone_value" ref="password2" type="password" placeholder="请输入新密码" v-model="password2">
 		</div>
 		<div class="phone_item">
 			<div class="phone_key">确认密码</div>
-			<input class="phone_value" ref="login_input2" type="password" placeholder="请输入重新确认密码" v-model="password3">
+			<input class="phone_value" ref="password3" type="password" placeholder="请输入重新确认密码" v-model="password3">
 		</div>
 		<div class="submit_btn" @click="confirmChange">确认修改</div>
-		<confirm :show.sync="showConfirm" content="您确认更换手机号？" @cancel="showConfirm = false" @confirm="confirm"></confirm>
+		<confirm :show.sync="showConfirm" content="您确认修改密码吗？" @cancel="showConfirm = false" @confirm="confirm"></confirm>
 	</div>
 </template>
 
@@ -61,50 +61,51 @@
 		},
 		methods: {
 			confirmChange() {
-				if(!this.code1) {
-					Toast('请输入原手机号验证码');
-					this.$refs.code_input1.focus();
-					return ;
-				}else if(!/^[0-9]{4}$/.test(this.code1)) {
-					Toast('请输入4位数字验证码');
-					this.$refs.code_input1.focus();
-					return ;
-				}else if(!this.phone2) {
-					Toast('请输入现手机号');
-					this.$refs.login_input2.focus();
-					return ;
-				}else if(!/^1([358][0-9]|4[56789]|6[67]|7[0135678]|9[189])[0-9]{8}$/.test(this.phone2)) {
-					Toast('请输入正确手机号');
-					this.$refs.login_input2.focus();
-					return ;
-				}else if(!this.code2) {
-					Toast('请输入现手机号验证码');
-					this.$refs.code_input2.focus();
-					return ;
-				}else if(!/^[0-9]{4}$/.test(this.code2)) {
-					Toast('请输入4位数字验证码');
-					this.$refs.code_input2.focus();
-					return ;
-				}else {
-					this.showConfirm = true;
+
+				if (this.password1 == '' && this.password1 == undefined) {
+					Toast('请输入原密码！')
+					this.$refs.password1.focus;
+					return
 				}
+				if (!/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/.test(this.password1)) {
+					Toast('原密码错误，密码必须为6～16位数字字母组合！')
+					this.$refs.password1.focus;
+					return
+				}
+				if (this.password2 == '' && this.password2 == undefined) {
+					Toast('请输入新密码！')
+					this.$refs.password2.focus;
+					return
+				}
+				if (!/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/.test(this.password2)) {
+					Toast('新密码错误，密码必须为6～16位数字字母组合！')
+					this.$refs.password2.focus;
+					return
+				}
+				if (this.password3 == '' && this.password3 == undefined) {
+					Toast('请输入确认密码！')
+					this.$refs.password3.focus;
+					return
+				}
+				if (!/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/.test(this.password3)) {
+					Toast('确认密码错误，密码必须为6～16位数字字母组合！')
+					this.$refs.password3.focus;
+					return
+				}
+				this.showConfirm = true;
 			},
 			confirm() {
 				let data = {
-					clientType: "h5",
-					newPhone: this.phone2,
-					newVerificationCode: this.code2,
-					originPhone: this.phone1,
-					originVerificationCode: this.code1,
+					oldPassword: this.password1,
+					newPassword: this.password2,
+					confirmPassword: this.password3
 				}
-				api.changePhone(data).then(res => {
+				api.changePassword(data).then(res => {
 					if(res.code == 0) {
-						Toast('更换手机号成功');
+						Toast('更换密码成功');
+						localStorage.setItem('password', this.password2);
 						setTimeout(() => {
 							this.$router.back();
-							// localStorage.removeItem('accessToken');
-							// this.$router.replace('/bindPhone');
-							// location.replace('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=https://wb.caishuiyu.com/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect');
 						}, 1000);
 					}else {
 						Toast(res.msg)
@@ -116,7 +117,7 @@
 			
 		},
 		mounted() {
-
+			this.$refs.password3.focus;
 		}
 	}
 </script>

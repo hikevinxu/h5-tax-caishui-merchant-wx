@@ -188,6 +188,6 @@ export default {
 
   //修改密码
   changePassword (params) {
-    return fetchGet('/merchant-service/reset', params)
+    return fetchPost('/merchant-service/reset', params)
   },
 }

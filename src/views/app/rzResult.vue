@@ -1,5 +1,5 @@
 <template>
-	<div class="container">
+	<div class="container" v-show="getData">
 		<img class="rz_img" :src="status == 102 ? require('@/assets/img_page_complete.png') : require('@/assets/img_page_failed.png')">
 		<div class="rz_text1">{{rz_text1}}</div>
 		<div class="rz_text2" v-show="status == 102">1个工作日内将通知您审核结果</div>
@@ -15,7 +15,8 @@
 		data() {
 			return {
 				status: '',
-				failCause: ''
+				failCause: '',
+				getData: false
 			}
 		},
 		watch: {
@@ -37,6 +38,7 @@
 			applyStatus() {
 				api.applyStatus({}).then(res => {
 					if(res.code == 0) {
+						this.getData = true;
 						this.status = res.data.status;
 						this.failCause = res.data.failCause;
 					}

@@ -48,11 +48,10 @@ axios.interceptors.response.use((res) => {
         return Promise.resolve(res)
       case 10000: 
         api.registerHasBind(params).then(res => {
-          console.log(res)
           if(res.code == 0){
             localStorage.setItem('openId', res.data.openId)
             if(res.data.hasBind == false){
-              router.push('/bindPhone');
+              router.replace('/bindPhone');
             }else {
               location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/bindLogin&response_type=code&scope=snsapi_base&state=123#wechat_redirect`;
             }

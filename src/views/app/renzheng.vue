@@ -92,10 +92,10 @@
 			// 获取文件
 			getFile1(e) {
 				this.showLoading = true;
-				console.log(111);
 				let self = this;
 				this.file1 = e.target.files[0];
-				this.submitImg1();
+				console.log(this.file1.name);
+				// this.submitImg1();
 				var reads= new FileReader();
 		        reads.readAsDataURL(e.target.files[0]);
 		        reads.onload=function () {
@@ -124,7 +124,7 @@
 				formData.append('files', this.file1);
 				var self = this;
 				$.ajax({
-					url: baseURL + '111/wechat/enterpriseAuth/uploadBusinessLicense11',
+					url: baseURL + '/wechat/enterpriseAuth/uploadBusinessLicense',
 					type: 'post',
 					processData: false,
 					contentType: false,

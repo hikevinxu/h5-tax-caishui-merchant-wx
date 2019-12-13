@@ -49,6 +49,11 @@
 				<div class="mine_bottom_item_text">解绑微信</div>
 				<img class="mine_bottom_item_arrow" src="@/assets/ic_chevron_right_small.png">
 			</div>
+			<!-- <div class="mine_bottom_item" @click="changePassword">
+				<img class="mine_bottom_item_icon" src="@/assets/mine-wechat.png">
+				<div class="mine_bottom_item_text">修改密码</div>
+				<img class="mine_bottom_item_arrow" src="@/assets/ic_chevron_right_small.png">
+			</div> -->
 		</div>
 	</div>
 </template>
@@ -81,7 +86,10 @@
 					if(res.code == 0) {
 						this.status = res.data.status;
 						localStorage.setItem('status', res.data.status);
-					}
+					}else if(res.code == 10000) {
+						console.log(111111);
+			        	location.replace(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect`)
+			        }
 				})
 			},
 			merchantDetail() {
@@ -117,6 +125,9 @@
 			},
 			unlinkWechat() {
 				this.$router.push('/unlinkWechat')
+			},
+			changePassword() {
+				this.$router.push('/changePassword')
 			},
 			goRz() {
 				if(this.status == 102 || this.status == 999) {

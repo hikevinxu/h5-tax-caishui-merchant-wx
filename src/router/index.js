@@ -217,6 +217,16 @@ export default new Router({
       }
     },
     {
+      path: '/changePassword',
+      name: 'changePassword',
+      component: () => import('../views/app/changePassword.vue'),
+      meta: {
+        title: '解绑微信',
+        saTitle: '解绑微信',
+        saName: 'untying_wechat_page'
+      }
+    },
+    {
       path: '/bindLogin',
       name: 'bindLogin',
       component: () => import('../views/Login/bindLogin.vue'),

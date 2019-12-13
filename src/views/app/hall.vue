@@ -445,7 +445,7 @@
 						})
 					}else if(res.code == 10000) {
 						if(!this.hasBind){
-			              	router.replace('/bindPhone');
+			              	this.$router.replace('/bindPhone');
 			            }else {
 			              	location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/bindLogin&response_type=code&scope=snsapi_base&state=123#wechat_redirect`;
 			            }

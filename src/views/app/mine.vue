@@ -1,5 +1,5 @@
 <template>
-	<div class="mine">
+	<div class="mine" v-show="hasData">
 		<div class="mine_top" @click="goRz">
 			<img class="mine_icon" :src="componyInfo.logo ? componyInfo.logo : require('@/assets/profile-photo@3x.png')">
 			<div class="mine_info">
@@ -49,11 +49,11 @@
 				<div class="mine_bottom_item_text">解绑微信</div>
 				<img class="mine_bottom_item_arrow" src="@/assets/ic_chevron_right_small.png">
 			</div>
-			<!-- <div class="mine_bottom_item" @click="changePassword">
+			<div class="mine_bottom_item" @click="changePassword">
 				<img class="mine_bottom_item_icon" src="@/assets/mine-modification.png">
 				<div class="mine_bottom_item_text">修改密码</div>
 				<img class="mine_bottom_item_arrow" src="@/assets/ic_chevron_right_small.png">
-			</div> -->
+			</div>
 		</div>
 	</div>
 </template>
@@ -70,6 +70,7 @@
 			    },
 			    componyInfo: {},
 			    hasBind: false,
+			    hasData: false,
 			    status: '',
 			    statusList: {
 			    	'100': '未认证',
@@ -84,11 +85,11 @@
 			applyStatus() {
 				api.applyStatus({}).then(res => {
 					if(res.code == 0) {
+						this.hasData = true;
 						this.status = res.data.status;
 						localStorage.setItem('status', res.data.status);
 					}else if(res.code == 10000) {
-						this.$router.replace('/bindPhone');
-						// location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect`;
+						location.href.replace(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect`);
 			        }
 				})
 			},

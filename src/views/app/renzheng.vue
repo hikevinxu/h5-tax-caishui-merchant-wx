@@ -95,7 +95,7 @@
 				let self = this;
 				this.file1 = e.target.files[0];
 				console.log(this.file1.name);
-				// this.submitImg1();
+				this.submitImg1();
 				var reads= new FileReader();
 		        reads.readAsDataURL(e.target.files[0]);
 		        reads.onload=function () {

@@ -124,7 +124,7 @@
 				formData.append('files', this.file1);
 				var self = this;
 				$.ajax({
-					url: baseURL + '/wechat/enterpriseAuth/uploadBusinessLicense',
+					url: baseURL + '111/wechat/enterpriseAuth/uploadBusinessLicense11',
 					type: 'post',
 					processData: false,
 					contentType: false,
@@ -153,9 +153,9 @@
 						}
 
 					},
-					fail(err) {
-						this.showLoading = false;
-						Toast(err.data.msg);
+					error(err) {
+						self.showLoading = false;
+						Toast('系统异常');
 					}
 			    })
 			},
@@ -188,9 +188,9 @@
 							}
 						}
 					},
-					fail(err) {
-						this.showLoading = false;
-						Toast(err.data.msg);
+					error(err) {
+						self.showLoading = false;
+						Toast('系统异常');
 					}
 			    })
 			},

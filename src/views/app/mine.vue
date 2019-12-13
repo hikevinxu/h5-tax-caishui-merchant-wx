@@ -49,11 +49,11 @@
 				<div class="mine_bottom_item_text">解绑微信</div>
 				<img class="mine_bottom_item_arrow" src="@/assets/ic_chevron_right_small.png">
 			</div>
-			<div class="mine_bottom_item" @click="changePassword">
+			<!-- <div class="mine_bottom_item" @click="changePassword">
 				<img class="mine_bottom_item_icon" src="@/assets/mine-modification.png">
 				<div class="mine_bottom_item_text">修改密码</div>
 				<img class="mine_bottom_item_arrow" src="@/assets/ic_chevron_right_small.png">
-			</div>
+			</div> -->
 		</div>
 	</div>
 </template>

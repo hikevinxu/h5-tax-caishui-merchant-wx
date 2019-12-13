@@ -205,6 +205,7 @@ export default {
   // height: 100vh;
   display: flex;
   flex-direction: column;
+  background: #fff;
   // padding-bottom: 20px;
   .balanceContainer{
     width: 100%;

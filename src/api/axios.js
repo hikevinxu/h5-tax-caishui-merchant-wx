@@ -48,7 +48,9 @@ axios.interceptors.response.use((res) => {
       case 500:
         return Promise.resolve(res)
       case 10000: 
-        console.log(getParams())
+      if(res.request.responseURL.indexOf('/merchant/apply/status') > -1 && location.pathname == '/hall') {
+        return Promise.resolve(res)
+      }else {
         let params = {
           code: getParams().code
         }
@@ -65,11 +67,7 @@ axios.interceptors.response.use((res) => {
         .catch((error) => {
           console.log(error)
         })
-        // if(!localStorage.getItem('accessToken')) {
-        //   router.push('/bindPhone');
-        // }else {
-        //   location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/bindLogin&response_type=code&scope=snsapi_base&state=123#wechat_redirect`;
-        // }
+      }
     }
     if(res.data.msg) {
       info = res.data.msg

@@ -204,7 +204,6 @@
 				if(newVal !== oldVal) {
 					this.pageNum = 1;
 					this.getClueList();
-					this.applyStatus();
 				}
 			}
 		},
@@ -303,15 +302,6 @@
 				api.serveList({}).then(res => {
 					if(res.code == 0) {
 						this.serveList = res.data;
-					}
-				})
-			},
-			applyStatus() {
-				api.applyStatus({}).then(res => {
-					if(res.code == 0) {
-						this.status = res.data.status;
-						this.renzheng = res.data.status == 103;
-						localStorage.setItem('status', res.data.status);
 					}
 				})
 			},
@@ -435,22 +425,32 @@
 				}
 			},
 			goDetail(item) {
-				if(!this.isLogin) {
-					this.content = '您还未登录，登录后方可查看订单';
-					this.showConfirm = true;
-					return false;
-				}
-				if(!this.renzheng) {
-					this.content = '您还未进行商户认证，认证后方可查看订单';
-					this.showConfirm = true;
-					return false;
-				}
-				this.$router.push({
-					path: '/detail',
-					query: {
-						intentionId: item.id,
-						origin: item.origin,
-						from: 'clues_page'
+				api.applyStatus({}).then(res => {
+					if(res.code == 0) {
+						this.status = res.data.status;
+						this.renzheng = res.data.status == 103;
+						localStorage.setItem('status', res.data.status);
+						if(!this.renzheng) {
+							this.content = '您还未进行商户认证，认证后方可查看订单';
+							this.showConfirm = true;
+							return false;
+						}
+						this.$router.push({
+							path: '/detail',
+							query: {
+								intentionId: item.id,
+								origin: item.origin,
+								from: 'clues_page'
+							}
+						})
+					}else if(res.code == 10000) {
+						if(!this.hasBind){
+			              	router.replace('/bindPhone');
+			            }else {
+			              	location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/bindLogin&response_type=code&scope=snsapi_base&state=123#wechat_redirect`;
+			            }
+					}else {
+						Toast(res.msg);
 					}
 				})
 			},
@@ -461,9 +461,9 @@
 				this.showConfirm = false;
 			},
 			// 跳转认证
-			goRZ() {	
+			goRZ() {
 				if(!this.isLogin) {
-					location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=https://wb.caishuiyu.com/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect'
+					location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect`
 				}else {
 					sa.track('WebTradingFloorConfirmConfirm');
 					if(this.status < 102) {
@@ -489,7 +489,26 @@
 			this.getClueList();
 			this.getCityList();
 			this.getServeList();
-			this.applyStatus();
+			let code = this.$route.query.code
+			if(code){
+				let params = {
+					code: this.$route.query.code
+				}
+				api.registerHasBind(params).then(res => {
+					console.log(res)
+					if(res.code == 0){
+						localStorage.setItem('openId', res.data.openId)
+						if(res.data.hasBind == false){
+							this.hasBind = false
+						}else {
+							this.hasBind = true
+						}
+					}
+				})
+				.catch((error) => {
+					console.log(error)
+				})
+			}
 		},
 		mounted() {
 		    // 监听用户行为判断是否展示banner

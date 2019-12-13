@@ -185,4 +185,9 @@ export default {
   authenticationInfo (params) {
     return fetchGet('/merchant-service/authenticationInfo', params)
   },
+
+  //修改密码
+  changePassword (params) {
+    return fetchGet('/merchant-service/reset', params)
+  },
 }

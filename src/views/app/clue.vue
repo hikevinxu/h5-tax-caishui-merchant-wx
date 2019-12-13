@@ -72,8 +72,6 @@
 			              	this.noMore = false
 			          	}
 			          	this.hasData = true;
-			        }else if(res.code == 10000) {
-			        	location.replace(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect`)
 			        }
 			    })
 			},
@@ -83,7 +81,8 @@
 						this.status = res.data.status;
 						localStorage.setItem('status', res.data.status);
 					}else if(res.code == 10000) {
-			        	location.replace(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect`)
+						this.$router.replace('/bindPhone');
+			        	// location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect`;
 			        }
 				})
 			},

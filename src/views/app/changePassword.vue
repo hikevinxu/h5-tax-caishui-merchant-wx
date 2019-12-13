@@ -31,49 +31,35 @@
 		},
 		data() {
 			return {
-				phone1: '',
-				phone2: '',
-				code1: '',
-				code2: '',
-				codeText1: '获取验证码',
-				codeText2: '获取验证码',
-				isSend1: true,
-				isSend2: true,
+				password1: '',
+				password2: '',
+				password3: '',
 				index: '',
-				time1: null,
-				timer2: null,
 				validate: '',
 				showConfirm: false,
 			}
 		},
 		watch: {
-		    phone2(val) {
-		      if(val.length > 11) {
-		        this.phone2 = this.phone2.slice(0, 11);
-		      }
+		    password1(val) {
+		    	if(val.length > 16) {
+		    		this.password1 = this.password1.slice(0, 16);
+		    	}
 		    },
-		    code1(val) {
-		      if(val.length > 4) {
-		        this.code1 = this.code1.slice(0, 4);
-		      }
+		    password2(val) {
+		    	if(val.length > 16) {
+		    		this.password2 = this.password2.slice(0, 16);
+		    	}
 		    },
-		    code2(val) {
-		      if(val.length > 4) {
-		        this.code2 = this.code2.slice(0, 4);
-		      }
-		    },
+		    password3(val) {
+		    	if(val.length > 16) {
+		    		this.password3 = this.password3.slice(0, 16);
+		    	}
+		    }
 		},
 		computed: {
 
 		},
 		methods: {
-			getPhone1() {
-				api.authenticationInfo({}).then(res => {
-					if(res.code == 0) {
-						this.phone1 = res.data.loginPhone;
-					}
-				})
-			},
 			confirmChange() {
 				if(!this.code1) {
 					Toast('请输入原手机号验证码');
@@ -125,89 +111,9 @@
 					}
 				})
 			},
-			getCode(index){
-				if(!/^1([358][0-9]|4[56789]|6[67]|7[0135678]|9[189])[0-9]{8}$/.test(this[`phone${index}`])) {
-					this.$refs[`login_input${index}`].focus();
-					Toast('请输入正确的手机号后获取')
-				}else {
-					this.index = index;
-					this.inst && this.inst.verify();
-				}
-			},
-			setCaptcha(){
-				getScript('//cstaticdun.126.net/load.min.js',()=>{
-					this.initCaptcha('1');
-					this.initCaptcha('2');
-				})
-			},
-			initCaptcha(index){
-				let self = this
-				initNECaptcha({
-					captchaId: 'ed852fa384a14b579172a3f93ba4c934',
-					element: `#getPhoneCode${index}`,
-					mode: 'bind',
-					width: 320,
-					onVerify: function (err, data) {
-						if(data){
-							self.validate = data.validate
-							self.sendPhoneCode()
-						}
-					}
-				}, function onload (instance) {
-					self.inst = instance
-				}, function onerror (err) {
-					Toast('验证码初始化失败，请刷新页面');
-				})
-			},
-			sendPhoneCode() {
-				let index = this.index
-				if(this[`isSend${index}`]) {
-					let data
-					if(/^1([358][0-9]|4[56789]|6[67]|7[0135678]|9[189])[0-9]{8}$/.test(this[`phone${index}`])) {
-						data = {
-							phone: this[`phone${index}`],
-				            captchaValidate: this.validate,
-				            clientType: 'h5'
-						}
-					}else {
-						Toast('请输入正确的手机号');
-						return false;
-					}
-					let self = this;
-					let methodList = ['sendVerifyOrigin', 'verifyNew'];
-					api[methodList[this.index - 1]](data).then(res => {
-						self.initCaptcha(index);
-						if (res.code == 0) {
-							Toast('发送验证码成功');
-							let seconds = 60;
-							let getCode = function () {
-								if (seconds > 0) {
-									self[`isSend${index}`] = false;
-									self[`codeText${index}`] = seconds + '秒';
-									seconds--;
-								} else {
-									self[`codeText${index}`] = '已发送';
-									clearInterval(self[`timer${index}`]);
-									setTimeout(() => {
-										self[`isSend${index}`] = true;
-										self[`codeText${index}`] = '获取验证码'
-									}, 1000)
-								}
-							}
-							getCode();
-							self[`timer${index}`] = setInterval(getCode, 1000);
-						} else {
-							Toast(res.msg)
-						}
-					})
-				}
-			},
 		},
 		created() {
-			this.getPhone1();
-			this.$nextTick(() => {
-				this.setCaptcha();
-			})
+			
 		},
 		mounted() {
 

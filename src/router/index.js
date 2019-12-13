@@ -221,9 +221,9 @@ export default new Router({
       name: 'changePassword',
       component: () => import('../views/app/changePassword.vue'),
       meta: {
-        title: '解绑微信',
-        saTitle: '解绑微信',
-        saName: 'untying_wechat_page'
+        title: '修改密码',
+        saTitle: '修改密码',
+        saName: 'change_password_page'
       }
     },
     {

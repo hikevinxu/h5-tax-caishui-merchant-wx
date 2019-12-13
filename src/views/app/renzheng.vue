@@ -118,7 +118,7 @@
 				this[`img${index}`] = '';
 				this[`fileUrl${index}`] = '';
 				document.getElementById(`file${index}`).value = "";
-			},
+			},	
 			submitImg1() {
 				const formData = new FormData();
 				formData.append('files', this.file1);
@@ -143,7 +143,15 @@
 							self.contactName = res.data.data['法人'].words;
 						}else {
 							Toast(res.msg);
+							if(res.code == 10000) {
+								if(!localStorage.getItem('accessToken')) {
+									router.push('/bindPhone');
+								}else {
+									location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/bindLogin&response_type=code&scope=snsapi_base&state=123#wechat_redirect`;
+								}
+							}
 						}
+
 					},
 					fail(err) {
 						this.showLoading = false;
@@ -171,6 +179,13 @@
 							self.fileUrl2 = res.data[0].fileId;
 						}else {
 							Toast(res.msg);
+							if(res.code == 10000) {
+								if(!localStorage.getItem('accessToken')) {
+									router.push('/bindPhone');
+								}else {
+									location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/bindLogin&response_type=code&scope=snsapi_base&state=123#wechat_redirect`;
+								}
+							}
 						}
 					},
 					fail(err) {

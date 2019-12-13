@@ -48,7 +48,7 @@
 							this.hasBind = true
 							let merchant = res.data.merchant.id;
 							localStorage.setItem('merchant', merchant)
-							this.$router.replace({ path: '/hall' })
+							location.replace(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/hall&response_type=code&scope=snsapi_base&state=123#wechat_redirect`)
 						}
 					}
 				})

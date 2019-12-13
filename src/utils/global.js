@@ -6,6 +6,26 @@ export let getQueryString = function (name) {
   }
   return null
 }
+
+export const getParams = () => {
+    var str=location.href.replace(/#\//, ''); //取得整个地址栏
+
+    var num=str.indexOf("?") 
+    str=str.substr(num+1); //取得所有参数   stringvar.substr(start [, length ]
+
+    var arr=str.split("&"); //各个参数放到数组里
+    var obj = {};
+    var value, name;
+    for(var i=0;i < arr.length;i++){ 
+        num=arr[i].indexOf("="); 
+        if(num>0){ 
+            name=arr[i].split('=')[0].split('#');
+            value=arr[i].split('=')[1];
+                obj[name] = value;
+        }
+    }
+    return obj
+}
 export let Terminal = {
   // 辨别移动终端类型
   platform : function () {

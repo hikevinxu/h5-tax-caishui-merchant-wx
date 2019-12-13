@@ -5,6 +5,7 @@ import store from '@/store/index'
 // import qs from 'qs'
 import { Toast } from 'vant'
 import api from '@/api/api'
+import { getParams } from '@/utils/global'
 
 Vue.use(Toast)
 
@@ -47,6 +48,10 @@ axios.interceptors.response.use((res) => {
       case 500:
         return Promise.resolve(res)
       case 10000: 
+        console.log(getParams())
+        let params = {
+          code: getParams().code
+        }
         api.registerHasBind(params).then(res => {
           if(res.code == 0){
             localStorage.setItem('openId', res.data.openId)

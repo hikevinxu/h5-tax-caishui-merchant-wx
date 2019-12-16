@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="">
     <keep-alive :include="keepAlive">
-      <router-view />
+      <router-view :reload="getData" />
     </keep-alive>
     <div class="tab" :class="{tab_bottom: isIphoneX}" v-show="tabName.includes($route.name)">
       <div class="tab_item" @click="tabClick('hall')">
@@ -24,13 +24,39 @@
 export default {
   data () {
     return {
-      keepAlive: ['login', 'clue', 'hall', 'mine'],
-      tabName: ['hall', 'clue', 'mine']
+      keepAlive: ['login', 'hall', 'bindPhone'],
+      tabName: ['hall', 'clue', 'mine'],
+      getData: 0
     }
   },
   watch: {
-    '$route.name': function(val) {
-      
+    '$route.name': {
+      handler(newVal, oldVal) {
+        if(newVal == 'hall') {
+          this.getData += 1;
+        }
+        if(newVal == 'feedback' && this.$route.query.from == 'payResult') {
+          console.log(111);
+          let self = this;
+          let state = {
+            title: "title",
+            url: '#'
+          };
+          window.history.pushState(state, "title", location.href);
+          window.addEventListener("popstate", () => {
+            if(this.$route.name == 'feedback' && this.$route.query.from == 'payResult') {
+              this.$router.push('/clue');
+            }else {
+              return false
+            }
+          }, false);
+        }else {
+          window.removeEventListener("popstate", () => {
+            this.$router.push('/clue');
+          }, false);
+        }
+      },
+      immediate: true
     }
   },
   computed: {
@@ -40,9 +66,11 @@ export default {
   },
   methods: {
     tabClick(name) {
-      this.$router.replace({
-        name,
-      })
+      if(this.$route.name != 'name') {
+        this.$router.replace({
+          name,
+        })
+      }
     }
   }
 }
@@ -129,7 +157,8 @@ export default {
       
       
 
-}@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3){
+}
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3){
 
   /*增加头部适配层*/
 
@@ -223,6 +252,8 @@ body {
   text-align: center;
   color: #2c3e50;
   font-size: 16px;
+  min-height: 100vh;
+  background: #fff;
 }
 
 img{

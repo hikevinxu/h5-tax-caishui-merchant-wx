@@ -4,6 +4,8 @@ import router from '@/router/index'
 import store from '@/store/index'
 // import qs from 'qs'
 import { Toast } from 'vant'
+import api from '@/api/api'
+import { getParams } from '@/utils/global'
 
 Vue.use(Toast)
 
@@ -16,19 +18,17 @@ axios.defaults.baseURL = process.env.VUE_APP_API
 // 线上环境地址
 // axios.defaults.baseURL = 'https://merchant-api.caishuiyu.com'
 // 本地环境地址
-// axios.defaults.baseURL = 'http://172.100.8.248:8081'
+// axios.defaults.baseURL = 'http://172.100.8.46:8081'  
 
-// POST传参序列化(添加请求拦截器)
-const merchant = localStorage.getItem('merchant')
-// const merchant = 448
 axios.interceptors.request.use((config) => {
   // 在发送请求之前做某件事
   if (config.method === 'post') {
     // config.data = qs.stringify(config.data)
   }
-  if (merchant) {
+  const accessToken = localStorage.getItem('accessToken')
+  if (accessToken) {
     // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
-    config.headers['Authorization'] = merchant
+    config.headers['Authorization'] = accessToken
   }
   return config
 }, (error) => {
@@ -47,6 +47,28 @@ axios.interceptors.response.use((res) => {
     switch (res.data.code) {
       case 500:
         return Promise.resolve(res)
+      case 10000: 
+      let pathList = ['/hall', '/clue', '/mine'];
+      if(res.request.responseURL.indexOf('/merchant/apply/status') > -1 && pathList.includes(location.pathname)) {
+        return Promise.resolve(res)
+      }else {
+        let params = {
+          code: getParams().code
+        }
+        api.registerHasBind(params).then(res => {
+          if(res.code == 0){
+            localStorage.setItem('openId', res.data.openId)
+            if(res.data.hasBind == false){
+              router.replace('/bindPhone');
+            }else {
+              location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/bindLogin&response_type=code&scope=snsapi_base&state=123#wechat_redirect`;
+            }
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+      }
     }
     if(res.data.msg) {
       info = res.data.msg
@@ -91,7 +113,8 @@ export function fetchGet (url, param) {
   })
 }
 
-let baseURL_ = process.env.VUE_APP_API_
+export const baseURL = axios.defaults.baseURL;
+export const baseURL_ = process.env.VUE_APP_API_;
 
 // 返回一个Promise(发送get请求)
 export function fetchAppGet (url, param) {

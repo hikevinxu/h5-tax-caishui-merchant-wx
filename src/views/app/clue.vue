@@ -18,7 +18,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="consult_none" v-else>
+		<div class="consult_none" v-show="hasData" v-else>
 			<img class="consult_none_icon" src="@/assets/expense-calendar.png">
 			<div class="consult_none_text">暂无线索，赶紧去抢单吧~</div>
 		</div>
@@ -47,6 +47,7 @@
 		      	pageNum: 1,
 		      	total: 0,
 		      	consultList: [],
+		      	hasData: false
 			}
 		},
 		computed: {
@@ -70,8 +71,19 @@
 			          	}else{
 			              	this.noMore = false
 			          	}
+			          	this.hasData = true;
 			        }
 			    })
+			},
+			applyStatus() {
+				api.applyStatus({}).then(res => {
+					if(res.code == 0) {
+						this.status = res.data.status;
+						localStorage.setItem('status', res.data.status);
+					}else if(res.code == 10000) {
+						location.href.replace(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect`);
+			        }
+				})
 			},
 			loadingMore() {
 				this.loading_more = true;
@@ -117,31 +129,8 @@
 		    }
 		},
 		created() {
-			if(localStorage.getItem('merchant')) {
-				this.getList();
-		    }else {
-		      	let params = {
-		        	code: this.$route.query.code
-		      	}
-		      	api.weixinHasBind(params).then(res => {
-		        	console.log(res)
-		        	if(res.code == 0){
-		          		let openId = res.data.openId
-		          		localStorage.setItem('openId', openId)
-		          		if(res.data.hasBind == false){
-		            		this.hasBind = false
-		            		location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=https://wb.caishuiyu.com/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect'
-		            		// this.$router.push({ path: '/bindPhone' })
-		          		}else {
-		            		this.hasBind = true
-		            		let merchant = res.data.merchant.id
-		            		console.log(merchant)
-		            		localStorage.setItem('merchant', merchant)
-							this.getList();
-		          		}
-		        	}
-		      	})
-		    }
+			this.getList();
+			this.applyStatus();
 		},
 		mounted() {
 			console.log(1);
@@ -154,6 +143,7 @@
 		padding: 16px 16px 60px;
 		width: 100%;
 		box-sizing: border-box;
+		background: #fff;
 		.consult_list {
 			width: 100%;
 			.consult_item {

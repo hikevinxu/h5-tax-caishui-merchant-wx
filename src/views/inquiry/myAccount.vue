@@ -1,5 +1,5 @@
 <template>
-  <div class="myAccount" >
+  <div class="myAccount" v-show="hasData">
     <div class="balanceContainer">
       <div class="balance">
         <h4>当前账户余额</h4>
@@ -88,35 +88,38 @@ export default {
       noMore: false,
       loading: false,
       loading_more: false,
+      hasData: false
     }
   },
   created () {
-    if(localStorage.getItem('merchant')) {
-      this.merchantDetail();
-      this.merchantTransactionList();
-    }else {
-      let params = {
-        code: this.$route.query.code
-      }
-      api.weixinHasBind(params).then(res => {
-        console.log(res)
-        if(res.code == 0){
-          this.openId = res.data.openId
-          localStorage.setItem('openId',this.openId)
-          if(res.data.hasBind == false){
-            this.hasBind = false
-            this.$router.push({ path: '/bindPhone' })
-          }else {
-            this.hasBind = true
-            let merchant = res.data.merchant.id
-            console.log(merchant)
-            localStorage.setItem('merchant', merchant)
-            this.merchantDetail();
-            this.merchantTransactionList();
-          }
-        }
-      })
-    }
+    this.merchantDetail();
+    this.merchantTransactionList();
+    // if(localStorage.getItem('merchant')) {
+    //   this.merchantDetail();
+    //   this.merchantTransactionList();
+    // }else {
+    //   let params = {
+    //     code: this.$route.query.code
+    //   }
+    //   api.weixinHasBind(params).then(res => {
+    //     console.log(res)
+    //     if(res.code == 0){
+    //       this.openId = res.data.openId
+    //       localStorage.setItem('openId',this.openId)
+    //       if(res.data.hasBind == false){
+    //         this.hasBind = false
+    //         this.$router.push({ path: '/bindPhone' })
+    //       }else {
+    //         this.hasBind = true
+    //         let merchant = res.data.merchant.id
+    //         console.log(merchant)
+    //         localStorage.setItem('merchant', merchant)
+    //         this.merchantDetail();
+    //         this.merchantTransactionList();
+    //       }
+    //     }
+    //   })
+    // }
   },
   methods: {
     //账户详情
@@ -124,6 +127,7 @@ export default {
       api.merchantDetail().then(res => {
         console.log(res)
         if(res.code == 0){
+          this.hasData = true;
           this.data = res.data
           if(!res.data.bonusBalance){
             this.data.bonusBalance = 0
@@ -201,6 +205,7 @@ export default {
   // height: 100vh;
   display: flex;
   flex-direction: column;
+  background: #fff;
   // padding-bottom: 20px;
   .balanceContainer{
     width: 100%;

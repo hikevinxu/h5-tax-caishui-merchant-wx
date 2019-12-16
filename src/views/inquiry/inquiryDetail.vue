@@ -138,30 +138,30 @@ export default {
       })
       localStorage.setItem('intentionId', intentionId)
     }
-    if(this.$route.query.code) {
-      let params = {
-        code: this.$route.query.code
-      }
-      api.weixinHasBind(params).then(res => {
-        console.log(res)
-        if(res.code == 0){
-          this.openId = res.data.openId
-          localStorage.setItem('openId',this.openId)
-          if(res.data.hasBind == false){
-            this.hasBind = false
-            this.$router.push({ path: '/bindPhone' })
-          }else {
-            this.hasBind = true
-            let merchant = res.data.merchant.id
-            console.log(merchant)
-            localStorage.setItem('merchant', merchant)
-          }
-        }
-      })
-      .catch((error) => {
-          console.log(error)
-      })
-    }
+    // if(this.$route.query.code) {
+    //   let params = {
+    //     code: this.$route.query.code
+    //   }
+    //   api.weixinHasBind(params).then(res => {
+    //     console.log(res)
+    //     if(res.code == 0){
+    //       this.openId = res.data.openId
+    //       localStorage.setItem('openId',this.openId)
+    //       if(res.data.hasBind == false){
+    //         this.hasBind = false
+    //         this.$router.push({ path: '/bindPhone' })
+    //       }else {
+    //         this.hasBind = true
+    //         let merchant = res.data.merchant.id
+    //         console.log(merchant)
+    //         localStorage.setItem('merchant', merchant)
+    //       }
+    //     }
+    //   })
+    //   .catch((error) => {
+    //       console.log(error)
+    //   })
+    // }
   },
   methods: {
     binding () {

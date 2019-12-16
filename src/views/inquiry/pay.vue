@@ -41,7 +41,7 @@
               </div>
             </div>
         </div>
-        <div class="payLine">
+        <div class="payLine" v-if="$route.query.from != 'detail'">
             <div class="label">
               <img src="@/assets/ic_wechat@3x.png" alt="">
               <span>微信支付</span>
@@ -91,7 +91,6 @@ export default {
       this.intentionId = intentionId
     }
     api.merchantDetail().then(res => {
-      console.log(res)
       if(res.code == 0){
         this.data = res.data
         if(!res.data.bonusBalance){
@@ -113,82 +112,112 @@ export default {
       
     },
     pay () {
-      let self = this;
-      let data = {
-        amount: this.$route.query.price,
-        payChannel: 'weixin',
-        payType:  'weixin_jsapi',
-        intentionId: this.$route.query.intentionId
-      }
-      Dialog.confirm({
-        title: '提示',
-        message: '是否确认报价？',
-        confirmButtonColor: '#FF7F4A'
-      }).then(() => {
-        if(this.payType == 'balance') {
-          api.intentionPurchase(data).then(res => {
-            console.log(1111);
-            console.log(res);
-            if(res.code == 0){
-              Toast('购买成功')
-              this.$router.push({ path: '/payResult' })
-            }else {
-              this.success = false
-              console.log(res);
-              Toast(res.msg)  
-            }
-          })
-          .catch(err => {
-            console.log(err);
-            Toast(err.data.msg)
-          })
-        }else {
-          api.intentionCashPurchase(data).then(res => {
-            if(res.code == 0){
-              let paySign = JSON.parse(res.data.paySign)
-              let that = this
-              WeixinJSBridge.invoke(
-              'getBrandWCPayRequest', {
-                "appId": paySign.appId,     //公众号名称，由商户传入     
-                "timeStamp": paySign.timeStamp,         //时间戳，自1970年以来的秒数     
-                "nonceStr": paySign.nonceStr, //随机串     
-                "package": paySign.package,     
-                "signType": paySign.signType,         //微信签名方式：     
-                "paySign": paySign.paySign //微信签名 
-              },
-              function(res){
-                if(res.err_msg == "get_brand_wcpay_request:ok" ){
-                  // 使用以上方式判断前端返回,微信团队郑重提示：
-                  // res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
-                  Toast.success('购买成功！')
-                  self.$router.push({ path: '/payResult' })
-                }
-                else if(res.err_msg == "get_brand_wcpay_request:cancel" ){
-                  // 使用以上方式判断前端返回,微信团队郑重提示：
-                  // res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
-                  Toast.fail('取消购买！')
-                  self.payLoading = false
-                } 
-                else if(res.err_msg == "get_brand_wcpay_request:fail" ){
-                  // 使用以上方式判断前端返回,微信团队郑重提示：
-                  // res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
-                  // getWeiXinConfig()
-                  Toast.fail('购买失败！')
-                  self.payLoading = false
-                }
-              })
-            }else {
-              this.success = false
-              Toast(res.msg)
-            }
-          })
-          .catch(err => {
-            Toast(err.msg)
-          })
+      if(this.$route.query.from == 'detail') {
+        let data = {
+          clueId: this.$route.query.intentionId,
+          price: this.$route.query.price,
         }
-      }).catch(() => {
-        Toast('取消购买')
-      });
+        console.log(222);
+        api.purchaseClue(data).then(res => {
+          console.log(res.code)
+          if(res.code == 0){
+            Toast('购买成功')
+            localStorage.setItem('intentionId', res.data);
+            this.$router.replace({ path: '/payResult' })
+          }else if(res.code == 20001) {
+            this.success = false
+            Toast(res.msg)
+            this.$router.replace({ path: '/payResult' })
+          }else {
+            this.success = false
+            Toast(res.msg)
+          }
+        })
+        .catch(err => {
+          Toast(err.data.msg)
+          if(err.data.code == 20001) {
+            this.$router.back();
+          }
+        })
+      }else {
+        let self = this;
+        let data = {
+          amount: this.$route.query.price,
+          payChannel: 'weixin',
+          payType:  'weixin_jsapi',
+          intentionId: this.$route.query.intentionId
+        }
+        Dialog.confirm({
+          title: '提示',
+          message: '是否确认报价？',
+          confirmButtonColor: '#FF7F4A'
+        }).then(() => {
+          if(this.payType == 'balance') {
+            api.intentionPurchase(data).then(res => {
+              if(res.code == 0){
+                Toast('购买成功')
+                this.$router.replace({ path: '/payResult' })
+              }else {
+                this.success = false
+                Toast(res.data.msg)
+              }
+            })
+            .catch(err => {
+              Toast(err.data.msg)
+            })
+          }else {
+            api.intentionCashPurchase(data).then(res => {
+              if(res.code == 0){
+                let paySign = JSON.parse(res.data.paySign)
+                let that = this
+                WeixinJSBridge.invoke(
+                'getBrandWCPayRequest', {
+                  "appId": paySign.appId,     //公众号名称，由商户传入     
+                  "timeStamp": paySign.timeStamp,         //时间戳，自1970年以来的秒数     
+                  "nonceStr": paySign.nonceStr, //随机串     
+                  "package": paySign.package,     
+                  "signType": paySign.signType,         //微信签名方式：     
+                  "paySign": paySign.paySign //微信签名 
+                },
+                function(res){
+                  if(res.err_msg == "get_brand_wcpay_request:ok" ){
+                    // 使用以上方式判断前端返回,微信团队郑重提示：
+                    // res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+                    Toast.success('购买成功！')
+                    self.$router.replace({ path: '/payResult' })
+                  }
+                  else if(res.err_msg == "get_brand_wcpay_request:cancel" ){
+                    // 使用以上方式判断前端返回,微信团队郑重提示：
+                    // res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+                    Toast.fail('取消购买！')
+                    self.payLoading = false
+                  } 
+                  else if(res.err_msg == "get_brand_wcpay_request:fail" ){
+                    // 使用以上方式判断前端返回,微信团队郑重提示：
+                    // res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+                    // getWeiXinConfig()
+                    Toast.fail('购买失败！')
+                    self.payLoading = false
+                  }
+                })
+              }else if(res.code == 20001) {
+                this.success = false
+                Toast(res.msg)
+                this.$router.back();
+              }else {
+                this.success = false
+                Toast(res.msg)
+              }
+            })
+            .catch(err => {
+              Toast(err.msg)
+            })
+          }
+        }).catch(() => {
+          Toast('取消购买')
+        });
+      }
+      
     },
     reCharge() {
       this.$router.push({ path: '/reCharge' })

@@ -58,17 +58,17 @@ export default {
 
   //充值
   recharge (params) {
-    return fetchPost('/merchant/recharge', params)
+    return fetchPost('/recharge', params)
   },
 
   //自定义充值
   customRecharge (params) {
-    return fetchPost('/merchant/customRecharge', params)
+    return fetchPost('/recharge/custom', params)
   },
 
   //充值套餐
   rechargePackage (params) {
-    return fetchPost('/merchant/rechargePackage', params)
+    return fetchPost('/recharge/package', params)
   },
 
   //轮播列表
@@ -104,5 +104,90 @@ export default {
   //获取app询价单详情
   clueDetail (params) {
     return fetchGet('/clueHall/clueDetail', params)
+  },
+
+  // 线索详情
+  sendPhoneCode (params) {
+    return fetchGet('/clueHall/clueDetail', params)
+  },
+
+  //购买app询价单
+  purchaseClue (params) {
+    return fetchPost('/clueHall/purchaseClue', params)
+  },
+
+  //更换手机号
+  changePhone (params) {
+    return fetchPost('/merchant-service/changePhone', params)
+  },
+
+  //解绑
+  unLinkWechat (params) {
+    return fetchPost('/merchant-service/unBind', params)
+  },
+
+  //绑定登录
+  bindLogin (params) {
+    return fetchPost('/wechat/register/bindLogin', params)
+  },
+
+  // 判断是否注册绑定
+  registerHasBind (params) {
+    return fetchGet('/wechat/register/hasBind', params)
+  },
+
+  // 判断是否注册
+  isRegistered (params) {
+    return fetchGet('/wechat/register/isRegistered', params)
+  },
+
+  // 获取验证码
+  registerVerification (params) {
+    return fetchGet('/wechat/register/registerVerification', params)
+  },
+
+  // 注册登录
+  registerLogin (params) {
+    return fetchPost('/wechat/register/registerLogin', params)
+  },
+
+  // 获取认证状态
+  applyStatus (params) {
+    return fetchGet('/merchant/apply/status', params)
+  },
+
+  // 原始手机号发送验证码
+  sendVerifyOrigin (params) {
+    return fetchPost('/merchant-service/sendVerifyOrigin', params)
+  },
+
+  // 新手机号发送验证码
+  verifyNew (params) {
+    return fetchPost('/merchant-service/verifyNew', params)
+  },
+
+  // 企业认证资料提交
+  apply (params) {
+    return fetchGet('/wechat/enterpriseAuth/apply', params)
+  },
+
+  // 提交重置
+  reset (params) {
+    return fetchGet('/merchant/apply/reset', params)
+  },
+
+  // 已绑定情况下自动登录
+  wechatLogin (params) {
+    return fetchGet('/wechat/login', params)
+  },
+
+  //认证详情
+  authenticationInfo (params) {
+    return fetchGet('/merchant-service/authenticationInfo', params)
+  },
+
+  //修改密码
+  changePassword (params) {
+    return fetchPost('/merchant-service/reset', params)
   },
 }

@@ -42,16 +42,20 @@
 						<div class="filter_item_name" :class="{active: filterType == 'type'}">{{typeText}}</div>
 						<img class="filter_item_icon" :src="filterType == 'type' ? require('@/assets/arrow-up@3x.png') : require('@/assets/arrow-down@3x.png')">
 					</div>
+					<div class="filter_item" @click="filter('status')">
+						<div class="filter_item_name" :class="{active: filterType == 'status'}">{{statusText}}</div>
+						<img class="filter_item_icon" :src="filterType == 'status' ? require('@/assets/arrow-up@3x.png') : require('@/assets/arrow-down@3x.png')">
+					</div>
 				</div>
 				<div class="filter_box" v-show="showFilter" @click.self="closeFilter">
 					<div class="filter_container">
 						<div class="filter_left">
-							<div class="filter_left_item" @click="selectAll">
+							<div class="filter_left_item" :class="{filter_left_item_active: fatherCode === ''}" @click="selectAll">
 								<div class="filter_left_item_icon"></div>
 								<div class="filter_left_item_text">全部</div>
 								<div class="filter_left_item_arrow"></div>
 							</div>
-							<div class="filter_left_item" v-for="item in filterList" :key="item.code" :class="{filter_left_item_active: fatherCode == item.code}" @click="select1(item)">
+							<div class="filter_left_item" v-for="item in filterList" :key="item.code" :class="{filter_left_item_active: fatherCode === item.code}" @click="select1(item)">
 								<div class="filter_left_item_icon"></div>
 								<div class="filter_left_item_text">{{item.name}}</div>
 								<img class="filter_left_item_arrow" src="@/assets/right@3x.png" v-if="item.childs && item.childs.length > 0">
@@ -59,21 +63,21 @@
 							</div>
 						</div>
 						<div class="filter_right">
-							<div class="filter_right_item" v-for="item_ in childs" :key="item_.code" :class="{filter_right_item_active: childCode == item_.code}" @click="select2(item_)">{{item_.name}}</div>
+							<div class="filter_right_item" v-for="item_ in childs" :key="item_.code" :class="{filter_right_item_active: childCode === item_.code}" @click="select2(item_)">{{item_.name}}</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="intention" :style="{'padding-bottom': isIphoneX ? '32px' : '12px'}" v-show="clueList.length > 0">
-				<div class="intention_item" v-for="item in clueList" @click="goDetail(item)">
-					<img class="intention_item_type" :src="require(`@/assets/label-${item.recommendTag}@3x.png`)">
+			<div class="intention" :class="{intention_top: !showBanner && imgList.length == 0}" :style="{'padding-bottom': isIphoneX ? '32px' : '12px'}" v-show="clueList.length > 0">
+				<div class="intention_item" v-for="(item, index) in clueList" :key="item.id" @click="goDetail(item)">
+					<img class="intention_item_type" v-if="item.recommendTag" :src="require(`@/assets/label-${item.recommendTag}@3x.png`)">
 					<div class="intention_item_detail">查看详情</div>
 					<div class="intention_item_top">
 						<div class="intention_item_name">{{item.name}}</div>
-						<div :class="`intention_item_status intention_item_status${item.status}`">{{statusList[item.status]}}</div>
+						<div :class="`intention_item_status intention_item_status${item.status}`">{{statusList[item.status]['name']}}</div>
 					</div>
 					<div class="intention_item_info">询问类目：{{item.intention}}</div>
-					<div class="intention_item_info">需求区域：{{item.area}}</div>
+					<div class="intention_item_info">需求区域：{{areaHandle(item.area)}}</div>
 					<div class="intention_item_info" v-if="item.customerIntention">客户意向：{{item.customerIntention}}</div>
 					<div class="intention_item_bottom">
 						<div class="intention_item_date">{{item.createTime}}</div>
@@ -90,6 +94,7 @@
 		        </div>
 			</div>
 		</div>
+		<confirm :show.sync="showConfirm" :content="content" @cancel="cancel" @confirm="goRZ"></confirm>
 	</div>
 </template>
 
@@ -99,12 +104,20 @@
 	import api from '@/api/api'
 	import { fetchAppGet } from '@/api/axios'
 	import { Toast, Button, Loading, Swipe, SwipeItem } from 'vant'
+	import Confirm from '@/components/confirm'
 	Vue.use(Loading);
 	Vue.use(Swipe).use(SwipeItem);
 	export default {
 		name: 'hall',
+		components: {
+			Confirm
+		},
 		data() {
 			return {
+				renzheng: false, // 是否已认证
+				isLogin: Boolean(localStorage.getItem('accessToken')), // 是否已登录
+				showConfirm: false, // 确认弹窗
+				content: '',
 				imgList: [],
 				userNum: 0,
 				typeNum: 0,
@@ -129,6 +142,21 @@
 						childs: []
 					}
 				],
+				statusList: [
+					{
+						name: '待对接',
+						code: 0,
+						childs: []
+					}, {
+						name: '对接中',
+						code: 1,
+						childs: []
+					}, {
+						name: '已成交',
+						code: 2,
+						childs: []
+					}
+				],
 				fatherItem: {},
 				childs: [],
 				childItem: {},
@@ -138,15 +166,18 @@
 				serveChildCode: '',
 				typeFatherCode: '',
 				typeChildCode: '',
+				statusFatherCode: '',
+				statusChildCode: '',
 				showFilter: false,
-				cityText: '筛选城市',
-				serveText: '筛选服务',
-				typeText: '筛选类型',
+				cityText: '城市',
+				serveText: '服务',
+				typeText: '类型',
+				statusText: '状态',
 				areaCode: '',
 				intentionCode: '',
 				recommendTag: '',
+				statusCode: '',
 				clueList: [],
-				statusList: ['', '对接中', '已成交'],
 				noMore: false,
 		      	loading: false,
 		      	loading_more: false,
@@ -155,12 +186,24 @@
 		      	hasBind: false
 			}
 		},
+		props: {
+			reload: {
+				default: 0,
+				type: Number
+			}
+		},
 		watch: {
 			showFilter(val) {
 				if(val) {
 					this.showBanner = !val;
 				}else {
 					this.showBanner = this.showBanner_;
+				}
+			},
+			reload(newVal, oldVal) {
+				if(newVal !== oldVal) {
+					this.pageNum = 1;
+					this.getClueList();
 				}
 			}
 		},
@@ -206,27 +249,30 @@
 				api.carouselList({}).then(res => {
 					if(res.code == 0) {
 						this.messageList = res.data.items;
-						this.$nextTick(() => {
-						    // 消息轮播
-						    new Swiper('.swiper-container2', {
-						    	direction: 'vertical',
-						      	autoplay: {
-						        	delay: 2500,
-						        	disableOnInteraction: false,
-						      	},
-						      	loop : true,
-						    });
-						})
 					}
+					this.$nextTick(() => {
+					    // 消息轮播
+					    new Swiper('.swiper-container2', {
+					    	direction: 'vertical',
+					      	autoplay: {
+					        	delay: 2500,
+					        	disableOnInteraction: false,
+					      	},
+					      	loop : true,
+					    });
+					})
 				})
 			},
 			getClueList(more) {
+				let recommendList = this.recommendTag !== '' ? [this.recommendTag] : [];
+				let statusList = this.statusCode !== '' ? [this.statusCode] : [];
 				let data = {
 					areaCode: this.areaCode,
 					intentionCode: this.intentionCode,
-					recommendTag: this.recommendTag,
+					recommendList,
+					statusList,
 					pageNum: this.pageNum,
-					pageSize: 10,
+					pageSize: 20,
 				}
 				api.clueList(data).then(res => {
 					if(res.code == 0) {
@@ -260,7 +306,11 @@
 				})
 			},
 			clickBanner(item) {
-				location.href = item.adValue;
+				sa.track('WebCheckOnTheBanner', {
+					id: item.id
+				}, () => {
+					location.href = item.adValue;
+				})
 			},
 			loadingMore() {
 				this.loading_more = true;
@@ -278,7 +328,8 @@
 					let obj = {
 						city: 'areaCode',
 						serve: 'intentionCode',
-						type: 'recommendTag'
+						type: 'recommendTag',
+						status: 'statusCode'
 					}
 					if(!this.showFilter) {
 						this.showBanner_ = this.showBanner;
@@ -299,16 +350,17 @@
 				let obj = {
 					city: 'areaCode',
 					serve: 'intentionCode',
-					type: 'recommendTag'
+					type: 'recommendTag',
+					status: 'statusCode'
 				}
 				this.childItem = {};
 				this.fatherItem = item;
-				this[this.filterType + 'Text'] = item.name;
 				this[obj[this.filterType]] = item.code;
 				this[this.filterType + 'FatherCode'] = item.code
 				if(item.childs.length > 0) {
 					this.childs = item.childs;
 				}else {
+					this[this.filterType + 'Text'] = item.name;
 					this.getClueList();
 					this.childs = [];
 					setTimeout(() => {
@@ -321,7 +373,8 @@
 				let obj = {
 					city: 'areaCode',
 					serve: 'intentionCode',
-					type: 'recommendTag'
+					type: 'recommendTag',
+					status: 'statusCode'
 				}
 				this.childItem = item;
 				this[this.filterType + 'Text'] = item.name;
@@ -336,14 +389,16 @@
 			},
 			selectAll() {
 				let obj = {
-					city: '筛选城市',
-					serve: '筛选服务',
-					type: '筛选类型',
+					city: '城市',
+					serve: '服务',
+					type: '类型',
+					status: '状态',
 				}
 				let obj_ = {
 					city: 'areaCode',
 					serve: 'intentionCode',
-					type: 'recommendTag'
+					type: 'recommendTag',
+					status: 'statusCode'
 				}
 				this[this.filterType + 'Text'] = obj[this.filterType];
 				this[obj_[this.filterType]] = '';
@@ -353,58 +408,107 @@
 				this.serveChildCode = '';
 				this.typeFatherCode = '';
 				this.typeChildCode = '';
+				this.statusFatherCode = '';
+				this.statusChildCode = '';
 				this.getClueList();
 				setTimeout(() => {
 					this.showFilter = false;
 					this.filterType = '';
 				}, 100);
 			},
+			areaHandle(area) {
+				if(area.indexOf('-') > -1) {
+					let list = area.split('-').reverse();
+					return `${list[1]}-${list[0]}`
+				}else {
+					return area;
+				}
+			},
 			goDetail(item) {
-				this.$router.push({
-					path: '/detail',
-					query: {
-						intentionId: item.id,
-						from: 'clues_page'
+				api.applyStatus({}).then(res => {
+					if(res.code == 0) {
+						this.status = res.data.status;
+						this.renzheng = res.data.status == 103;
+						localStorage.setItem('status', res.data.status);
+						if(!this.renzheng) {
+							this.content = '您还未进行商户认证，认证后方可查看订单';
+							this.showConfirm = true;
+							return false;
+						}
+						this.$router.push({
+							path: '/detail',
+							query: {
+								intentionId: item.id,
+								origin: item.origin,
+								from: 'clues_page'
+							}
+						})
+					}else if(res.code == 10000) {
+						if(!this.hasBind){
+			              	this.$router.replace('/bindPhone');
+			            }else {
+			              	location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/bindLogin&response_type=code&scope=snsapi_base&state=123#wechat_redirect`;
+			            }
+					}else {
+						Toast(res.msg);
 					}
 				})
 			},
+			cancel() {
+				if(this.isLogin) {
+					sa.track('WebTradingFloorDialogCancel');
+				}
+				this.showConfirm = false;
+			},
+			// 跳转认证
+			goRZ() {
+				if(!this.isLogin) {
+					location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect`
+				}else {
+					sa.track('WebTradingFloorConfirmConfirm');
+					if(this.status < 102) {
+						this.$router.push({
+							path: '/renzheng',
+						})
+					}else if(this.status == 103) {
+						this.$router.push({
+							path: '/rzSucc',
+						})
+					}else {
+						this.$router.push({
+							path: '/rzResult',
+						})
+					}
+				}
+			}
 		},
 		created() {
-			if(localStorage.getItem('merchant')) {
-				this.getNum();
-				this.getBanner();
-				this.getCarouselList();
-				this.getClueList();
-				this.getCityList();
-				this.getServeList();
-		    }else {
-		      	let params = {
-		        	code: this.$route.query.code
-		      	}
-		      	api.weixinHasBind(params).then(res => {
-		        	console.log(res)
-		        	if(res.code == 0){
-		          		let openId = res.data.openId
-		          		localStorage.setItem('openId', openId)
-		          		if(res.data.hasBind == false){
-		            		this.hasBind = false
-		            		location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=https://wb.caishuiyu.com/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect'
-		            		// this.$router.push({ path: '/bindPhone' })
-		          		}else {
-		            		this.hasBind = true
-		            		let merchant = res.data.merchant.id
-		            		console.log(merchant)
-		            		localStorage.setItem('merchant', merchant)
-							this.getNum();
-							this.getBanner();
-							this.getCarouselList();
-							this.getClueList();
-							this.getCityList();
-							this.getServeList();
-		          		}
-		        	}
-		      	})
-		    }
+			this.getNum();
+			this.getBanner();
+			this.getCarouselList();
+			this.getClueList();
+			this.getCityList();
+			this.getServeList();
+			let code = this.$route.query.code
+			if(code){
+				let params = {
+					code: this.$route.query.code
+				}
+				api.registerHasBind(params).then(res => {
+					console.log(res)
+					if(res.code == 0){
+						localStorage.setItem('openId', res.data.openId)
+						if(res.data.hasBind == false){
+							this.hasBind = false
+						}else {
+							this.hasBind = true
+						}
+					}
+				})
+				.catch((error) => {
+					console.log(error)
+				})
+			}
 		},
 		mounted() {
 		    // 监听用户行为判断是否展示banner
@@ -639,7 +743,7 @@
 			}
 			.intention {
 				// margin-top: 96px;
-				padding: 12px 12px;
+				padding: 12px;
 				box-sizing: border-box;
 				width: 100%;
 				background: #f5f5f5;

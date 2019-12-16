@@ -49,10 +49,7 @@ router.beforeEach((to, from, next) => {
 	  	$title: to.meta.saTitle,
 	  	$screen_name: to.meta.saName,
 	})
-  if (to.name === 'bindPhone') {
-    // alert(1)
-  }
-  next()
+  	next()
 })
 
 new Vue({

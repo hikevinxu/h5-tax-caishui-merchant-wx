@@ -1,5 +1,5 @@
 <template>
-  <div class="reChargeBox" >
+  <div class="reChargeBox" v-show="hasData">
     <div class="balanceContainer">
       <div class="balance">
         <h4>当前账户余额</h4>
@@ -101,7 +101,8 @@ export default {
           txt: '春节客户大回馈，充值688送68',
           price: 10000
         }
-      ]
+      ],
+      hasData: false
     }
   },
   created () {
@@ -109,6 +110,7 @@ export default {
     api.merchantDetail().then(res => {
       console.log(res)
       if(res.code == 0){
+        this.hasData = true;
         this.data = res.data
         if(!res.data.bonusBalance){
           this.data.bonusBalance = 0

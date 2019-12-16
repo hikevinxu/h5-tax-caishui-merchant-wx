@@ -62,6 +62,16 @@
         </div>
       </div>
     </div>
+    <div class="pay_bottom" v-if="data.status == 0">
+      <div class="pay_bottom_dw">¥</div>
+      <div class="pay_bottom_price">{{data.price}}</div>
+      <div class="pay_bottom_oldPrice">原价：¥ {{data.originPrice}}</div>
+      <div class="pay_bottom_icon">
+        <p>限时特惠</p>
+      </div>
+      <div class="pay_bottom_empty"></div>
+      <div class="pay_bottom_btn" @click="baojia">去支付</div>
+    </div>
     <van-dialog
       v-model="showQrcode"
       title="请前往财税鱼商家助手小程序进行查看"
@@ -107,20 +117,19 @@ export default {
           childs: []
         }
       ],
-      statusList: ['', '对接中', '已成交'],
+      statusList: ['待对接', '对接中', '已成交'],
     }
   },
   created () {
 
     let intentionId = this.$route.query.intentionId
-    console.log(intentionId)
+    let origin = this.$route.query.origin
     if(intentionId) {
       this.intentionId = intentionId
       let data = {
-        id: intentionId
-        // intentionId: 1
+        id: intentionId,
+        origin,
       }
-      // data = qs.stringify(data)
       api.clueDetail(data).then(res => {
         console.log(res)
         if(res.code == 0){
@@ -173,6 +182,7 @@ export default {
         path: '/pay',
         query: {
           intentionId: this.intentionId,
+          from: 'detail',
           price: this.data.price
         }
       })
@@ -205,6 +215,8 @@ export default {
 .inquiryDetail {
   padding-bottom: 52px;
   width: 100%;
+  min-height: 100vh;
+  box-sizing: border-box;
   position: relative;
   .inquiryDetail_top {
     padding: 16px 16px 8px;
@@ -254,6 +266,9 @@ export default {
       color: #5AB3A4;
       line-height: 22px;
       flex-grow: 0;
+    }
+    .inquiryDetail_top_status0 {
+      color: #FFAD71;
     }
     .inquiryDetail_top_status1 {
       color: #FF7F4A;
@@ -398,6 +413,75 @@ export default {
           font-size: 12px !important;
         }
       }
+    }
+  }
+  .pay_bottom {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    padding-left: 20px;
+    box-sizing: border-box;
+    background: #FFEADA;
+    .pay_bottom_dw {
+      margin-top: 19px;
+      font-family: PingFangSC-Medium;
+      font-size: 14px;
+      color: #FF7F4A;
+      line-height: 20px;
+    }
+    .pay_bottom_price {
+      margin-top: 9px;
+      margin-left: 2px;
+      font-family: PingFangSC-Medium;
+      font-size: 24px;
+      color: #FF7F4A;
+      line-height: 33px;
+    }
+    .pay_bottom_oldPrice {
+      margin-top: 20px;
+      margin-left: 8px;
+      font-family: PingFangSC-Regular;
+      font-size: 12px;
+      color: #FFAD71;
+      text-align: center;
+      line-height: 18px;
+      text-decoration: line-through;
+    }
+    .pay_bottom_icon{
+      margin-left: 4px;
+      margin-top: 17px;
+      background: #FB5332;
+      border-radius: 8px 12px 12px 0;
+      width: 50px;
+      height: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      p {
+        font-family: PingFangSC-Regular;
+        font-size: 12px;
+        color: #FFFFFF;
+        text-align: center;
+        transform: scale(0.83);
+      }
+    }
+    .pay_bottom_empty {
+      flex-grow: 1;
+    }
+    .pay_bottom_btn {
+      padding-left: 52px;
+      box-sizing: border-box;
+      width: 142px;
+      height: 52px;
+      flex-shrink: 0;
+      background: url('../../assets/payment-backg.png') center no-repeat;
+      background-size: 100%;
+      font-family: PingFangSC-Medium;
+      font-size: 16px;
+      color: #FFFFFF;
+      text-align: left;
+      line-height: 52px;
     }
   }
 }

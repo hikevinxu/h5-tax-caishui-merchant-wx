@@ -38,13 +38,14 @@ export default {
       code: this.$route.query.code
     }
     console.log(params)
-    let that = this
     let intentionId = localStorage.getItem('intentionId')
     setTimeout(() => {
-      that.$router.push({
+      // this.$router.back();
+      this.$router.push({
         path: '/feedback',
         query: {
-          intentionId: intentionId
+          intentionId: intentionId,
+          from: 'payResult'
         }
       })
     },3000)

@@ -139,6 +139,38 @@ export default new Router({
       }
     },
     {
+      path: '/serviceList',
+      name: 'serviceList',
+      component: () => import('../views/serviceManager/serviceList.vue'),
+      meta: {
+        title: '服务列表'
+      }
+    },
+    {
+      path: '/serviceDetail',
+      name: 'serviceDetail',
+      component: () => import('../views/serviceManager/serviceDetail.vue'),
+      meta: {
+        title: '服务详情'
+      }
+    },
+    {
+      path: '/serviceEdit',
+      name: 'serviceEdit',
+      component: () => import('../views/serviceManager/serviceEdit.vue'),
+      meta: {
+        title: '添加服务'
+      }
+    },
+    {
+      path: '/setting',
+      name: 'setting',
+      component: () => import('../views/serviceManager/setting.vue'),
+      meta: {
+        title: '设置'
+      }
+    },
+    {
       path: '/mine',
       name: 'mine',
       component: () => import('../views/app/mine.vue'),

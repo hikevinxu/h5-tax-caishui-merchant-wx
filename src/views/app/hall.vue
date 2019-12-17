@@ -68,8 +68,8 @@
 					</div>
 				</div>
 			</div>
-			<div class="intention" :class="{intention_top: !showBanner && imgList.length == 0}" :style="{'padding-bottom': isIphoneX ? '32px' : '12px'}" v-show="clueList.length > 0">
-				<div class="intention_item" v-for="(item, index) in clueList" :key="item.id" @click="goDetail(item)">
+			<div class="intention" :class="{intention_top: !showBanner && imgList.length == 0}" :style="{'padding-bottom': isIphoneX ? '32px' : '12px'}" v-if="clueList.length > 0">
+				<div class="intention_item" v-for="(item) in clueList" :key="item.id" @click="goDetail(item)">
 					<img class="intention_item_type" v-if="item.recommendTag" :src="require(`@/assets/label-${item.recommendTag}@3x.png`)">
 					<div class="intention_item_detail">查看详情</div>
 					<div class="intention_item_top">
@@ -86,13 +86,16 @@
 					</div>
 				</div>
 				<div class="load_more" @click="loadingMore" v-show="showLoad && !noMore">
-		            <span v-show="!loading_more">点击加载更多</span>
-		            <van-loading style="width: 10px;" v-show="loading_more == true" type="spinner" />
-		        </div>
-		        <div class="load_more" v-show="showLoad && noMore">
-		            <span>已经到底了</span>
-		        </div>
+          <span v-show="!loading_more">点击加载更多</span>
+          <van-loading style="width: 10px;" v-show="loading_more == true" type="spinner" />
+        </div>
+        <div class="load_more" v-show="showLoad && noMore">
+          <span>已经到底了</span>
+        </div>
 			</div>
+      <div v-else>
+        <emptyList />
+      </div>
 		</div>
 		<confirm :show.sync="showConfirm" :content="content" @cancel="cancel" @confirm="goRZ"></confirm>
 	</div>
@@ -104,13 +107,15 @@
 	import api from '@/api/api'
 	import { fetchAppGet } from '@/api/axios'
 	import { Toast, Button, Loading, Swipe, SwipeItem } from 'vant'
-	import Confirm from '@/components/confirm'
+  import Confirm from '@/components/confirm'
+  import emptyList from '@/components/EmptyList/EmptyList'
 	Vue.use(Loading);
 	Vue.use(Swipe).use(SwipeItem);
 	export default {
 		name: 'hall',
 		components: {
-			Confirm
+      Confirm,
+      emptyList
 		},
 		data() {
 			return {

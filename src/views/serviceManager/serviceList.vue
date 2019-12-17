@@ -1,57 +1,23 @@
 <template>
   <div class="serviceList_page">
-    <div class="serviceList">
+    <div class="serviceList" v-if="serviceList.length > 0">
       <van-collapse v-model="activeNames" accordion>
-        <van-collapse-item title="工商服务" name="1">
+        <van-collapse-item v-for="(value, index) in serviceList" :key="index" :title="value.name" :name="value.name">
           <div class="collapse-item-body">
-            <div class="content-item">
-              <label>公司注册</label>
-              <span class="up">已上架</span>
-              <span class="down">已下架</span>
-              <i><img src="@/assets/ic_chevron_right_small@3x.png" alt=""></i>
-            </div>
-            <div class="content-item">
-              <label>公司注销</label>
-              <span class="up">已上架</span>
-              <span class="down">已下架</span>
-              <i><img src="@/assets/ic_chevron_right_small@3x.png" alt=""></i>
-            </div>
-            <div class="content-item">
-              <label>代理记账</label>
-              <span class="up">已上架</span>
-              <span class="down">已下架</span>
-              <i><img src="@/assets/ic_chevron_right_small@3x.png" alt=""></i>
-            </div>
-          </div>
-        </van-collapse-item>
-        <van-collapse-item title="代理记账" name="2">
-          <div class="collapse-item-body">
-            <div class="content-item">
-              <label>公司注册</label>
-              <span class="up">已上架</span>
-              <span class="down">已下架</span>
-              <i><img src="@/assets/ic_chevron_right_small@3x.png" alt=""></i>
-            </div>
-            <div class="content-item">
-              <label>公司注册</label>
-              <span class="up">已上架</span>
-              <span class="down">已下架</span>
-              <i><img src="@/assets/ic_chevron_right_small@3x.png" alt=""></i>
-            </div>
-          </div>
-        </van-collapse-item>
-        <van-collapse-item title="税务筹划" name="3">
-          <div class="collapse-item-body">
-            <div class="content-item">
-              <label>公司注册</label>
-              <span class="up">已上架</span>
-              <span class="down">已下架</span>
+            <div v-for="(item, i) in value.childs" :key="i" class="content-item" @click="goDetail(item)">
+              <label>{{item.serviceName}}</label>
+              <span v-if="item.status == 1" class="up">已上架</span>
+              <span v-else class="down">已下架</span>
               <i><img src="@/assets/ic_chevron_right_small@3x.png" alt=""></i>
             </div>
           </div>
         </van-collapse-item>
       </van-collapse>
     </div>
+    <div v-else>
+      <emptyList text="暂未添加服务" />
+    </div>
+    <div class="addService" @click="addService">添加</div>
   </div>
 </template>
 <script>
@@ -59,17 +25,54 @@
 import Vue from 'vue'
 import { Collapse, CollapseItem } from 'vant'
 Vue.use(Collapse).use(CollapseItem)
+import serviceApi from '@/api/serviceApi'
+import emptyList from '@/components/EmptyList/EmptyList'
 
 export default {
+  components: {
+    emptyList
+  },
   data() {
     return {
-      activeNames: ['1']
+      activeNames: ["0"],
+      serviceList: []
+    }
+  },
+  created() {
+    this.getAllService()
+  },
+  methods: {
+    getAllService() {
+      serviceApi.simpleServiceAll().then(res => {
+        if(res.code == 0){
+          let arr = []
+          for (const key in res.data) {
+            if (res.data.hasOwnProperty(key)) {
+              arr.push({
+                name: key,
+                childs: res.data[key]
+              })
+            }
+          }
+          this.serviceList = arr.reverse()
+          if (this.serviceList.length > 0) {
+            this.activeNames = this.serviceList[0].name
+          }
+        }
+      })
+    },
+    goDetail(item) {
+      this.$router.push('/serviceDetail?id=' + item.id)
+    },
+    addService() {
+      this.$router.push('/serviceEdit')
     }
   }
 }
 </script>
 <style lang="scss" scoped>
 .serviceList_page {
+  position: relative;
   .serviceList {
     text-align: left;
     .collapse-item-body {
@@ -116,6 +119,37 @@ export default {
           }
         }
       }
+    }
+  }
+  .addService {
+    width: 100%;
+    height: 48px;
+    background: #FF7F4A;
+    font-family: PingFangSC-Medium;
+    font-size: 16px;
+    color: #FFFFFF;
+    line-height: 48px;
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    &::before {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: 100%;
+      background-color: #000;
+      border: inherit;
+      border-color: #000;
+      border-radius: inherit;
+      -webkit-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      content: ' ';
+    }
+    &:active::before {
+      opacity: 0.1;
     }
   }
 }

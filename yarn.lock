@@ -8820,6 +8820,11 @@ yorkie@^2.0.0:
     normalize-path "^1.0.0"
     strip-indent "^2.0.0"
 
+zhangjia-zepto@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.npm.taobao.org/zhangjia-zepto/download/zhangjia-zepto-1.2.0.tgz#a255508c0f6c594743e2b9ac38f70d993be93262"
+  integrity sha1-olVQjA9sWUdD4rmsOPcNmTvpMmI=
+
 zip-webpack-plugin@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npm.taobao.org/zip-webpack-plugin/download/zip-webpack-plugin-3.0.0.tgz#63b3c173f1a87a006915cd7328a3c40b44dc8e32"

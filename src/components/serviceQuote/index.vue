@@ -3,7 +3,7 @@
     <div class="serviceQuote_title">服务报价</div>
     <div class="serviceQuote_info">请提服务报价供用户参考！</div>
     <div class="serviceQuote_input">
-      <input type="number" placeholder="请输入服务报价">
+      <input type="number" v-model="price" placeholder="请输入反馈价格">
     </div>
     <div class="serviceQuote_btn">
       <div class="serviceQuote_btn_cancel" @click="cancel">取消</div>
@@ -15,7 +15,7 @@
 export default {
   data() {
     return {
-
+      price: ''
     }
   },
   created() {
@@ -23,11 +23,11 @@ export default {
   },
   methods: {
     cancel() {
-      console.log('cancel')
+      this.price = ''
       this.$emit('cancel')
     },
     confirm() {
-      console.log('confirm')
+      this.$emit('confirm', this.price)
     }
   }
 }

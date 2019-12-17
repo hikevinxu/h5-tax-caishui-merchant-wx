@@ -45,6 +45,10 @@ window.sa = sa;
 sa.quick("autoTrack")
 	
 router.beforeEach((to, from, next) => {
+  /* 路由发生变化修改页面title */
+  if (to.meta.title) {
+    document.title = to.meta.title
+  }
 	sa.registerPage({
 	  	$title: to.meta.saTitle,
 	  	$screen_name: to.meta.saName,

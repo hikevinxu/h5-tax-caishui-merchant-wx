@@ -39,7 +39,7 @@
 				<div class="mine_bottom_item_text">充值</div>
 				<img class="mine_bottom_item_arrow" src="@/assets/ic_chevron_right_small.png">
 			</div>
-			<div class="mine_bottom_item" @click="changePhone">
+			<!-- <div class="mine_bottom_item" @click="changePhone">
 				<img class="mine_bottom_item_icon" src="@/assets/mine-replace.png">
 				<div class="mine_bottom_item_text">更换手机号</div>
 				<img class="mine_bottom_item_arrow" src="@/assets/ic_chevron_right_small.png">
@@ -52,6 +52,16 @@
 			<div class="mine_bottom_item" @click="changePassword">
 				<img class="mine_bottom_item_icon" src="@/assets/mine-modification.png">
 				<div class="mine_bottom_item_text">修改密码</div>
+				<img class="mine_bottom_item_arrow" src="@/assets/ic_chevron_right_small.png">
+			</div> -->
+      <div class="mine_bottom_item" @click="goServiceList">
+				<img class="mine_bottom_item_icon" src="@/assets/mine-management.png">
+				<div class="mine_bottom_item_text">服务管理</div>
+				<img class="mine_bottom_item_arrow" src="@/assets/ic_chevron_right_small.png">
+			</div>
+      <div class="mine_bottom_item" @click="goSetting">
+				<img class="mine_bottom_item_icon" src="@/assets/mine-setting.png">
+				<div class="mine_bottom_item_text">设置</div>
 				<img class="mine_bottom_item_arrow" src="@/assets/ic_chevron_right_small.png">
 			</div>
 		</div>
@@ -147,7 +157,17 @@
 						path: '/rzSucc'
 					})
 				}
-			}
+      },
+      goSetting() {
+        this.$router.push({
+          path: '/setting'
+        })
+      },
+      goServiceList() {
+        this.$router.push({
+          path: '/serviceList'
+        })
+      }
 		},
 		created() {
 			this.merchantDetail();
@@ -196,14 +216,20 @@
 		.mine_top {
 			width: 100%;
 			height: 112px;
-			display: flex;
-			align-items: center;
+			// display: flex;
+			// align-items: center;
+      overflow: hidden;
 			.mine_icon {
+        display: block;
+        float: left;
 				margin-right: 16px;
 				width: 64px;
 				height: 64px;
+        margin-top: 24px;
 			}
 			.mine_info {
+        float: left;
+        margin-top: 26px;
 				.mine_compony {
 					font-family: PingFangSC-Medium;
 					font-size: 20px;
@@ -212,7 +238,7 @@
 					text-align: left;
 					display: flex;
 					.mine_compony_name {
-						max-width: 160px;
+						max-width: 200px;
 						overflow: hidden;
 						text-overflow: ellipsis;
 						white-space: nowrap;
@@ -258,8 +284,11 @@
 				}
 			}
 			.mine_arrow {
+        display: block;
+        float: right;
 				width: 16px;
 				height: 16px;
+        margin-top: 48px;
 			}
 		}
 		.mine_wallet {

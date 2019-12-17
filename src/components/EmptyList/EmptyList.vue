@@ -1,16 +1,22 @@
 <template>
   <div class="emptyList">
     <div class="picInfo">
-      <img src="@/assets/error/empty.png" alt="">
+      <img src="@/assets/img-no-result.png" alt="">
     </div>
     <div class="info">
-      未找到相关结果
+      {{text}}
     </div>
   </div>
 </template>
 <script>
 export default {
   name: 'emptyList',
+  props: {
+    text: {
+      type: String,
+      default: '暂无数据'
+    }
+  },
   data () {
     return {
     }
@@ -20,7 +26,7 @@ export default {
 
 <style lang="scss" scoped>
 .emptyList {
-  margin-top: 40px;
+  padding-top: 40px;
   .picInfo {
     width: 80px;
     height: 80px;

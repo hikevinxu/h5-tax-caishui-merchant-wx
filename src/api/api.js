@@ -51,10 +51,16 @@ export default {
     return fetchGet('/intention/purchase', params)
   },
 
-  //直接购买
+  //直接购买-询价单
   intentionCashPurchase (params) {
     return fetchPost('/intention/cashPurchase', params)
   },
+
+  //直接购买-线索
+  clueHallCashPurchaseClue (params) {
+    return fetchPost('/clueHall/cashPurchaseClue', params)
+  },
+
 
   //充值
   recharge (params) {

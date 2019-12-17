@@ -70,7 +70,7 @@
         <span class="offer" style="background: rgba(0,0,0,0.26);font-family: PingFangSC-Medium;font-size: 16px;color: #FFFFFF;">已过期</span>
       </div> -->
     </div>
-    <van-dialog
+    <!-- <van-dialog
       v-model="show"
       title="反馈价格"
       show-cancel-button
@@ -78,18 +78,25 @@
       confirmButtonColor='#FF7F4A'
     >
       <input class="baojiaInput" v-model="price" type="number" placeholder="请输入反馈价格">
-    </van-dialog>
+    </van-dialog> -->
+    <van-popup v-model="show" :close-on-popstate="true" :close-on-click-overlay="false" :round="true">
+      <service-quote @cancel="show = false" @confirm="submit" />
+    </van-popup>
   </div>
 </template>
 <script>
 import Vue from 'vue'
-import { Toast, Button, Dialog } from 'vant'
+import { Toast, Button, Dialog, Popup } from 'vant'
 import api from '@/api/api'
 import qs from 'qs'
 Vue.use(Button)
-Vue.use(Dialog)
+Vue.use(Dialog).use(Popup)
 Vue.use(Toast)
+import serviceQuote from '@/components/serviceQuote/index'
 export default {
+  components: {
+    serviceQuote
+  },
   data () {
     return {
       data: {},
@@ -177,6 +184,27 @@ export default {
       }else {
         return area;
       }
+    },
+    submit(price) {
+      console.log(price)
+      this.price = price
+      if(this.price == null || this.price <= 0){
+        Toast('请输入大于零的正整数！')
+        return
+      }
+      let data = {
+        intentionId: this.intentionId,
+        price: this.price
+      }
+      api.intentionQuotePrice(data).then(res => {
+        this.show = false
+        if(res.code == 0){
+          Toast('报价成功')
+          this.getDetail()
+        }else {
+          Toast(res.msg)
+        }
+      })
     }
   }
 }

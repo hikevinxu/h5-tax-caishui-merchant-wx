@@ -1,19 +1,19 @@
 <template>
   <div class="setting_page">
     <div class="menu">
-      <div class="menu_item" @click="show = true">
+      <div class="menu_item" @click="changePhone">
         <div class="menu_item_inner">
           <label>更换手机号</label>
           <i><img src="@/assets/ic_chevron_right_small@3x.png" alt=""></i>
         </div>
       </div>
-      <div class="menu_item">
+      <div class="menu_item" @click="unlinkWechat">
         <div class="menu_item_inner">
           <label>解绑微信</label>
           <i><img src="@/assets/ic_chevron_right_small@3x.png" alt=""></i>
         </div>
       </div>
-      <div class="menu_item">
+      <div class="menu_item" @click="changePassword">
         <div class="menu_item_inner">
           <label>修改密码</label>
           <i><img src="@/assets/ic_chevron_right_small@3x.png" alt=""></i>
@@ -44,6 +44,15 @@ export default {
   methods: {
     submit() {
 
+    },
+    changePhone() {
+      this.$router.push('/changePhone')
+    },
+    unlinkWechat() {
+      this.$router.push('/unlinkWechat')
+    },
+    changePassword() {
+      this.$router.push('/changePassword')
     }
   }
 }

@@ -41,13 +41,22 @@ export default {
     let intentionId = localStorage.getItem('intentionId')
     setTimeout(() => {
       // this.$router.back();
-      this.$router.push({
-        path: '/feedback',
-        query: {
-          intentionId: intentionId,
-          from: 'payResult'
-        }
-      })
+      if(this.$route.query.from = 'detail') {
+        this.$router.push({
+          path: '/clue',
+          query: {
+            from: 'payResult'
+          }
+        })
+      } else {
+        this.$router.push({
+          path: '/feedback',
+          query: {
+            intentionId: intentionId,
+            from: 'payResult'
+          }
+        })
+      }
     },3000)
   },
   methods: {

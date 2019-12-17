@@ -1,7 +1,7 @@
 <template>
 	<div class="consult">
 		<div class="consult_list" v-if="consultList.length > 0">
-			<div class="consult_item" v-for="(item, index) in consultList" :key="item.id" @click="goDetail(item)">
+			<div class="consult_item" v-for="(item) in consultList" :key="item.id" @click="goDetail(item)">
 				<div class="consult_item_top">
 					<div class="consult_item_name">{{item.name}}</div>
 					<div class="consult_item_price" v-show="item.status == 1 || item.status == 2">未报价</div>

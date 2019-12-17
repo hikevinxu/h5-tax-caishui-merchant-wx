@@ -47,6 +47,10 @@ axios.interceptors.response.use((res) => {
     switch (res.data.code) {
       case 500:
         return Promise.resolve(res)
+      case 600:
+        return Promise.reject(res)
+      case 20001:
+        return Promise.resolve(res)
       case 10000: 
       let pathList = ['/hall', '/clue', '/mine'];
       if(res.request.responseURL.indexOf('/merchant/apply/status') > -1 && pathList.includes(location.pathname)) {

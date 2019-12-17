@@ -227,36 +227,58 @@ export default {
       //     price: this.data.price
       //   }
       // })
-      let self = this
       let data = {
-        amount: self.data.price,
+        amount: this.data.price,
         payChannel: 'weixin',
         payType:  'weixin_jsapi',
-        intentionId: self.intentionId
+        intentionId: this.intentionId
       }
       Dialog.confirm({
         title: '提示',
         message: '确认购买此询价单？',
         confirmButtonColor: '#FF7F4A'
       }).then(() => {
-        if(self.payType == 'balance') {
+        if(this.payType == 'balance') {
           api.intentionPurchase(data).then(res => {
             if(res.code == 0){
               Toast('购买成功')
-              self.$router.replace({ path: '/payResult' })
+              this.$router.replace({ path: '/payResult' })
+            } else if(res.code == 20001) {
+              this.success = false
+              Dialog.alert({
+                title: '提示',
+                message: '需求状态发生改变，请更新！',
+                closeOnPopstate: true,
+                confirmButtonColor: '#FF7F4A'
+              }).then(() => {
+                this.getDetail()
+              })
             }else {
-              self.success = false
+              this.success = false
               Toast(res.data.msg)
             }
           })
           .catch(err => {
-            Toast(err.data.msg)
+            if(err.data.code == 600) {
+              this.success = false
+              Dialog.alert({
+                title: '提示',
+                message: '亲，您余额不足，现在去充值，以免错失开单机会～',
+                closeOnPopstate: true,
+                showCancelButton: true,
+                confirmButtonColor: '#FF7F4A'
+              }).then(() => {
+                this.$router.push('/reCharge')
+              }).catch(() => {
+                console.log('取消')
+              })
+            }
           })
         }else {
           api.intentionCashPurchase(data).then(res => {
             if(res.code == 0){
               let paySign = JSON.parse(res.data.paySign)
-              let that = this
+              let self = this
               WeixinJSBridge.invoke(
               'getBrandWCPayRequest', {
                 "appId": paySign.appId,     //公众号名称，由商户传入     
@@ -277,21 +299,27 @@ export default {
                   // 使用以上方式判断前端返回,微信团队郑重提示：
                   // res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
                   Toast.fail('取消购买！')
-                  self.payLoading = false
                 } 
                 else if(res.err_msg == "get_brand_wcpay_request:fail" ){
                   // 使用以上方式判断前端返回,微信团队郑重提示：
                   // res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
                   // getWeiXinConfig()
                   Toast.fail('购买失败！')
-                  self.payLoading = false
                 }
               })
             }else if(res.code == 20001) {
               this.success = false
               Toast(res.msg)
               // this.$router.back();
-              this.getDetail()
+              // this.getDetail()
+              Dialog.alert({
+                title: '提示',
+                message: '需求状态发生改变，请更新！',
+                closeOnPopstate: true,
+                confirmButtonColor: '#FF7F4A'
+              }).then(() => {
+                this.getDetail()
+              })
             }else {
               this.success = false
               Toast(res.msg)

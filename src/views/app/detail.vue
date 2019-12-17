@@ -220,7 +220,8 @@ export default {
       Dialog.confirm({
         title: '提示',
         message: '确认购买此线索？',
-        confirmButtonColor: '#FF7F4A'
+        confirmButtonColor: '#FF7F4A',
+        closeOnPopstate: true
       }).then(() => {
         if(this.payType == 'balance') {
           let params = {
@@ -234,17 +235,35 @@ export default {
               this.$router.replace({ path: '/payResult' })
             }else if(res.code == 20001) {
               this.success = false
-              Toast(res.msg)
-              this.$router.replace({ path: '/payResult' })
-            }else {
+              // Toast(res.msg)
+              // this.$router.replace({ path: '/payResult' })
+              Dialog.alert({
+                title: '提示',
+                message: '需求状态发生改变，请更新！',
+                closeOnPopstate: true,
+                confirmButtonColor: '#FF7F4A'
+              }).then(() => {
+                this.getDetail()
+              })
+            } else {
               this.success = false
               Toast(res.msg)
             }
           })
           .catch(err => {
-            Toast(err.data.msg)
-            if(err.data.code == 20001) {
-              this.$router.back();
+            if(err.data.code == 600) {
+              this.success = false
+              Dialog.alert({
+                title: '提示',
+                message: '亲，您余额不足，现在去充值，以免错失开单机会～',
+                closeOnPopstate: true,
+                showCancelButton: true,
+                confirmButtonColor: '#FF7F4A'
+              }).then(() => {
+                this.$router.push('/reCharge')
+              }).catch(() => {
+                console.log('取消')
+              })
             }
           })
         }else {
@@ -272,22 +291,28 @@ export default {
                   // 使用以上方式判断前端返回,微信团队郑重提示：
                   // res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
                   Toast.fail('取消购买！')
-                  self.payLoading = false
                 } 
                 else if(res.err_msg == "get_brand_wcpay_request:fail" ){
                   // 使用以上方式判断前端返回,微信团队郑重提示：
                   // res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
                   // getWeiXinConfig()
                   Toast.fail('购买失败！')
-                  self.payLoading = false
                 }
               })
             }else if(res.code == 20001) {
               this.success = false
-              Toast(res.msg)
+              // Toast(res.msg)
               // this.$router.back();
-              this.getDetail()
-            }else {
+              // this.getDetail()
+              Dialog.alert({
+                title: '提示',
+                message: '需求状态发生改变，请更新！',
+                closeOnPopstate: true,
+                confirmButtonColor: '#FF7F4A'
+              }).then(() => {
+                this.getDetail()
+              })
+            } else {
               this.success = false
               Toast(res.msg)
             }

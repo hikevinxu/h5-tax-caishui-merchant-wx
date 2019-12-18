@@ -65,30 +65,36 @@
 				<img class="mine_bottom_item_arrow" src="@/assets/ic_chevron_right_small.png">
 			</div>
 		</div>
+    <confirm :show.sync="showConfirm" :content="content" @cancel="cancel" @confirm="goRZ"></confirm>
 	</div>
 </template>
 
 <script>
 	import api from '@/api/api'
 	export default {
-		name: 'mine',
+    name: 'mine',
+    components: {
+      Confirm
+		},
 		data() {
 			return {
 				data: {
-			        balance: 0,
-			        bonusBalance: 0
-			    },
-			    componyInfo: {},
-			    hasBind: false,
-			    hasData: false,
-			    status: '',
-			    statusList: {
-			    	'100': '未认证',
-			    	'101': '未认证',
-			    	'102': '审核中',
-			    	'103': '已认证',
-			    	'999': '审核失败'
-			    }
+            balance: 0,
+            bonusBalance: 0
+        },
+        componyInfo: {},
+        hasBind: false,
+        hasData: false,
+        status: '',
+        statusList: {
+          '100': '未认证',
+          '101': '未认证',
+          '102': '审核中',
+          '103': '已认证',
+          '999': '审核失败'
+        },
+        content: '',
+        showConfirm: false
 			}
 		},
 		methods: {
@@ -164,9 +170,18 @@
         })
       },
       goServiceList() {
-        this.$router.push({
-          path: '/serviceList'
-        })
+        if(this.status == 103) {
+          this.$router.push({
+            path: '/serviceList'
+          })
+        } else {
+          this.content = '您还未进行商户认证，认证后方可查看订单'
+          this.showConfirm = true
+          return false
+        }
+      },
+      cancel() {
+        this.showConfirm = false
       }
 		},
 		created() {

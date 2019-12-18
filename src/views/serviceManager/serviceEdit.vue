@@ -96,6 +96,8 @@ export default {
             this.action = 'edit'
             if(this.areaList.length > 0) {
               this.area = '已选服务区域'
+            } else {
+              this.area = ''
             }
           }
         })
@@ -144,12 +146,12 @@ export default {
     },
     // 点击选择服务区域的确定
     selectAreaSubmit(val) {
-      console.log(456)
       this.areaList = val
       if(this.areaList.length > 0) {
         this.area = '已选服务区域'
+      }else {
+        this.area = ''
       }
-      console.log(this.areaList)
       this.areaShow = false
     },
     // 取消保存

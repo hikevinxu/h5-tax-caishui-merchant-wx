@@ -65,7 +65,7 @@
 				<img class="mine_bottom_item_arrow" src="@/assets/ic_chevron_right_small.png">
 			</div>
 		</div>
-    <confirm :show.sync="showConfirm" :content="content" @cancel="cancel" @confirm="goRZ"></confirm>
+    <confirm :show.sync="showConfirm" :content="content" @cancel="cancel" @confirm="renZhengJump"></confirm>
 	</div>
 </template>
 
@@ -164,6 +164,21 @@
 						path: '/rzSucc'
 					})
 				}
+      },
+      renZhengJump() {
+        if(this.status < 102) {
+          this.$router.push({
+            path: '/renzheng',
+          })
+        }else if(this.status == 103) {
+          this.$router.push({
+            path: '/rzSucc',
+          })
+        }else {
+          this.$router.push({
+            path: '/rzResult',
+          })
+        }
       },
       goSetting() {
         this.$router.push({

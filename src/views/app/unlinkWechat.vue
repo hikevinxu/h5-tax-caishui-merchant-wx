@@ -39,10 +39,12 @@
 				let data = {};
 				api.unLinkWechat(data).then(res => {
 					if(res.code == 0) {
+            window.history.replaceState(null, null, "/hall")
+            // this.$router.replace({ path: '/hall' })
 						Toast('解绑成功，请重新登录');
 						setTimeout(() => {
-							localStorage.removeItem('accessToken');
-							this.$router.replace('/bindPhone');
+							localStorage.removeItem('accessToken')
+							this.$router.push('/bindPhone')
 							// location.replace(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect`);
 						}, 1000);
 					}else {

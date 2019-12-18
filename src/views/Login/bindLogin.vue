@@ -28,6 +28,8 @@
 
 		},
 		created() {
+      window.history.replaceState(null, null, "/hall")
+      // this.$router.replace({ path: '/hall' })
 			let data = {
 				code: this.$route.query.code
 			}

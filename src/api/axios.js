@@ -45,34 +45,43 @@ axios.interceptors.response.use((res) => {
   } else if (res.data.code !== 0) {
     let info = '系统异常'
     switch (res.data.code) {
+      // 异常处理
       case 500:
         return Promise.resolve(res)
+      // 余额购买时，商户余额不足
       case 600:
         return Promise.reject(res)
+      // 需求状态发生改变
       case 20001:
         return Promise.resolve(res)
-      case 10000: 
-      let pathList = ['/hall', '/clue', '/mine'];
-      if(res.request.responseURL.indexOf('/merchant/apply/status') > -1 && pathList.includes(location.pathname)) {
-        return Promise.resolve(res)
-      }else {
-        let params = {
-          code: getParams().code
-        }
-        api.registerHasBind(params).then(res => {
-          if(res.code == 0){
-            localStorage.setItem('openId', res.data.openId)
-            if(res.data.hasBind == false){
-              router.replace('/bindPhone');
-            }else {
-              location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/bindLogin&response_type=code&scope=snsapi_base&state=123#wechat_redirect`;
-            }
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-      }
+      // 未绑定商户
+      case 20002:
+        router.push('/bindPhone')
+        return Promise.reject(res)
+      case 10000:
+        // let pathList = ['/hall', '/clue', '/mine']
+        // if(res.request.responseURL.indexOf('/merchant/apply/status') > -1 && pathList.includes(location.pathname)) {
+        //   return Promise.resolve(res)
+        // }else {
+        //   let params = {
+        //     code: getParams().code
+        //   }
+        //   api.registerHasBind(params).then(res => {
+        //     if(res.code == 0){
+        //       localStorage.setItem('openId', res.data.openId)
+        //       if(res.data.hasBind == false){
+        //         router.replace('/bindPhone');
+        //       }else {
+        //         location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/bindLogin&response_type=code&scope=snsapi_base&state=123#wechat_redirect`;
+        //       }
+        //     }
+        //   })
+        //   .catch((error) => {
+        //     console.log(error)
+        //   })
+        // }
+        location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/bindLogin&response_type=code&scope=snsapi_base&state=123#wechat_redirect`
+        return Promise.reject(res)
     }
     if(res.data.msg) {
       info = res.data.msg

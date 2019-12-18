@@ -142,7 +142,7 @@
 							self.address = res.data.data['地址'].words;
 							self.contactName = res.data.data['法人'].words;
 						}else {
-							Toast(res.msg);
+							Toast(res.msg)
 							if(res.code == 10000) {
 								if(!localStorage.getItem('accessToken')) {
 									self.$router.push('/bindPhone');

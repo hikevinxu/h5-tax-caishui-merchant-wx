@@ -242,7 +242,15 @@ export default {
           api.intentionPurchase(data).then(res => {
             if(res.code == 0){
               Toast('购买成功')
-              this.$router.replace({ path: '/payResult' })
+              this.getDetail()
+              // this.$router.replace({ path: '/payResult' })
+              this.$router.replace({
+                path: '/feedback',
+                query: {
+                  intentionId: this.intentionId,
+                  from: 'payResult'
+                }
+              })
             } else if(res.code == 20001) {
               this.success = false
               Dialog.alert({
@@ -293,7 +301,14 @@ export default {
                   // 使用以上方式判断前端返回,微信团队郑重提示：
                   // res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
                   Toast.success('购买成功！')
-                  self.$router.replace({ path: '/payResult' })
+                  // self.$router.replace({ path: '/payResult' })
+                  self.$router.replace({
+                    path: '/feedback',
+                    query: {
+                      intentionId: self.intentionId,
+                      from: 'payResult'
+                    }
+                  })
                 }
                 else if(res.err_msg == "get_brand_wcpay_request:cancel" ){
                   // 使用以上方式判断前端返回,微信团队郑重提示：

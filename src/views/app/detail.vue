@@ -292,7 +292,7 @@ export default {
                   // res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
                   self.success('购买成功！')
                   // self.$router.replace({ path: '/payResult?from=detail' })
-                  this.$router.replace({
+                  self.$router.replace({
                     path: '/clue',
                     query: {
                       from: 'payResult'

@@ -242,7 +242,7 @@ export default {
           api.intentionPurchase(data).then(res => {
             if(res.code == 0){
               Toast('购买成功')
-              this.getDetail()
+              // this.getDetail()
               // this.$router.replace({ path: '/payResult' })
               this.$router.replace({
                 path: '/feedback',

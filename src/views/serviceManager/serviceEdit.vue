@@ -175,6 +175,7 @@ export default {
         serviceApi.simpleServiceUpdate(params).then(res => {
           if(res.code == 0){
             Toast('修改成功')
+            this.$router.go(-1)
           }else if(res.code == 500) {
             Toast(res.msg)
           }
@@ -200,6 +201,7 @@ export default {
         serviceApi.simpleServiceAdd(params).then(res => {
           if(res.code == 0){
             Toast('添加成功')
+            this.$router.go(-1)
           } else if(res.code == 500) {
             Toast(res.msg)
           }

@@ -3,14 +3,14 @@
     <div class="form">
       <div class="form_item">
         <label>关联业务</label>
-        <input readonly v-model="service" @click="openSeviceDialog" type="text" placeholder="请选择关联业务">
+        <input ref="service" readonly v-model="service" @click="openSeviceDialog" type="text" placeholder="请选择关联业务">
         <span>
           <img src="@/assets/ic_chevron_right_small@3x.png" alt="">
         </span>
       </div>
       <div class="form_item">
         <label>服务区域</label>
-        <input readonly v-model="area" @click="areaShow = true" type="text" placeholder="请选择服务区域">
+        <input ref="area" readonly v-model="area" @click="openAreaSelectDialog" type="text" placeholder="请选择服务区域">
         <span>
           <img src="@/assets/ic_chevron_right_small@3x.png" alt="">
         </span>
@@ -104,9 +104,14 @@ export default {
       }
     },
     openSeviceDialog() {
+      this.$refs.service.blur()
       if(this.action != 'edit'){
         this.show = true
       }
+    },
+    openAreaSelectDialog() {
+      this.$refs.area.blur()
+      this.areaShow = true
     },
     // 选择服务类目改变
     onChange(picker, values, index) {

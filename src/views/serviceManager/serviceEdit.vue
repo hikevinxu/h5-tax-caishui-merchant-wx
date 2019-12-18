@@ -23,8 +23,8 @@
     <van-popup v-model="show" position="bottom">
       <van-picker show-toolbar title="关联业务" value-key="name" :columns="columns" @change="onChange" @cancel="cancel" @confirm="confirm" />
     </van-popup>
-    <van-popup v-model="areaShow" position="bottom" :style="{ height: '50%' }">
-      <area-Select :close-on-click-overlay="false" :selectAreaList="areaList" @cancel="closeAreaDialog" @submit="selectAreaSubmit" />
+    <van-popup v-model="areaShow" position="bottom" :close-on-click-overlay="false" :style="{ height: '50%' }">
+      <area-Select :selectAreaList="areaList" @cancel="closeAreaDialog" @submit="selectAreaSubmit" />
     </van-popup>
   </div>
 </template>

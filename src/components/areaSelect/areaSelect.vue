@@ -558,6 +558,12 @@ export default {
     },
     // 点击取消
     cancel() {
+      this.provinceList = []
+      this.cityList = []
+      this.areaList = []
+      this.areaAllSelect = false
+      this.cityAllSelect = false
+      this.provinceAllSelect = false
       this.init()
       this.$emit('cancel')
     },

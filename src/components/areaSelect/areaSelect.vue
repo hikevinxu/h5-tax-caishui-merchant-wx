@@ -554,10 +554,21 @@ export default {
         }
       }
       this.$emit('submit', selectArr)
+      this.remove()
     },
     // 点击取消
     cancel() {
       this.$emit('cancel')
+      this.remove()
+    },
+    remove: function () {
+      setTimeout(() => {
+        this.destroy()
+      }, 300)
+    },
+    destroy: function () {
+      this.$destroy()
+      document.body.removeChild(this.$el)
     }
   }
 }

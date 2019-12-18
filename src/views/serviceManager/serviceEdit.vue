@@ -141,7 +141,6 @@ export default {
     },
     // 点击选择服务区域的 取消
     closeAreaDialog() {
-      console.log(123)
       this.areaShow = false
     },
     // 点击选择服务区域的确定

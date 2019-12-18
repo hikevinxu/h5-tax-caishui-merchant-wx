@@ -568,7 +568,7 @@ export default {
     },
     destroy: function () {
       this.$destroy()
-      document.body.removeChild(this.$el)
+      // document.body.removeChild(this.$el)
     }
   }
 }

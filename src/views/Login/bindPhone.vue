@@ -117,6 +117,7 @@ export default {
           console.log(res)
           if(res.code == 0){
             localStorage.setItem('openId', res.data.openId)
+            this.openId = res.data.openId
             if(res.data.hasBind == false){
               this.hasBind = false
             }else {

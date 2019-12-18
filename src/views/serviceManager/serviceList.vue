@@ -158,6 +158,8 @@ export default {
 .serviceList_page {
   width: 100%;
   min-height: 100vh;
+  padding-bottom: 50px;
+  box-sizing: border-box;
   background-color: #fafafa;
   .serviceList {
     .van-collapse-item {

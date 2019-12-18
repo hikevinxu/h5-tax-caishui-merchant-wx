@@ -190,7 +190,7 @@ export default {
             this.$router.replace({
               path: '/feedback',
               query: {
-                intentionId,
+                intentionId: this.intentionId
               }
             })
           }else {

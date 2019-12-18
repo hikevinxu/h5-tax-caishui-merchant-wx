@@ -48,7 +48,8 @@ export default {
   },
   methods: {
     init() {
-
+      // 重置
+      this.getCityTree()
     },
     getCityTree() {
       globalApi.addressTrees().then(res => {
@@ -554,22 +555,12 @@ export default {
         }
       }
       this.$emit('submit', selectArr)
-      this.remove()
     },
     // 点击取消
     cancel() {
+      this.init()
       this.$emit('cancel')
-      this.remove()
     },
-    remove: function () {
-      setTimeout(() => {
-        this.destroy()
-      }, 300)
-    },
-    destroy: function () {
-      this.$destroy()
-      // document.body.removeChild(this.$el)
-    }
   }
 }
 </script>

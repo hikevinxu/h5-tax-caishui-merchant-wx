@@ -44,8 +44,8 @@
 						Toast('解绑成功，请重新登录');
 						setTimeout(() => {
 							localStorage.removeItem('accessToken')
-							this.$router.push('/bindPhone')
-							// location.replace(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect`);
+							// this.$router.push('/bindPhone')
+							location.replace(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect`);
 						}, 1000);
 					}else {
 						Toast(res.msg)

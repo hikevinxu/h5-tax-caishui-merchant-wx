@@ -47,8 +47,8 @@ axios.interceptors.response.use((res) => {
     switch (res.data.code) {
       // 异常处理
       case 500:
-        // return Promise.resolve(res)
-        info = res.data.msg
+        return Promise.resolve(res)
+        // info = res.data.msg
       // 余额购买时，商户余额不足
       case 600:
         return Promise.reject(res)

@@ -56,12 +56,12 @@
 			}
 		},
 		methods: {
-			getList() {
+			async getList() {
 				let data = {
 					pageNum: this.pageNum,
 					pageSize: 10
 				}
-				api.getConsultList(data).then(res => {
+        await api.getConsultList(data).then(res => {
 			        if(res.code == 0){
 			          	this.consultList = this.consultList.concat(res.data.items)
 			          	this.total = res.data.total
@@ -71,7 +71,8 @@
 			          	}else{
 			              	this.noMore = false
 			          	}
-			          	this.hasData = true;
+                  this.hasData = true;
+                  console.log(123)
 			        }
 			    })
 			},
@@ -128,8 +129,9 @@
 		      	}
 		    }
 		},
-		created() {
-			this.getList();
+		async created() {
+      await this.getList();
+      console.log(456)
 			this.applyStatus();
 		},
 		mounted() {

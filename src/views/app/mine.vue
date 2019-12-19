@@ -110,14 +110,14 @@
 			    }
 				})
 			},
-			merchantDetail() {
-				api.merchantDetail().then(res => {
-					console.log(res)
+      async merchantDetail() {
+			  await api.merchantDetail().then(res => {
 					if(res.code == 0){
 						this.data = res.data
 						if(!res.data.bonusBalance){
-							this.data.bonusBalance = 0
-						}
+              this.data.bonusBalance = 0
+            }
+            console.log(123)
 					}
 				})
 			},
@@ -200,10 +200,11 @@
         this.showConfirm = false
       }
 		},
-		created() {
-			this.merchantDetail();
-			this.getComponyInfo();
-			this.applyStatus();
+    async created() {
+      await this.merchantDetail()
+      console.log(456)
+			this.getComponyInfo()
+			this.applyStatus()
 			// if(localStorage.getItem('merchant')) {
 			// 	this.merchantDetail();
 			// 	this.getComponyInfo();

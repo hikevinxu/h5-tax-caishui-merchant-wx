@@ -4,7 +4,7 @@
 		<div class="phone_text">您的手机号：{{phone1}}</div>
 		<div class="phone_item">
 			<div class="phone_key">原手机验证码</div>
-			<input class="phone_value" ref="code_input1" type="text" placeholder="请输入原手机验证码" v-model="code1">
+			<input class="phone_value" ref="code_input1" type="text" placeholder="请输入验证码" v-model="code1">
 			<div class="line1"></div>
 			<div class="login_code_btn" :class="{login_code_btn_send: !isSend1}" id="getPhoneCode1" @click.stop.prevent="getCode('1')">{{codeText1}}</div>
 		</div>
@@ -14,7 +14,7 @@
 		</div>
 		<div class="phone_item">
 			<div class="phone_key">现手机验证码</div>
-			<input class="phone_value" ref="code_input2" type="text" placeholder="请输入现手机验证码" v-model="code2">
+			<input class="phone_value" ref="code_input2" type="text" placeholder="请输入验证码" v-model="code2">
 			<div class="line1"></div>
 			<div class="login_code_btn" :class="{login_code_btn_send: !isSend2}" id="getPhoneCode2" @click.stop.prevent="getCode('2')">{{codeText2}}</div>
 		</div>

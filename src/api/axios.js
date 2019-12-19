@@ -57,7 +57,8 @@ axios.interceptors.response.use((res) => {
         return Promise.resolve(res)
       // 未绑定商户
       case 20002:
-        router.push('/bindPhone')
+        // router.push('/bindPhone')
+        location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9adab1432e4d7cf1&redirect_uri=${location.origin}/bindPhone&response_type=code&scope=snsapi_base&state=123#wechat_redirect`
         return Promise.reject(res)
       case 10000:
         // let pathList = ['/hall', '/clue', '/mine']
